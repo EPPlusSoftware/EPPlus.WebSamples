@@ -1,0 +1,415 @@
+﻿@model EPPlus.WebSampleMvc.NetCore.Models.HtmlExport.ExportTable1Model
+@{
+    ViewData["Title"] = "Html export";
+    Layout = "_Layout";
+}
+<style type="text/css">
+    @Html.Raw(Model.Css)
+</style>
+<div class="row">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/HtmlExport">Html export</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Export table 1</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<div class="row">
+    <div class="col text-center">
+        <h4>Html export - export table html and css</h4>
+    </div>
+</div>
+<div class="row my-2">
+    <div class="col bg-light rounded">
+        <div class="row">
+            <div class="col-6">
+                <a href="#" class="text-secondary">&laquo; Previous sample</a>
+            </div>
+            <div class="col-6 text-right">
+                <a href="/HtmlExport/ExportTable2">Next sample &raquo;</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col my-3">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" id="tab-demo">Demo</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="tab-csharp">C#</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="tab-html">HTML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="tab-css">CSS</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="row demo">
+    <div class="row justify-content-center">
+        <div class="col-sm-12 col-md-6 bg-light p-2">
+            <div class="bg-white p-3 rounded border border-dark">
+                <p>Use the dropdowns to change table style and theme, then click the Reload button. This is the only roundtrip done back to EPPlus. Change the appearance of the table by checking/unchecking the checkboxes.</p>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6 bg-light p-2">
+            <div class="bg-white p-3 rounded border border-dark" style="height:100%">
+                <p>All CSS classes needed to style the table is exported from EPPlus and based on Excels table styles and themes. You can use the dev tools of your favorite browser to see how the classes are applied to the table.</p>
+            </div>
+        </div>
+    </div>
+    <form asp-action="ExportTable1" method="post" id="form1">
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.GetWorkbook, new { id = "get-workbook" })
+        <div class="row justify-content-center">
+            <div class="col-sm-12 col-md-6 p-3">
+                <div class="bg-light rounded p-2">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
+                                <label>Theme</label>
+                                @Html.DropDownListFor(x => x.Theme, Model.AllThemes, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
+                                <label>Table style</label>
+                                @Html.DropDownListFor(x => x.TableStyle, Model.AllBuiltInTableStyles, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-check">
+                                @Html.CheckBoxFor(x => x.ShowFirstColumn, new { @class = "form-control-check", id = "chkShowFirstColumn" })
+                                <label class="form-check-label">Show first column</label>
+                            </div>
+                            <div class="form-check">
+                                @Html.CheckBoxFor(x => x.ShowLastColumn, new { @class = "form-control-check", id = "chkShowLastColumn" })
+                                <label class="form-check-label">Show last column</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-check">
+                                @Html.CheckBoxFor(x => x.ShowColumnStripes, new { @class = "form-control-check", id = "chkShowColumnStripes" })
+                                <label class="form-check-label">Show column stripes</label>
+                            </div>
+                            <div class="form-check">
+                                @Html.CheckBoxFor(x => x.ShowRowsStripes, new { @class = "form-control-check", id = "chkShowRowStripes" })
+                                <label class="form-check-label">Show row stripes</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group mt-2">
+                        <a href="#" class="btn btn-sm btn-secondary" id="btn-get-workbook">Get the workbook</a>
+                        <button type="submit" class="btn btn-sm btn-primary float-right" id="btn-submit-form">Reload</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-6 p-3">
+                <div class="bg-light rounded p-2" style="height:100%">
+                    <p>The checkboxes below demonstrates that you can use the html/css from EPPlus with css/javascript from other frameworks</p>
+                    <div class="form-check">
+                        @Html.CheckBoxFor(x => x.AddBootstrapClasses, new { @class = "form-control-check", id = "chkAddBootstrapClasses" })
+                        <label class="form-check-label">Add <a href="https://getbootstrap.com/docs/4.1/content/tables/">Bootstrap 4 table classes</a></label>
+                    </div>
+                    <div class="form-check">
+                        @Html.CheckBoxFor(x => x.AddDataTablesJs, new { @class = "form-control-check", id = "chkAddDataTablesJs" })
+                        <label class="form-check-label">Add <a href="https://datatables.net/" target="_blank">DataTables</a></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col border-top border-secondary">
+                <label>Css classes on the table element</label>
+                <p class="bg-light p-2 rounded" style="font-family: Courier New, Courier, monospace" id="table-class-info"></p>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col table-responsive" id="colTable">
+                @Html.Raw(Model.Html)
+            </div>
+        </div>
+    </form>
+</div>
+<div class="row csharp">
+    <div class="col">
+        <pre style="white-space: pre-wrap">
+            <code class="language-csharp hljs">
+public void SetupSampleData(int theme, TableStyles? style = TableStyles.Dark1)
+{
+    // This method just fakes some data into a data table
+    InitDataTable();
+
+    using(var package = new ExcelPackage())
+    {
+        SetTheme(theme, package);
+
+        var sheet = package.Workbook.Worksheets.Add("Html export sample 1");
+        var tableRange = sheet.Cells["A1"].LoadFromDataTable(_dataTable, true, style);
+        // set number format for the BirthDate column
+        sheet.Cells[tableRange.Start.Row + 1, 4, tableRange.End.Row, 4].Style.Numberformat.Format = "yyyy-MM-dd";
+        tableRange.AutoFitColumns();
+
+        var table = sheet.Tables.GetFromRange(tableRange);
+
+        // table properties
+        table.ShowFirstColumn = this.ShowFirstColumn;
+        table.ShowLastColumn = this.ShowLastColumn;
+        table.ShowColumnStripes = this.ShowColumnStripes;
+        table.ShowRowStripes = this.ShowRowsStripes;
+
+        // Export Html and CSS
+        table.HtmlExporter.Settings.Minify = false;
+        Css = table.HtmlExporter.GetCssString();
+        Html = table.HtmlExporter.GetHtmlString();
+        WorkbookBytes = package.GetAsByteArray();
+    }
+}
+
+private static void SetTheme(int theme, ExcelPackage package)
+{
+    if (theme > 0)
+    {
+        var fileInfo = default(FileInfo);
+        switch (theme)
+        {
+            case 1:
+                fileInfo = new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"themes\\Ion.thmx"));
+                break;
+            case 2:
+                fileInfo = new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"themes\\Banded.thmx"));
+                break;
+            case 3:
+                fileInfo = new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"themes\\Parallax.thmx"));
+                break;
+            default:
+                fileInfo = new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"themes\\Ion.thmx"));
+                break;
+        }
+        package.Workbook.ThemeManager.Load(fileInfo);
+    }
+}
+            </code>
+        </pre>
+    </div>
+</div>
+<div class="row html">
+    <div class="col">
+        <p>Html as it was exported</p>
+        <pre style="white-space: pre-wrap">
+        <code class="language-html hljs" id="html-code">
+ @Model.Html.Trim()
+            </code>
+        </pre>
+    </div>
+</div>
+<div class="row css">
+    <div class="col">
+        <pre style="white-space: pre-wrap">
+        <code class="language-css hljs" id="css-code">
+ @Model.Css.Trim()
+            </code>
+        </pre>
+    </div>
+</div>
+<script type_="text/javascript">
+    /*
+     * Updates the p element that displays the classes currently applied to the table.
+     */ 
+    function updateTableClassInfo() {
+        let classes = document.getElementsByClassName("epplus-table")[0].className;
+        document.getElementById("table-class-info").innerHTML = classes;
+    }
+    /*
+    * Removes some attributes that DataTable.js has set on the table and don't remove at destroy().
+    */
+    function postDestroyDataTable() {
+        jQuery(".epplus-table thead tr th").each(function (i, elem) {
+            jQuery(".epplus-table").removeClass("no-footer");
+            jQuery(elem).removeAttr("style").removeAttr("class").removeAttr("tabindex").removeAttr("aria-controls").removeAttr("aria-sort").removeAttr("aria-label").removeAttr("colspan").removeAttr("rowspan").removeAttr("tabindex");
+        });
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+
+        var table = document.getElementsByClassName("epplus-table")[0];
+
+        // checkbox handler for show first column
+        var firstColCheckbox = document.getElementById('chkShowFirstColumn');
+        var firstColumnClass = "ts-@Model.TableStyle?.ToLower()-first-column";
+        firstColCheckbox.addEventListener("change", function () {
+            if (firstColCheckbox.checked) {
+                table.classList.add(firstColumnClass);
+            } else {
+                table.classList.remove(firstColumnClass);
+            }
+            updateTableClassInfo();
+        }, false);
+
+        // checkbox handler for show last column
+        var lastColCheckbox = document.getElementById('chkShowLastColumn');
+        var lastColumnClass = "ts-@Model.TableStyle?.ToLower()-last-column";
+        lastColCheckbox.addEventListener("change", function () {
+            if (lastColCheckbox.checked) {
+                table.classList.add(lastColumnClass);
+            } else {
+                table.classList.remove(lastColumnClass);
+            }
+            updateTableClassInfo();
+        }, false);
+
+        // checkbox handler for show column stripes
+        var colStripesCheckbox = document.getElementById('chkShowColumnStripes');
+        var colStripesClass = "ts-@Model.TableStyle?.ToLower()-column-stripes";
+        colStripesCheckbox.addEventListener("change", function () {
+            if (colStripesCheckbox.checked) {
+                table.classList.add(colStripesClass);
+            } else {
+                table.classList.remove(colStripesClass);
+            }
+            updateTableClassInfo();
+        }, false);
+
+        // checkbox handler for show row stripes
+        var rowStripesCheckbox = document.getElementById('chkShowRowStripes');
+        var rowStripesClass = "ts-@Model.TableStyle?.ToLower()-row-stripes";
+        rowStripesCheckbox.addEventListener("change", function () {
+            if (rowStripesCheckbox.checked) {
+                table.classList.add(rowStripesClass);
+            } else {
+                table.classList.remove(rowStripesClass);
+            }
+            updateTableClassInfo();
+        }, false);
+
+        // checkbox handler for adding/removing bootstrap classes
+        var addBootstrapClassesCheckbox = document.getElementById("chkAddBootstrapClasses");
+        addBootstrapClassesCheckbox.addEventListener("change", function () {
+            if (addBootstrapClassesCheckbox.checked) {
+                document.getElementById("colTable").classList.add("table-responsive");
+                table.classList.add("table");
+                table.classList.add("table-borderless");
+            }
+            else {
+                document.getElementById("colTable").classList.remove("table-responsive");
+                table.classList.remove("table");
+                table.classList.remove("table-borderless");
+            }
+            updateTableClassInfo();
+        }, false);
+
+        // checkbox handler for adding/removing DataTables.js
+        var addDataTablesJsCheckbox = document.getElementById("chkAddDataTablesJs");
+        addDataTablesJsCheckbox.addEventListener("change", function () {
+            if (addDataTablesJsCheckbox.checked) {
+                // data tables requires jquery
+                jQuery('.epplus-table').first().DataTable();
+            }
+            else {
+                jQuery('.epplus-table').first().DataTable().destroy();
+                // datatables.js leaves this class after destroy(), so removing it this way
+                postDestroyDataTable();
+            }
+            updateTableClassInfo();
+        }, false);
+
+        jQuery.noConflict();
+        updateTableClassInfo();
+
+        jQuery("#btn-get-workbook").click(function (e) {
+            e.preventDefault();
+            jQuery("#get-workbook").val(true);
+            jQuery("#form1").submit();
+
+        });
+        jQuery("#btn-submit-form").click(function (e) {
+            e.preventDefault();
+            jQuery("#get-workbook").val(false);
+            jQuery("#form1").submit();
+        });
+    });
+</script>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        jQuery(".css").hide();
+        jQuery(".html").hide();
+        jQuery(".csharp").hide();
+        //let html = new DOMParser().parseFromString(jQuery("#table-container").innerHTML, "text/html").documentElement.textContent;
+        //jQuery("#html-code").html(html);
+        hljs.highlightAll();
+        jQuery("#tab-css").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").hide();
+            jQuery(".css").show();
+            jQuery(".html").hide();
+            jQuery(".csharp").hide();
+            jQuery("#tab-demo").removeClass("active");
+            jQuery("#tab-css").addClass("active");
+            jQuery("#tab-html").removeClass("active");
+            jQuery("#tab-csharp").removeClass("active");
+        });
+        jQuery("#tab-demo").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").show();
+            jQuery(".csharp").hide();
+            jQuery(".html").hide();
+            jQuery(".csharp").hide();
+            jQuery("#tab-demo").addClass("active");
+            jQuery("#tab-css").removeClass("active");
+            jQuery("#tab-html").removeClass("active");
+            jQuery("#tab-csharp").removeClass("active");
+        });
+        jQuery("#tab-html").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").hide();
+            jQuery(".html").show();
+            jQuery(".css").hide();
+            jQuery(".csharp").hide();
+            jQuery("#tab-demo").removeClass("active");
+            jQuery("#tab-html").addClass("active");
+            jQuery("#tab-css").removeClass("active");
+            jQuery("#tab-csharp").removeClass("active");
+        });
+        jQuery("#tab-csharp").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").hide();
+            jQuery(".html").hide();
+            jQuery(".css").hide();
+            jQuery(".csharp").show();
+            jQuery("#tab-demo").removeClass("active");
+            jQuery("#tab-html").removeClass("active");
+            jQuery("#tab-css").removeClass("active");
+            jQuery("#tab-csharp").addClass("active");
+        });
+    });
+</script>
+@if (Model.AddBootstrapClasses)
+{
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            var table = document.getElementsByClassName("epplus-table")[0];
+            document.getElementById("colTable").classList.add("table-responsive");
+            table.classList.add("table");
+            table.classList.add("table-borderless");
+            updateTableClassInfo();
+        });
+    </script>
+}
+@if (Model.AddDataTablesJs)
+{
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            jQuery.noConflict();
+            jQuery('.epplus-table').first().DataTable();
+            updateTableClassInfo();
+        });
+    </script>
+}

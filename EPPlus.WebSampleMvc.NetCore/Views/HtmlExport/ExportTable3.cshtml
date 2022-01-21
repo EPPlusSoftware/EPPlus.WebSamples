@@ -1,0 +1,256 @@
+﻿@model EPPlus.WebSampleMvc.NetCore.Models.HtmlExport.ExportTable3Model
+@{
+    ViewData["Title"] = "Html export";
+}
+<script type="text/javascript" src=https://www.gstatic.com/charts/loader.js></script>
+<style type="text/css">
+    @Html.Raw(Model.Css)
+</style>
+<div class="row">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/HtmlExport">Html export</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Export currency table with line chart</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<div class="row">
+    <div class="col text-center">
+        <h4>Html export - Google line chart</h4>
+    </div>
+</div>
+<div class="row my-2">
+    <div class="col bg-light rounded">
+        <div class="row">
+            <div class="col-6">
+                <a href="/HtmlExport/ExportTable2">&laquo; Previous sample</a>
+            </div>
+            <div class="col-6 text-right">
+                <a href="/HtmlExport/ExportTable4">Next sample &raquo;</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <p>This table contains over 2 000 currency rates and is connected to a <a href="https://developers.google.com/chart/interactive/docs/gallery/linechart" target="_blank">Google charts line chart</a>. The rates are imported to EPPlus from a .csv file using the <a href="https://github.com/EPPlusSoftware/EPPlus/wiki/LoadFromText" target="_blank">LoadFromText</a> function and exported to css/html using table style Light2.</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col my-3">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" id="tab-demo">Demo</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="tab-csharp">C#</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="tab-js">Javascript</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="row demo">
+    <div class="col">
+        <div id="currency-chart" class="text-center border border-secondary p-3 mb-4 rounded shadow" style="height:450px">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading chart...</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row demo">
+    <div class="col">
+        @Html.Raw(Model.Html)
+    </div>
+</div>
+<div class="row js">
+    <div class="col">
+        <pre>
+        <code class="language-js hljs" id="js-code"></code>
+        </pre>
+    </div>
+</div>
+<div class="row csharp">
+    <div class="col">
+        <pre>
+        <code class="language-csharp hljs">
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using OfficeOpenXml.Table;
+using System;
+using System.Globalization;
+using System.IO;
+
+namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
+{
+    public class ExportTable3Model
+    {
+        public void SetupSampleData(TableStyles style = TableStyles.Dark1)
+        {
+            using (var package = new ExcelPackage())
+            {
+                var sheet = package.Workbook.Worksheets.Add("Html export sample 3");
+                var csvFileInfo = new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"data\\currencies2011weekly.csv"));
+                var format = new ExcelTextFormat
+                {
+                    Delimiter = ';',
+                    Culture = CultureInfo.InvariantCulture,
+                    DataTypes = new eDataTypes[] { eDataTypes.DateTime, eDataTypes.Number, eDataTypes.Number, eDataTypes.Number }
+                };
+                var tableRange = sheet.Cells["A1"].LoadFromText(csvFileInfo, format, style, true);
+
+                sheet.Cells["B1:E1"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                sheet.Cells[tableRange.Start.Row, 1, tableRange.End.Row, 1].Style.Numberformat.Format = "yyyy-MM-dd";
+                sheet.Cells[tableRange.Start.Row, 2, tableRange.End.Row, 5].Style.Numberformat.Format = "#,##0.0000";
+
+                var table = sheet.Tables.GetFromRange(tableRange);
+                table.ShowFirstColumn = true;
+
+                var settings = table.HtmlExporter.Settings;
+                settings.Culture = CultureInfo.InvariantCulture;
+                settings.TableId = "currency-table";
+                settings.AdditionalTableClassNames.Add("table");
+                settings.AdditionalTableClassNames.Add("table-sm");
+                settings.AdditionalTableClassNames.Add("table-borderless");
+
+                // export css and html
+                Css = table.HtmlExporter.GetCssString();
+                Html = table.HtmlExporter.GetHtmlString();
+            }
+        }
+
+        public string Css { get; set; }
+
+        public string Html { get; set; }
+    }
+}
+            </code>
+        </pre>
+    </div>
+</div>
+<script type="text/javascript" id="chart-script">
+
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', { 'packages': ['corechart'] });
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(drawCharts);
+
+    function getValue(cell, datatype) {
+        if (datatype == "string") {
+            return cell.innerHTML;
+        }
+        else if (datatype == "number") {
+            return parseFloat(cell.getAttribute("data-value"));
+        }
+        else if (datatype == "datetime") {
+            return new Date(parseInt(cell.getAttribute("data-value")));
+        }
+    }
+
+    // Reads data from the table and creates a google.visualization.DataTable.
+    // The argument indexes should be an array containing the 0-based indexes of the table
+    // columns to use.
+    function getDataFromTable(indexes) {
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        var dataTypes = [];
+
+        // read data types from the thead and define columns in the google.visualization.DataTable
+        var headers = document.querySelectorAll("table#currency-table thead tr th");
+        for (var hIx = 0; hIx < headers.length; hIx++) {
+            let hCell = headers[hIx];
+            if (indexes.indexOf(hIx) > -1) {
+                let dt = hCell.getAttribute("data-datatype");
+                dataTypes.push(dt);
+                data.addColumn(dt, hCell.innerHTML);
+            }
+        }
+
+        // read the data from the tbody and insert it into the table
+        let rows = [];
+        var tableRows = document.querySelectorAll("table#currency-table tbody tr");
+        for (var rIx = 0; rIx < tableRows.length; rIx++) {
+            var row = [];
+            let tableRow = tableRows[rIx];
+            for (var iIx = 0; iIx < indexes.length; iIx++) {
+                let ix = indexes[iIx];
+                let dataType = dataTypes[iIx];
+                let val = getValue(tableRow.children[ix], dataType);
+                row.push(val);
+            }
+            rows.push(row);
+        }
+        data.addRows(rows);
+        return data;
+    }
+
+    // Callback that creates and populates a data table,
+    // instantiates the line chart, passes in the data and
+    // draws it.
+    function drawCharts() {
+        var dt = getDataFromTable([0, 1, 2, 3, 4]);
+        drawLineChart(dt, "Historical currency rates in USD");
+    }
+
+    function drawLineChart(data, title) {
+        var options = {
+            'title': title,
+            'width': '100%',
+            'height': 400,
+            'is3D': true,
+            'animation': {
+                startup: true,
+                duration: 1000,
+                easing: 'in'
+            }
+        };
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.LineChart(document.getElementById('currency-chart'));
+        chart.draw(data, options);
+    };
+</script>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        jQuery(".csharp").hide();
+        jQuery(".js").hide();
+        jQuery("#js-code").html(jQuery("#chart-script").html());
+        //let html = new DOMParser().parseFromString(jQuery("#table-container").innerHTML, "text/html").documentElement.textContent;
+        //jQuery("#html-code").html(html);
+        hljs.highlightAll();
+        jQuery("#tab-csharp").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").hide();
+            jQuery(".csharp").show();
+            jQuery(".js").hide();
+            jQuery("#tab-demo").removeClass("active");
+            jQuery("#tab-csharp").addClass("active");
+            jQuery("#tab-js").removeClass("active");
+        });
+        jQuery("#tab-demo").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").show();
+            jQuery(".csharp").hide();
+            jQuery(".js").hide();
+            jQuery(".html").hide();
+            jQuery("#tab-demo").addClass("active");
+            jQuery("#tab-csharp").removeClass("active");
+            jQuery("#tab-js").removeClass("active");
+            jQuery("#tab-html").removeClass("active");
+        });
+        jQuery("#tab-js").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").hide();
+            jQuery(".csharp").hide();
+            jQuery(".js").show();
+            jQuery("#tab-demo").removeClass("active");
+            jQuery("#tab-csharp").removeClass("active");
+            jQuery("#tab-js").addClass("active");
+        });
+    });
+</script>
