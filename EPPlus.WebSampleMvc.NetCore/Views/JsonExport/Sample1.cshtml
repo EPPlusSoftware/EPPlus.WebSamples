@@ -40,7 +40,7 @@
 <div class="row demo">
     <div class="col-12">
         <p>In this we use JSON data from EPPlus to populate a <a href="https://www.chartjs.org/" target="_blank">Charts.js</a> line chart. The rates are imported to EPPlus from a .csv file using the <a href="https://github.com/EPPlusSoftware/EPPlus/wiki/LoadFromText" target="_blank">LoadFromText</a> function and exported to JSON via the ToJson() method.
-            The JSON data is fetched via a ajax call to a separate MVC controller action (JsonExportController.Sample1GetJsonData())</p>
+            The JSON data is fetched via an ajax call to a separate MVC controller action (JsonExportController.Sample1GetJsonData())</p>
     </div>
 </div>
 <div class="row demo">
@@ -173,28 +173,30 @@ public async Task&lt;JsonResult&gt; Sample1GetJsonData()
     </div>
 </div>
 <script type="text/javascript" id="chart-script">
-    document.addEventListener('DOMContentLoaded', function () {
-        $.getJSON("/JsonExport/Sample1GetJsonData", function(data){
-            let jsonData = JSON.parse(data);
-            let config = {
-                type: 'line',
-                data: getChartData(0, [1, 2, 3, 4], jsonData.range),
-                options: {
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Historial currency rates in USD'
-                        }
+// runs when the DOM content has been fully loaded and fetches
+// the exported json data via an ajax (jQuery.getJSON) call.
+document.addEventListener('DOMContentLoaded', function () {
+    $.getJSON("/JsonExport/Sample1GetJsonData", function(data){
+        let jsonData = JSON.parse(data);
+        let config = {
+            type: 'line',
+            data: getChartData(0, [1, 2, 3, 4], jsonData.range),
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Historial currency rates in USD'
                     }
                 }
-            };
-            let myChart = new Chart(document.getElementById("myChart"), config);
-        }, false);
-    });
+            }
+        };
+        let myChart = new Chart(document.getElementById("myChart"), config);
+    }, false);
+});
 
-    // Reads data from the table and creates input for a Chart.js line chart.
-// The argument xCol should be the 0-based index of the table column that contains the labels of the x-axis.
-// The argument indexes should be an array containing the 0 - based indexes of the table
+// Reads data from exported range and creates input for a Chart.js line chart.
+// The argument xCol should be the 0-based index of the range column that contains the labels of the x-axis.
+// The argument indexes should be an array containing the 0 - based indexes of the ranges columns
 // columns to use in the datasets.
 function getChartData(xCol, indexes, jsonRange) {
     var xDataType;
@@ -205,7 +207,7 @@ function getChartData(xCol, indexes, jsonRange) {
         datasets: []
     };
 
-    // read data from the header section
+    // read data from the column section
     var headers = jsonRange.column;
     for (var hIx = 0; hIx < headers.length; hIx++) {
         if (indexes.indexOf(hIx) > -1) {
