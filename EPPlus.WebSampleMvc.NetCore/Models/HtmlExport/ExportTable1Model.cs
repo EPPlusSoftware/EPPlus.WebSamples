@@ -61,9 +61,10 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 table.ShowRowStripes = this.ShowRowsStripes;
 
                 // Export Html and CSS
-                table.HtmlExporter.Settings.Minify = false;
-                Css = table.HtmlExporter.GetCssString();
-                Html = table.HtmlExporter.GetHtmlString();
+                var exporter = table.CreateHtmlExporter();
+                exporter.Settings.Minify = false;
+                Css = exporter.GetCssString();
+                Html = exporter.GetHtmlString();
                 WorkbookBytes = package.GetAsByteArray();
             }
         }

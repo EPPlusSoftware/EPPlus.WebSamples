@@ -219,7 +219,8 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 
 
                 // Configure export settings
-                var settings = table.HtmlExporter.Settings;
+                var exporter = table.CreateHtmlExporter();
+                var settings = exporter.Settings;
                 settings.Minify = false;
                 settings.AdditionalTableClassNames.Add("table");
                 settings.AdditionalTableClassNames.Add("table-sm");
@@ -228,8 +229,8 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 settings.Accessibility.TableSettings.AriaLabel = "Demo table";
 
                 // export css and html
-                Css = table.HtmlExporter.GetCssString();
-                Html = table.HtmlExporter.GetHtmlString();
+                Css = exporter.GetCssString();
+                Html = exporter.GetHtmlString();
             }
         }
 

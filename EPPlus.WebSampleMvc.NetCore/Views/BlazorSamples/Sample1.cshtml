@@ -28,13 +28,102 @@
     </div>
 </div>
 <div class="row">
+    <div class="col my-3">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" id="tab-demo">Demo</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="tab-csharp">C#/Blazor</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="tab-js">Javascript</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="row demo">
     <div class="col">
         <component type="typeof(DownloadExcelFile)" render-mode="WebAssemblyPrerendered" />
     </div>
 </div>
-<script type="text/javascript">
+<div class="row csharp">
+    <div class="col">
+        <p>Blazor code below. BlazorDownloadFile is a Javascript function on this page that handles the download of the workbook created in Blazor.</p>
+        <pre>
+        <code class="language-csharp hljs">
+@Html.Raw("@using System.IO")
+@Html.Raw("@using OfficeOpenXml")
+@Html.Raw("@using Microsoft.JSInterop")
+@Html.Raw("@using System.Net")
+@Html.Raw("@using System.Reflection")
+@Html.Raw("@using System.Dynamic")
+@Html.Raw("@using System.Text.Json")
+@Html.Raw("@using OfficeOpenXml.Table")
+@Html.Raw("@inject IJSRuntime JS")
+
+@Html.Raw("@code {")
+    async Task DownloadExcel()
+    {
+        // read png image from embedded resource
+        var imageBytes = default(byte[]);
+        using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EPPlus.WebSampleMvc.NetCore.WebAssemblySamples.Resources.EPPlus-logo-full.png");
+        using var sr = new BinaryReader(stream);
+        imageBytes = sr.ReadBytes((int)stream.Length);
+
+        // get some json data from a javascript function and convert it into ExpandoObjects (dynamic objects)
+        var json = await JS.InvokeAsync&lt;string&gt;("getCities");
+        IEnumerable<ExpandoObject> cities = JsonSerializer.Deserialize&lt;IEnumerable&lt;ExpandoObject&gt;&gt;(json);
+
+        using(var package = new ExcelPackage())
+        {
+            var sheet = package.Workbook.Worksheets.Add("Test");
+
+            // load the dynamic objects into EPPlus using the LoadFromDictionaries method.
+            var loadedRange = sheet.Cells["A5"].LoadFromDictionaries(cities, x => {
+                x.TableStyle = OfficeOpenXml.Table.TableStyles.Medium13;
+                x.PrintHeaders = true;
+                x.DataTypes = new eDataTypes[] { eDataTypes.String, eDataTypes.Number, eDataTypes.String, eDataTypes.Number };
+            });
+            var table = sheet.Tables.GetFromRange(loadedRange);
+            table.ShowTotal = true;
+            table.Columns[0].TotalsRowLabel = "Average";
+            table.Columns[1].TotalsRowFunction = RowFunctions.Average;
+            table.Columns[3].TotalsRowFunction = RowFunctions.Average;
+            sheet.Cells[table.Range.Start.Row, 2, table.Range.End.Row, 2].Style.Numberformat.Format = "#,##0";
+            sheet.Cells[table.Range.Start.Row, 4, table.Range.End.Row, 4].Style.Numberformat.Format = "#,##0 \"km2\"";
+            // Calculate the formulas in the worksheet, in this case the average functions of the table's total row
+            sheet.Calculate();
+            // Adjust the column width after the widest text in the cells
+            sheet.Cells[1, 1, sheet.Dimension.End.Row, sheet.Dimension.End.Column].AutoFitColumns();
+            if(imageBytes != null)
+            {
+                using(var ms = new MemoryStream(imageBytes))
+                {
+                    var pic = sheet.Drawings.AddPicture("epplogo", ms, OfficeOpenXml.Drawing.ePictureType.Png);
+                    pic.SetSize(50);
+                    pic.SetPosition(0, 10, 0, 10);
+                }
+            }
+            await JS.InvokeVoidAsync("BlazorDownloadFile", "Excel.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", package.GetAsByteArray());
+
+        }
+    }
+}
+            </code>
+        </pre>
+    </div>
+</div>
+<div class="row js">
+    <div class="col">
+        <pre>
+        <code class="language-js hljs" id="js-code"></code>
+        </pre>
+    </div>
+</div>
+<script type="text/javascript" id="chart-script">
     function getCities(){
-        return [
+        var cities = [
             {
                 "Name": "Tokyo-Yokohama",
                 "Population": 37843000,
@@ -66,6 +155,7 @@
                 "Area": 2266
             }
         ];
+        return JSON.stringify(cities);
     }
 </script>
 <script src="_framework/blazor.webassembly.js"></script>
@@ -116,4 +206,43 @@
         }
         return taBytes;
     }
+</script>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        jQuery(".csharp").hide();
+        jQuery(".js").hide();
+        jQuery("#js-code").html(jQuery("#chart-script").html());
+        //let html = new DOMParser().parseFromString(jQuery("#table-container").innerHTML, "text/html").documentElement.textContent;
+        //jQuery("#html-code").html(html);
+        hljs.highlightAll();
+        jQuery("#tab-csharp").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").hide();
+            jQuery(".csharp").show();
+            jQuery(".js").hide();
+            jQuery("#tab-demo").removeClass("active");
+            jQuery("#tab-csharp").addClass("active");
+            jQuery("#tab-js").removeClass("active");
+        });
+        jQuery("#tab-demo").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").show();
+            jQuery(".csharp").hide();
+            jQuery(".js").hide();
+            jQuery(".html").hide();
+            jQuery("#tab-demo").addClass("active");
+            jQuery("#tab-csharp").removeClass("active");
+            jQuery("#tab-js").removeClass("active");
+            jQuery("#tab-html").removeClass("active");
+        });
+        jQuery("#tab-js").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").hide();
+            jQuery(".csharp").hide();
+            jQuery(".js").show();
+            jQuery("#tab-demo").removeClass("active");
+            jQuery("#tab-csharp").removeClass("active");
+            jQuery("#tab-js").addClass("active");
+        });
+    });
 </script>
