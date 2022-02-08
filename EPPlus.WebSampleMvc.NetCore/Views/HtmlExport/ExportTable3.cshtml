@@ -64,7 +64,7 @@
     </div>
 </div>
 <div class="row demo">
-    <div class="col">
+    <div class="col table-responsive">
         @Html.Raw(Model.Html)
     </div>
 </div>
@@ -90,6 +90,10 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 {
     public class ExportTable3Model
     {
+        public string Css { get; set; }
+
+        public string Html { get; set; }
+
         public void SetupSampleData(TableStyles style = TableStyles.Dark1)
         {
             using (var package = new ExcelPackage())
@@ -124,10 +128,6 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 Html = exporter.GetHtmlString();
             }
         }
-
-        public string Css { get; set; }
-
-        public string Html { get; set; }
     }
 }
             </code>
@@ -136,93 +136,91 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 </div>
 <script type="text/javascript" id="chart-script">
 
-    // Load the Visualization API and the corechart package.
-    google.charts.load('current', { 'packages': ['corechart'] });
+// Load the Visualization API and the corechart package.
+google.charts.load('current', { 'packages': ['corechart'] });
 
-    // Set a callback to run when the Google Visualization API is loaded.
-    google.charts.setOnLoadCallback(drawCharts);
+// Set a callback to run when the Google Visualization API is loaded.
+google.charts.setOnLoadCallback(drawCharts);
 
-    function getValue(cell, datatype) {
-        if (datatype == "string") {
-            return cell.innerHTML;
-        }
-        else if (datatype == "number") {
-            return parseFloat(cell.getAttribute("data-value"));
-        }
-        else if (datatype == "datetime") {
-            return new Date(parseInt(cell.getAttribute("data-value")));
+function getValue(cell, datatype) {
+    if (datatype == "string") {
+        return cell.innerHTML;
+    }
+    else if (datatype == "number") {
+        return parseFloat(cell.getAttribute("data-value"));
+    }
+    else if (datatype == "datetime") {
+        return new Date(parseInt(cell.getAttribute("data-value")));
+    }
+}
+
+// Reads data from the table and creates a google.visualization.DataTable.
+// The argument indexes should be an array containing the 0-based indexes of the table
+// columns to use.
+function getDataFromTable(indexes) {
+    // Create the data table.
+    var data = new google.visualization.DataTable();
+    var dataTypes = [];
+
+    // read data types from the thead and define columns in the google.visualization.DataTable
+    var headers = document.querySelectorAll("table#currency-table thead tr th");
+    for (var hIx = 0; hIx < headers.length; hIx++) {
+        let hCell = headers[hIx];
+        if (indexes.indexOf(hIx) > -1) {
+            let dt = hCell.getAttribute("data-datatype");
+            dataTypes.push(dt);
+            data.addColumn(dt, hCell.innerHTML);
         }
     }
 
-    // Reads data from the table and creates a google.visualization.DataTable.
-    // The argument indexes should be an array containing the 0-based indexes of the table
-    // columns to use.
-    function getDataFromTable(indexes) {
-        // Create the data table.
-        var data = new google.visualization.DataTable();
-        var dataTypes = [];
-
-        // read data types from the thead and define columns in the google.visualization.DataTable
-        var headers = document.querySelectorAll("table#currency-table thead tr th");
-        for (var hIx = 0; hIx < headers.length; hIx++) {
-            let hCell = headers[hIx];
-            if (indexes.indexOf(hIx) > -1) {
-                let dt = hCell.getAttribute("data-datatype");
-                dataTypes.push(dt);
-                data.addColumn(dt, hCell.innerHTML);
-            }
+    // read the data from the tbody and insert it into the table
+    let rows = [];
+    var tableRows = document.querySelectorAll("table#currency-table tbody tr");
+    for (var rIx = 0; rIx < tableRows.length; rIx++) {
+        var row = [];
+        let tableRow = tableRows[rIx];
+        for (var iIx = 0; iIx < indexes.length; iIx++) {
+            let ix = indexes[iIx];
+            let dataType = dataTypes[iIx];
+            let val = getValue(tableRow.children[ix], dataType);
+            row.push(val);
         }
+        rows.push(row);
+    }
+    data.addRows(rows);
+    return data;
+}
 
-        // read the data from the tbody and insert it into the table
-        let rows = [];
-        var tableRows = document.querySelectorAll("table#currency-table tbody tr");
-        for (var rIx = 0; rIx < tableRows.length; rIx++) {
-            var row = [];
-            let tableRow = tableRows[rIx];
-            for (var iIx = 0; iIx < indexes.length; iIx++) {
-                let ix = indexes[iIx];
-                let dataType = dataTypes[iIx];
-                let val = getValue(tableRow.children[ix], dataType);
-                row.push(val);
-            }
-            rows.push(row);
+// Callback that creates and populates a data table,
+// instantiates the line chart, passes in the data and
+// draws it.
+function drawCharts() {
+    var dt = getDataFromTable([0, 1, 2, 3, 4]);
+    drawLineChart(dt, "Historical currency rates in USD");
+}
+
+function drawLineChart(data, title) {
+    var options = {
+        'title': title,
+        'width': '100%',
+        'height': 400,
+        'is3D': true,
+        'animation': {
+            startup: true,
+            duration: 1000,
+            easing: 'in'
         }
-        data.addRows(rows);
-        return data;
-    }
-
-    // Callback that creates and populates a data table,
-    // instantiates the line chart, passes in the data and
-    // draws it.
-    function drawCharts() {
-        var dt = getDataFromTable([0, 1, 2, 3, 4]);
-        drawLineChart(dt, "Historical currency rates in USD");
-    }
-
-    function drawLineChart(data, title) {
-        var options = {
-            'title': title,
-            'width': '100%',
-            'height': 400,
-            'is3D': true,
-            'animation': {
-                startup: true,
-                duration: 1000,
-                easing: 'in'
-            }
-        };
-        // Instantiate and draw our chart, passing in some options.
-        var chart = new google.visualization.LineChart(document.getElementById('currency-chart'));
-        chart.draw(data, options);
     };
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.LineChart(document.getElementById('currency-chart'));
+    chart.draw(data, options);
+};
 </script>
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function () {
         jQuery(".csharp").hide();
         jQuery(".js").hide();
         jQuery("#js-code").html(jQuery("#chart-script").html());
-        //let html = new DOMParser().parseFromString(jQuery("#table-container").innerHTML, "text/html").documentElement.textContent;
-        //jQuery("#html-code").html(html);
         hljs.highlightAll();
         jQuery("#tab-csharp").click(function (e) {
             e.preventDefault();

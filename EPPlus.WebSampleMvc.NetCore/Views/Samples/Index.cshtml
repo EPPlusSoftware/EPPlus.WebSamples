@@ -8,22 +8,65 @@
         <div class="text-center">
             <h1 class="display-4">Samples</h1>
             <p class="my-2">
-                These samples demonstrates how to create worksheets in an MVC controller let the user download them as files
+                These sample demonstrates how to create a workbook in an MVC controller and let the user download it.
             </p>
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-lg-5 col-sm-12 mt-3 p-3 border border-dark rounded-lg mr-1">
-        <h3>Download workbook 1</h3>
-        <p>This sample calls the <i>WebSample1</i> action in the <i>SamplesController</i>. The workbook is created in memory, without any filesystem access.</p>
-        <a href="/Samples/WebSample1">Download workbook</a>
-    </div>
-    <div class="col-lg-5 col-sm-12 mt-3 p-3 border border-dark rounded-lg ml-1">
-        <h3>Download workbook 2</h3>
-        <p>This sample calls <i>WebSample2</i> action in the <i>SamplesController</i>. It uses <i>LoadFromCollection</i> to load a collection of 1000 objects into the workbook.</p>
-        <a href="/Samples/WebSample2">Download workbook</a>
+<div class="row"">
+    <div class="col mt-3 p-3 border border-dark rounded-lg mr-1">
+        <div class="row">
+            <div class="col">
+                <h3>Create and download workbook</h3>
+            </div>
+         </div>
+         <div class="row csharp">
+             <div class="col">
+               <pre style="white-space: pre-wrap">
+                <code class="language-csharp hljs">
+private const string ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+[HttpGet]
+public IActionResult WebSample1()
+{
+    using(var package = new ExcelPackage())
+    {
+        var sheet = package.Workbook.Worksheets.Add("Sheet 1");
+        sheet.Cells["A1:C1"].Merge = true;
+        sheet.Cells["A1"].Style.Font.Size = 18f;
+        sheet.Cells["A1"].Style.Font.Bold = true;
+        sheet.Cells["A1"].Value = "Simple example 1";
+        var excelData = package.GetAsByteArray();
+        var fileName = "MyWorkbook.xlsx";
+        return File(excelData, ContentType, fileName);
+    }
+}
+                </code>
+            </pre>
+            </div>
+         </div>
+         <div class="row">
+             <div class="col">
+                <p>This sample calls the <i>WebSample1</i> action in the <i>SamplesController</i>. The workbook is created in memory, without any filesystem access.</p>
+                <a href="/Samples/WebSample1" class="btn btn-primary">Download workbook</a>
+            </div>
+        </div>
     </div>
 </div>
-
+<div class="row mt-3">
+    <div class="col-sm-12 col-md-4 text-center">
+        <a href="/HtmlExport">Html export</a>
+    </div>
+    <div class="col-sm-12 col-md-4 text-center">
+        <a href="/JsonExport">Json export</a>
+    </div>
+    <div class="col-sm-12 col-md-4 text-center">
+        <a href="/BlazorSamples">Blazor</a>
+    </div>
+</div>
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        hljs.highlightAll();
+    });
+</script>
 

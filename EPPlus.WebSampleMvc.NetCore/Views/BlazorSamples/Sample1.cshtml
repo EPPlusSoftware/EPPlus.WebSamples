@@ -68,7 +68,7 @@
 
         // get some json data from a javascript function and convert it into ExpandoObjects (dynamic objects)
         var json = await JS.InvokeAsync&lt;string&gt;("getCities");
-        IEnumerable&lt;ExpandoObject&lt; cities = JsonSerializer.Deserialize&lt;IEnumerable&lt;ExpandoObject&gt;&gt;(json);
+        var cities = JsonSerializer.Deserialize&lt;IEnumerable&lt;ExpandoObject&gt;&gt;(json);
 
         using(var package = new ExcelPackage())
         {
@@ -99,7 +99,7 @@
             pic.SetPosition(0, 10, 0, 10);
 
             // finally serialize the workbook to a byte array and use the BlazorDownloadFile function to create a link for download.
-            await JS.InvokeVoidAsync("BlazorDownloadFile", "Excel.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", package.GetAsByteArray());
+            await JS.InvokeVoidAsync("BlazorDownloadFile", "BlazorSample1.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", package.GetAsByteArray());
         }
     }
 }

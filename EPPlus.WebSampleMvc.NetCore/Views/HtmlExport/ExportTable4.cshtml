@@ -61,7 +61,7 @@
     </div>
 </div>
 <div class="row demo">
-    <div class="col">
+    <div class="col table-responsive">
         @Html.Raw(Model.Html)
     </div>
 </div>
@@ -80,6 +80,10 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 {
     public class ExportTable4Model
     {
+        public string Css { get; set; }
+
+        public string Html { get; set; }
+
         public void SetupSampleData(TableStyles style = TableStyles.Dark1)
         {
             using (var package = new ExcelPackage())
@@ -114,10 +118,6 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 Html = exporter.GetHtmlString();;
             }
         }
-
-        public string Css { get; set; }
-
-        public string Html { get; set; }
     }
 }
             </code>
@@ -150,61 +150,62 @@ function getValue(cell, datatype) {
 // The argument indexes should be an array containing the 0 - based indexes of the table
 // columns to use in the datasets.
 function getChartJsDataFromTable(xCol, indexes) {
-            var xDataType;
-            var dataTypes = [];
-            var colors = ['black', 'blue', 'red', 'orange', 'green']
-            var data = {
-                labels: [],
-                datasets: []
-            };
+    var xDataType;
+    var dataTypes = [];
+    var colors = ['black', 'blue', 'red', 'orange', 'green']
+    var data = {
+        labels: [],
+        datasets: []
+    };
 
-            // read data from the header section
-            var headers = document.querySelectorAll("table#currency-table thead tr th");
-            for (var hIx = 0; hIx < headers.length; hIx++) {
-                if (indexes.indexOf(hIx) > -1) {
-                    dataTypes.push(headers[hIx].getAttribute("data-datatype"));
-                    data.datasets.push({
-                        label: headers[hIx].innerHTML,
-                        data: [],
-                        borderColor: colors[hIx],
-                        backgroundColor: colors[hIx],
-                        borderWidth: 1,
-                        pointRadius: 0.5,
-                        fill: false
-                    });
-                }
-                else if (hIx == xCol) {
-                    xDataType = headers[hIx].getAttribute("data-datatype");
-                }
-            }
-
-            // read data in reverse order from the table's body
-            var tableRows = document.querySelectorAll("table#currency-table tbody tr");
-            for (var rIx = tableRows.length - 1; rIx >= 0 ; rIx--) {
-                let xVal = getValue(tableRows[rIx].children[xCol], xDataType);
-                data.labels.push(tableRows[rIx].children[xCol].innerHTML);
-                for (var iIx = 0; iIx < indexes.length; iIx++) {
-                    let ix = indexes[iIx];
-                    let val = getValue(tableRows[rIx].children[ix], dataTypes[iIx]);
-                    data.datasets[iIx].data.push({ x: xVal, y: val });
-                }
-            }
-
-            return data;
+    // read data from the header section
+    var headers = document.querySelectorAll("table#currency-table thead tr th");
+    for (var hIx = 0; hIx < headers.length; hIx++) {
+        if (indexes.indexOf(hIx) > -1) {
+            dataTypes.push(headers[hIx].getAttribute("data-datatype"));
+            data.datasets.push({
+                label: headers[hIx].innerHTML,
+                data: [],
+                borderColor: colors[hIx],
+                backgroundColor: colors[hIx],
+                borderWidth: 1,
+                pointRadius: 0.5,
+                fill: false
+            });
         }
+        else if (hIx == xCol) {
+            xDataType = headers[hIx].getAttribute("data-datatype");
+        }
+    }
+
+    // read data in reverse order from the table's body
+    var tableRows = document.querySelectorAll("table#currency-table tbody tr");
+    for (var rIx = tableRows.length - 1; rIx >= 0 ; rIx--) {
+        let xVal = getValue(tableRows[rIx].children[xCol], xDataType);
+        data.labels.push(tableRows[rIx].children[xCol].innerHTML);
+        for (var iIx = 0; iIx < indexes.length; iIx++) {
+            let ix = indexes[iIx];
+            let val = getValue(tableRows[rIx].children[ix], dataTypes[iIx]);
+            data.datasets[iIx].data.push({ x: xVal, y: val });
+        }
+    }
+
+    return data;
+}
 
 const config = {
-        type: 'line',
-        data: getChartJsDataFromTable(0, [1, 2, 3, 4]),
-        options: {
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Historial currency rates in USD'
-                }
+    type: 'line',
+    data: getChartJsDataFromTable(0, [1, 2, 3, 4]),
+    options: {
+        plugins: {
+            title: {
+                display: true,
+                text: 'Historial currency rates in USD'
             }
         }
-    };
+    }
+};
+
 const myChart = new Chart(document.getElementById("myChart"), config);
 </script>
 <script type="text/javascript">
@@ -212,8 +213,6 @@ const myChart = new Chart(document.getElementById("myChart"), config);
         jQuery(".csharp").hide();
         jQuery(".js").hide();
         jQuery("#js-code").html(jQuery("#chart-script").html());
-        //let html = new DOMParser().parseFromString(jQuery("#table-container").innerHTML, "text/html").documentElement.textContent;
-        //jQuery("#html-code").html(html);
         hljs.highlightAll();
         jQuery("#tab-csharp").click(function (e) {
             e.preventDefault();

@@ -39,12 +39,17 @@
 </div>
 <div class="row demo">
     <div class="col-12">
-        <p>In this we use JSON data from EPPlus to populate a <a href="https://www.chartjs.org/" target="_blank">Charts.js</a> line chart. The rates are imported to EPPlus from a .csv file using the <a href="https://github.com/EPPlusSoftware/EPPlus/wiki/LoadFromText" target="_blank">LoadFromText</a> function and exported to JSON via the ToJson() method.
+        <p>In this sample we use JSON data, containing over 2000 currency rates, from EPPlus to populate a <a href="https://www.chartjs.org/" target="_blank">Charts.js</a> line chart. The rates are imported to EPPlus from a .csv file using the <a href="https://github.com/EPPlusSoftware/EPPlus/wiki/LoadFromText" target="_blank">LoadFromText</a> function and exported to JSON via the ToJson() method.
             The JSON data is fetched via an ajax call to a separate MVC controller action (JsonExportController.Sample1GetJsonData())</p>
     </div>
 </div>
 <div class="row demo">
     <div class="col">
+        <div id="currency-chart-loader" class="text-center border border-secondary p-3 mb-4 rounded shadow" style="height:550px">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading chart...</span>
+            </div>
+        </div>
         <canvas id="myChart"></canvas>
     </div>
 </div>
@@ -57,7 +62,7 @@
 </div>
 <div class="row json" style="display:none">
     <div class="col">
-        <p>This is just a small subset of the actual json in the sample just to show the format.</p>
+        <p>This is just a small subset of the actual json in the sample to show the format.</p>
         <pre>
             <code class="language-json" id="json-code">
 {
@@ -185,6 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         };
+        document.getElementById("currency-chart-loader").style.display = 'none';
         let myChart = new Chart(document.getElementById("myChart"), config);
     }, false);
 });
@@ -193,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // The argument xCol should be the 0-based index of the range column that contains the labels of the x-axis.
 // The argument indexes should be an array containing the 0 - based indexes of the ranges columns
 // columns to use in the datasets.
-function getChartJsData(lableColumn, dataColumns, jsonRange) {
+function getChartJsData(labelColumn, dataColumns, jsonRange) {
     var xDataType;
     var dataTypes = [];
     var colors = ['black', 'blue', 'red', 'orange', 'green']
@@ -218,13 +224,13 @@ function getChartJsData(lableColumn, dataColumns, jsonRange) {
     }
 
     // Read data in reverse order from the range's rows
-    var tableRows = jsonRange.rows;
-    for (var row = tableRows.length - 1; row >= 0 ; row--) {
-        let labelValue = getValue(tableRows[row].cells[lableColumn].v, jsonRange.columns[lableColumn].dataType);
-        data.labels.push(tableRows[row].cells[lableColumn].t);
+    let labelDataType = jsonRange.columns[labelColumn].dataType;
+    for (var row = jsonRange.rows.length - 1; row >= 0 ; row--) {
+        let labelValue = getValue(jsonRange.rows[row].cells[labelColumn].v, labelDataType);
+        data.labels.push(jsonRange.rows[row].cells[labelColumn].t);
         for (var i = 0; i < dataColumns.length; i++) {
             let columnIndex = dataColumns[i];
-            let val = getValue(tableRows[row].cells[columnIndex].v, jsonRange.columns[columnIndex].dataType);
+            let val = getValue(jsonRange.rows[row].cells[columnIndex].v, jsonRange.columns[columnIndex].dataType);
             data.datasets[i].data.push({ x: labelValue, y: val });
         }
     }
