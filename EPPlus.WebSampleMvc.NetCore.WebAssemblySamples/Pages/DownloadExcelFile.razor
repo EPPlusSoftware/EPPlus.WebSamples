@@ -31,12 +31,6 @@
 
     async Task DownloadExcel()
     {
-        // read png image from embedded resource
-        var imageBytes = default(byte[]);
-        using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EPPlus.WebSampleMvc.NetCore.WebAssemblySamples.Resources.EPPlus-logo-full.png");
-        using var sr = new BinaryReader(stream);
-        imageBytes = sr.ReadBytes((int)stream.Length);
-
         // get some json data from a javascript function and convert it into ExpandoObjects (dynamic objects)
         var json = await JS.InvokeAsync<string>("getCities");
         IEnumerable<ExpandoObject> cities = JsonSerializer.Deserialize<IEnumerable<ExpandoObject>>(json);
@@ -62,15 +56,14 @@
             sheet.Calculate();
             // Adjust the column width after the widest text in the cells
             sheet.Cells[1, 1, sheet.Dimension.End.Row, sheet.Dimension.End.Column].AutoFitColumns();
-            if(imageBytes != null)
-            {
-                using(var ms = new MemoryStream(imageBytes))
-                {
-                    var pic = sheet.Drawings.AddPicture("epplogo", ms, OfficeOpenXml.Drawing.ePictureType.Png);
-                    pic.SetSize(50);
-                    pic.SetPosition(0, 10, 0, 10);
-                }
-            }
+
+            // read png image from embedded resource
+            using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EPPlus.WebSampleMvc.NetCore.WebAssemblySamples.Resources.EPPlus-logo-full.png");
+            var pic = sheet.Drawings.AddPicture("epplogo", stream, OfficeOpenXml.Drawing.ePictureType.Png);
+            pic.SetSize(50);
+            pic.SetPosition(0, 10, 0, 10);
+
+            // finally serialize the workbook to a byte array and use the BlazorDownloadFile function to create a link for download.
             await JS.InvokeVoidAsync("BlazorDownloadFile", "Excel.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", package.GetAsByteArray());
 
         }
