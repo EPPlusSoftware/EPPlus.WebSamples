@@ -62,79 +62,74 @@
             <code class="language-json" id="json-code">
 {
     "range": {
-        "column": [
+        "columns": [
             {
-                "Name": "Date"
+                "Name": "Date",
+                "dataType": "datetime"
             },
             {
-                "Name": "GBP"
+                "Name": "GBP",
+                "dataType": "number"
             },
             {
-                "Name": "EUR"
+                "Name": "EUR",
+                "dataType": "number"
             },
             {
-                "Name": "AUD"
+                "Name": "AUD",
+                "dataType": "number"
             },
             {
-                "Name": "CAD"
+                "Name": "CAD",
+                "dataType": "number"
             }
         ],
         "rows": [
-           {
+            {
                 "cells": [
                     {
-                        "v": "1322092800000",
-                        "t": "2011-11-24",
-                        "dataType": "datetime"
+                        "v": "1636588800000",
+                        "t": "2021-11-11"
                     },
                     {
-                        "v": "0.6435",
-                        "t": "0,6435",
-                        "dataType": "number"
+                        "v": "0.7464",
+                        "t": "0,7464"
                     },
                     {
-                        "v": "0.7478",
-                        "t": "0,7478",
-                        "dataType": "number"
+                        "v": "0.8726",
+                        "t": "0,8726"
                     },
                     {
-                        "v": "1.0242",
-                        "t": "1,0242",
-                        "dataType": "number"
+                        "v": "1.3699",
+                        "t": "1,3699"
                     },
                     {
-                        "v": "1.0442",
-                        "t": "1,0442",
-                        "dataType": "number"
+                        "v": "1.2582",
+                        "t": "1,2582"
                     }
                 ]
             },
             {
                 "cells": [
                     {
-                        "v": "1321488000000",
-                        "t": "2011-11-17",
-                        "dataType": "datetime"
+                        "v": "1635984000000",
+                        "t": "2021-11-04"
                     },
                     {
-                        "v": "0.6335",
-                        "t": "0,6335",
-                        "dataType": "number"
+                        "v": "0.7377",
+                        "t": "0,7377"
                     },
                     {
-                        "v": "0.7418",
-                        "t": "0,7418",
-                        "dataType": "number"
+                        "v": "0.8644",
+                        "t": "0,8644"
                     },
                     {
-                        "v": "0.9943",
-                        "t": "0,9943",
-                        "dataType": "number"
+                        "v": "1.3486",
+                        "t": "1,3486"
                     },
                     {
-                        "v": "1.0253",
-                        "t": "1,0253",
-                        "dataType": "number"
+                        "v": "1.2417",
+                        "t": "1,2417"
                     }
                 ]
             }
@@ -164,7 +159,7 @@ public async Task&lt;JsonResult&gt; Sample1GetJsonData()
         var range = await sheet.Cells["A1"].LoadFromTextAsync(csvFileInfo, format);
         sheet.Cells[range.Start.Row, 1, range.End.Row, 1].Style.Numberformat.Format = "yyyy-MM-dd";
         sheet.Cells[range.Start.Row, 2, range.End.Row, 5].Style.Numberformat.Format = "#,##0.0000";
-        var jsonData = range.ToJson();
+        var jsonData = range.ToJson(x=>x.AddDataTypesOn=eDataTypeOn.OnColumn);
         return Json(jsonData);
     }
 }
@@ -180,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let jsonData = JSON.parse(data);
         let config = {
             type: 'line',
-            data: getChartData(0, [1, 2, 3, 4], jsonData.range),
+            data: getChartJsData(0, [1, 2, 3, 4], jsonData.range),
             options: {
                 plugins: {
                     title: {
@@ -198,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // The argument xCol should be the 0-based index of the range column that contains the labels of the x-axis.
 // The argument indexes should be an array containing the 0 - based indexes of the ranges columns
 // columns to use in the datasets.
-function getChartData(xCol, indexes, jsonRange) {
+function getChartJsData(lableColumn, dataColumns, jsonRange) {
     var xDataType;
     var dataTypes = [];
     var colors = ['black', 'blue', 'red', 'orange', 'green']
@@ -207,15 +202,14 @@ function getChartData(xCol, indexes, jsonRange) {
         datasets: []
     };
 
-    // read data from the column section
-    var headers = jsonRange.column;
-    for (var hIx = 0; hIx < headers.length; hIx++) {
-        if (indexes.indexOf(hIx) > -1) {
+    // Read data from the column section
+    for (var i = 0; i < jsonRange.columns.length; i++) {
+        if (dataColumns.indexOf(i) > -1) {
             data.datasets.push({
-                label: headers[hIx].Name,
+                label: jsonRange.columns[i].Name,
                 data: [],
-                borderColor: colors[hIx],
-                backgroundColor: colors[hIx],
+                borderColor: colors[i],
+                backgroundColor: colors[i],
                 borderWidth: 1,
                 pointRadius: 0.5,
                 fill: false
@@ -223,15 +217,15 @@ function getChartData(xCol, indexes, jsonRange) {
         }
     }
 
-    // read data in reverse order from the range's rows
+    // Read data in reverse order from the range's rows
     var tableRows = jsonRange.rows;
-    for (var rIx = tableRows.length - 1; rIx >= 0 ; rIx--) {
-        let xVal = getValue(tableRows[rIx].cells[xCol].v, tableRows[rIx].cells[xCol].dataType);
-        data.labels.push(tableRows[rIx].cells[xCol].t);
-        for (var iIx = 0; iIx < indexes.length; iIx++) {
-            let ix = indexes[iIx];
-            let val = getValue(tableRows[rIx].cells[ix].v, tableRows[rIx].cells[ix].dataType);
-            data.datasets[iIx].data.push({ x: xVal, y: val });
+    for (var row = tableRows.length - 1; row >= 0 ; row--) {
+        let labelValue = getValue(tableRows[row].cells[lableColumn].v, jsonRange.columns[lableColumn].dataType);
+        data.labels.push(tableRows[row].cells[lableColumn].t);
+        for (var i = 0; i < dataColumns.length; i++) {
+            let columnIndex = dataColumns[i];
+            let val = getValue(tableRows[row].cells[columnIndex].v, jsonRange.columns[columnIndex].dataType);
+            data.datasets[i].data.push({ x: labelValue, y: val });
         }
     }
     return data;

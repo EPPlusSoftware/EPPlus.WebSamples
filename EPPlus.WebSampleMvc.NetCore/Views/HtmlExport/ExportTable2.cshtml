@@ -126,6 +126,68 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 
         private DataTable _dataTable;
 
+        public string Css { get; set; }
+
+        public string Html { get; set; }
+
+        public void SetupSampleData(TableStyles style = TableStyles.Dark1)
+        {
+            InitDataTable();
+            using(var package = new ExcelPackage())
+            {
+                var sheet = package.Workbook.Worksheets.Add("Html export sample 2");
+                var tableRange = sheet.Cells["A1"].LoadFromDataTable(_dataTable, true, style);
+                
+                // Configure the table
+                var table = sheet.Tables.GetFromRange(tableRange);
+                table.Sort(x => x.SortBy.ColumnNamed("Population", eSortOrder.Descending));
+                table.ShowTotal = true;
+                table.Columns[0].TotalsRowLabel = "Total";
+                table.Columns[1].TotalsRowFunction = RowFunctions.Sum;
+                table.Columns[2].TotalsRowFunction = RowFunctions.Sum;
+                
+                // Add column for population density
+                table.Columns.Add(1);
+                tableRange = table.Range;
+                table.Columns[3].CalculatedColumnFormula = $"{table.Name}[[#This Row],[Population]]/{table.Name}[[#This Row],[Area (km2)]]";
+                table.Columns[3].Name = "Density";
+                table.Columns[3].TotalsRowFunction = RowFunctions.Average;
+                sheet.Calculate();
+
+                // Format the header
+                sheet.Cells[1, tableRange.Start.Column + 1, 1, tableRange.End.Column].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+
+                // Format the rows
+                var lastDataRow = tableRange.End.Row - 1;
+                sheet.Cells[tableRange.Start.Row, 1, lastDataRow, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                sheet.Cells[tableRange.Start.Row, 2, lastDataRow, 2].Style.Numberformat.Format = "#,##0";
+                sheet.Cells[tableRange.Start.Row, 3, lastDataRow, 3].Style.Numberformat.Format = "#,##0 \"km2\"";
+                sheet.Cells[tableRange.Start.Row, 4, lastDataRow, 4].Style.Numberformat.Format = "#,##0.0";
+
+                // Format the total row
+                var totalRow = tableRange.End.Row;
+                sheet.Cells[totalRow, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                sheet.Cells[totalRow, 2].Style.Numberformat.Format = "#,##0";
+                sheet.Cells[totalRow, 3].Style.Numberformat.Format = "#,##0 \"km2\"";
+                sheet.Cells[totalRow, 4].Style.Numberformat.Format = "\"Avg: \"#,##0.0 ";
+
+
+                // Configure export settings
+                var exporter = table.CreateHtmlExporter();
+                var settings = exporter.Settings;
+                settings.Minify = false;
+                settings.AdditionalTableClassNames.Add("table");
+                settings.AdditionalTableClassNames.Add("table-sm");
+                settings.TableId = "population-table";
+                settings.Accessibility.TableSettings.AriaDescribedBy = "table-description";
+                settings.Accessibility.TableSettings.AriaLabel = "Demo table";
+
+                // export css and html
+                Css = exporter.GetCssString();
+                Html = exporter.GetHtmlString();
+            }
+        }
+
         private void InitDataTable()
         {
             _dataTable = new DataTable();
@@ -175,68 +237,6 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
             _dataTable.Rows.Add("North Macedonia", 2083374, 25713);
 
         }
-
-        public void SetupSampleData(TableStyles style = TableStyles.Dark1)
-        {
-            InitDataTable();
-            using(var package = new ExcelPackage())
-            {
-                var sheet = package.Workbook.Worksheets.Add("Html export sample 2");
-                var tableRange = sheet.Cells["A1"].LoadFromDataTable(_dataTable, true, style);
-                
-                // configure the table
-                var table = sheet.Tables.GetFromRange(tableRange);
-                table.Sort(x => x.SortBy.ColumnNamed("Population", eSortOrder.Descending));
-                table.ShowTotal = true;
-                table.Columns[0].TotalsRowLabel = "Total";
-                table.Columns[1].TotalsRowFunction = RowFunctions.Sum;
-                table.Columns[2].TotalsRowFunction = RowFunctions.Sum;
-                
-                // add column for population density
-                table.Columns.Add(1);
-                tableRange = table.Range;
-                table.Columns[3].CalculatedColumnFormula = $"{table.Name}[[#This Row],[Population]]/{table.Name}[[#This Row],[Area (km2)]]";
-                table.Columns[3].Name = "Density";
-                table.Columns[3].TotalsRowFunction = RowFunctions.Average;
-                sheet.Calculate();
-
-                // format the header
-                sheet.Cells[1, tableRange.Start.Column + 1, 1, tableRange.End.Column].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-
-                // format the rows
-                var lastDataRow = tableRange.End.Row - 1;
-                sheet.Cells[tableRange.Start.Row, 1, lastDataRow, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-                sheet.Cells[tableRange.Start.Row, 2, lastDataRow, 2].Style.Numberformat.Format = "#,##0";
-                sheet.Cells[tableRange.Start.Row, 3, lastDataRow, 3].Style.Numberformat.Format = "#,##0 \"km2\"";
-                sheet.Cells[tableRange.Start.Row, 4, lastDataRow, 4].Style.Numberformat.Format = "#,##0.0";
-
-                // format the total row
-                var totalRow = tableRange.End.Row;
-                sheet.Cells[totalRow, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-                sheet.Cells[totalRow, 2].Style.Numberformat.Format = "#,##0";
-                sheet.Cells[totalRow, 3].Style.Numberformat.Format = "#,##0 \"km2\"";
-                sheet.Cells[totalRow, 4].Style.Numberformat.Format = "\"Avg: \"#,##0.0 ";
-
-
-                // Configure export settings
-                var exporter = table.CreateHtmlExporter();
-                var settings = exporter.Settings;
-                settings.Minify = false;
-                settings.AdditionalTableClassNames.Add("table");
-                settings.AdditionalTableClassNames.Add("table-sm");
-                settings.TableId = "population-table";
-                settings.Accessibility.TableSettings.AriaDescribedBy = "table-description";
-                settings.Accessibility.TableSettings.AriaLabel = "Demo table";
-
-                // export css and html
-                Css = exporter.GetCssString();
-                Html = exporter.GetHtmlString();
-            }
-        }
-
-        public string Css { get; set; }
-
-        public string Html { get; set; }
     }
 }
 
