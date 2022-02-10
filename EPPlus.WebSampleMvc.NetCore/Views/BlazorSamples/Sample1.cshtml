@@ -115,6 +115,15 @@
     </div>
 </div>
 <script type="text/javascript" id="chart-script">
+    function getFxRates()
+    {
+        return new Promise(function(){
+            jQuery.getJSON("/api/fxrates", function(data){
+                return JSON.stringify(data);
+            });
+        });
+    }
+
     function getCities(){
         var cities = [
             {

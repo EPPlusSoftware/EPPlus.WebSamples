@@ -6,8 +6,13 @@
 @using System.Reflection
 @using System.Dynamic
 @using System.Text.Json
+@using OfficeOpenXml.Drawing
+@using OfficeOpenXml.Drawing.Chart
+@using OfficeOpenXml.Drawing.Chart.Style
 @using OfficeOpenXml.Table
+@using System.Globalization
 @inject IJSRuntime JS
+@inject NavigationManager _navigationManager
 
 <div class="row">
     <div class="col">
@@ -30,15 +35,21 @@
     private int currentCount = 0;
 
     async Task DownloadExcel()
-    {
-        // get some json data from a javascript function and convert it into ExpandoObjects (dynamic objects)
-        var json = await JS.InvokeAsync<string>("getCities");
-        var cities = JsonSerializer.Deserialize<IEnumerable<ExpandoObject>>(json);
-
+    {   
         using(var package = new ExcelPackage())
         {
-            var sheet = package.Workbook.Worksheets.Add("Test");
+            // Add a named style for hyperlinks
+            var ns=package.Workbook.Styles.CreateNamedStyle("Hyperlink");
+            ns.BuildInId = 8; //Build in type 8 is Hyperlink
+            ns.Style.Font.Color.SetColor(eThemeSchemeColor.Hyperlink);
+            ns.Style.Font.UnderLine = true;
 
+
+            var sheet = package.Workbook.Worksheets.Add("Cities");
+
+            // get some json data from a javascript function and convert it into ExpandoObjects (dynamic objects)
+            var json = await JS.InvokeAsync<string>("getCities");
+            var cities = JsonSerializer.Deserialize<IEnumerable<ExpandoObject>>(json);
             // load the dynamic objects into EPPlus using the LoadFromDictionaries method.
             var loadedRange = sheet.Cells["A5"].LoadFromDictionaries(cities, x => {
                 x.TableStyle = OfficeOpenXml.Table.TableStyles.Medium13;
@@ -54,6 +65,12 @@
             sheet.Cells[table.Range.Start.Row, 4, table.Range.End.Row, 4].Style.Numberformat.Format = "#,##0 \"km2\"";
             // Calculate the formulas in the worksheet, in this case the average functions of the table's total row
             sheet.Calculate();
+
+            // add a hyperlink to next worksheet
+            var nextWorksheetHyperlink = new ExcelHyperLink("'Fx Rates'!A1", "Go to next worksheet");
+            sheet.Cells["A13"].Hyperlink = nextWorksheetHyperlink;
+            sheet.Cells["A13"].StyleName = "Hyperlink";
+
             // Adjust the column width after the widest text in the cells
             sheet.Cells[1, 1, sheet.Dimension.End.Row, sheet.Dimension.End.Column].AutoFitColumns();
 
@@ -63,9 +80,87 @@
             pic.SetSize(50);
             pic.SetPosition(0, 10, 0, 10);
 
+
+            // call an api endpoint to retrieve json data with fx rates. 
+            var client = new HttpClient();
+            var url = new Uri(new Uri(_navigationManager.BaseUri), "/api/fxrates");
+            var response = await client.GetAsync(url);
+            var fxRatesJson = await response.Content.ReadFromJsonAsync<string>();
+            var fxRates = JsonSerializer.Deserialize<IEnumerable<ExpandoObject>>(fxRatesJson);
+            CreateTableAndChartWorksheet(package, fxRates);
+
             // finally serialize the workbook to a byte array and use the BlazorDownloadFile function to create a link for download.
             await JS.InvokeVoidAsync("BlazorDownloadFile", "BlazorSample1.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", package.GetAsByteArray());
 
         }
     }
+
+    private static void CreateTableAndChartWorksheet(ExcelPackage p,IEnumerable<ExpandoObject>? data)
+        {
+            var ws = p.Workbook.Worksheets.Add("FX Rates");
+            ws.View.ShowGridLines = false;
+
+            var range = ws.Cells["A20"].LoadFromDictionaries(data, x =>
+            {
+                x.TableStyle = null;
+                x.DataTypes = new[] { eDataTypes.DateTime, eDataTypes.Number, eDataTypes.Number, eDataTypes.Number, eDataTypes.Number, eDataTypes.Number };
+                x.PrintHeaders = true;
+                x.Culture = CultureInfo.InvariantCulture;
+            });
+
+            ws.Cells["A:A"].Style.Numberformat.Format = "yyyy-MM-dd";
+            ws.Cells["B:F"].Style.Numberformat.Format = "#,##0.00";
+
+            ws.Cells[22, 7, range.End.Row, 11].Formula = "B$21/B22-1";
+            ws.Cells["G:K"].Style.Numberformat.Format = "0.00%";
+
+            ws.Cells["B20"].Value = "USD/SEK";
+            ws.Cells["C20"].Value = "USD/EUR";
+            ws.Cells["D20"].Value = "USD/INR";
+            ws.Cells["E20"].Value = "USD/CNY";
+            ws.Cells["F20"].Value = "USD/DKK";
+
+            ws.Cells["G20"].Value = "USD/SEK %";
+            ws.Cells["H20"].Value = "USD/EUR %";
+            ws.Cells["I20"].Value = "USD/INR %";
+            ws.Cells["J20"].Value = "USD/CNY %";
+            ws.Cells["K20"].Value = "USD/DKK %";
+
+            //Add a table over the range including the . 
+            var tbl = ws.Tables.Add(ws.Cells[20, 1, range.End.Row, 11], "Table2");
+            tbl.TableStyle = OfficeOpenXml.Table.TableStyles.Dark6;
+
+            ws.View.FreezePanes(21, 1);
+
+            CreateLineChart(ws, range);
+
+            ws.Cells.AutoFitColumns();
+        }
+
+        private static void CreateLineChart(ExcelWorksheet ws, ExcelRangeBase range)
+        {
+            var chart = ws.Drawings.AddLineChart("LineChart1", eLineChartType.Line);
+            var s1 = chart.Series.Add(ws.Cells[21, 7, range.End.Row, 7], ws.Cells[21, 1, range.End.Row, 1]);
+            s1.HeaderAddress = ws.Cells["G20"];
+
+            var s2 = chart.Series.Add(ws.Cells[21, 8, range.End.Row, 8], ws.Cells[21, 1, range.End.Row, 1]);
+            s2.HeaderAddress = ws.Cells["H20"];
+
+            var s3 = chart.Series.Add(ws.Cells[21, 9, range.End.Row, 9], ws.Cells[21, 1, range.End.Row, 1]);
+            s3.HeaderAddress = ws.Cells["I20"];
+
+            var s4 = chart.Series.Add(ws.Cells[21, 10, range.End.Row, 10], ws.Cells[21, 1, range.End.Row, 1]);
+            s4.HeaderAddress = ws.Cells["J20"];
+
+            var s5 = chart.Series.Add(ws.Cells[21, 11, range.End.Row, 11], ws.Cells[21, 1, range.End.Row, 1]);
+            s5.HeaderAddress = ws.Cells["K20"];
+
+            chart.XAxis.Crosses = eCrosses.Min;
+
+            chart.To.Row = 19;
+            chart.To.Column = 11;
+            chart.Legend.Add();
+            chart.Legend.Position = eLegendPosition.Bottom;
+            chart.StyleManager.SetChartStyle(ePresetChartStyleMultiSeries.LineChartStyle9);
+        }
 }
