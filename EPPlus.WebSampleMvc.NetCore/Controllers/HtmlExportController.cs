@@ -75,5 +75,12 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
             model.SetupSampleData(ts);
             return View(model);
         }
+
+        public IActionResult ExportRange5()
+        {
+            var model = new ExportRange5Model();
+            model.SetupSampleData();
+            return View(model);
+        }
     }
 }
