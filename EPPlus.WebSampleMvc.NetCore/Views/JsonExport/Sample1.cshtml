@@ -69,24 +69,24 @@
     "range": {
         "columns": [
             {
-                "Name": "Date",
-                "dataType": "datetime"
+                "name": "Date",
+                "dt": "datetime"
             },
             {
-                "Name": "GBP",
-                "dataType": "number"
+                "name": "GBP",
+                "dt": "number"
             },
             {
-                "Name": "EUR",
-                "dataType": "number"
+                "name": "EUR",
+                "dt": "number"
             },
             {
-                "Name": "AUD",
-                "dataType": "number"
+                "name": "AUD",
+                "dt": "number"
             },
             {
-                "Name": "CAD",
-                "dataType": "number"
+                "name": "CAD",
+                "dt": "number"
             }
         ],
         "rows": [
@@ -212,7 +212,7 @@ function getChartJsData(labelColumn, dataColumns, jsonRange) {
     for (var i = 0; i < jsonRange.columns.length; i++) {
         if (dataColumns.indexOf(i) > -1) {
             data.datasets.push({
-                label: jsonRange.columns[i].Name,
+                label: jsonRange.columns[i].name,
                 data: [],
                 borderColor: colors[i],
                 backgroundColor: colors[i],
@@ -224,13 +224,13 @@ function getChartJsData(labelColumn, dataColumns, jsonRange) {
     }
 
     // Read data in reverse order from the range's rows
-    let labelDataType = jsonRange.columns[labelColumn].dataType;
+    let labelDataType = jsonRange.columns[labelColumn].dt;
     for (var row = jsonRange.rows.length - 1; row >= 0 ; row--) {
         let labelValue = getValue(jsonRange.rows[row].cells[labelColumn].v, labelDataType);
         data.labels.push(jsonRange.rows[row].cells[labelColumn].t);
         for (var i = 0; i < dataColumns.length; i++) {
             let columnIndex = dataColumns[i];
-            let val = getValue(jsonRange.rows[row].cells[columnIndex].v, jsonRange.columns[columnIndex].dataType);
+            let val = getValue(jsonRange.rows[row].cells[columnIndex].v, jsonRange.columns[columnIndex].dt);
             data.datasets[i].data.push({ x: labelValue, y: val });
         }
     }

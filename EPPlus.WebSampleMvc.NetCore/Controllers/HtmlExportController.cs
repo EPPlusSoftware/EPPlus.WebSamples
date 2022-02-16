@@ -1,8 +1,10 @@
 ﻿using EPPlus.WebSampleMvc.NetCore.Models.HtmlExport;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml;
 using OfficeOpenXml.Table;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -81,6 +83,14 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
             var model = new ExportRange5Model();
             model.SetupSampleData();
             return View(model);
+        }
+
+        public async Task<IActionResult> GetWorkbookSample5()
+        {
+            var file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"data\\Allsvenskan2001.xlsx");
+            using var package = new ExcelPackage(file);
+            var fileBytes = await package.GetAsByteArrayAsync();
+            return File(fileBytes, ContentType, "SwedishSoccerLeage2001.xlsx");
         }
     }
 }
