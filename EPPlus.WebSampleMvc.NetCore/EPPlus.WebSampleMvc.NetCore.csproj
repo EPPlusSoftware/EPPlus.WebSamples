@@ -37,6 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="EPPlus" Version="6.0.0-beta" />
     <PackageReference Include="Faker.Net" Version="1.5.150" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.9" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
@@ -44,7 +45,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\EPPlus\src\EPPlus\EPPlus.csproj" />
     <ProjectReference Include="..\EPPlus.WebSampleMvc.NetCore.WebAssemblySamples\EPPlus.WebSampleMvc.NetCore.WebAssemblySamples.csproj" />
   </ItemGroup>
 
