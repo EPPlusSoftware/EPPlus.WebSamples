@@ -39,7 +39,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
             model.SetupSampleData(model.Theme, ts);
             if(model.GetWorkbook)
             {
-                return File(model.WorkbookBytes, ContentType, "MyWorkbook.xlsx");
+                return File(model.WorkbookBytes, ContentType, "EPPlusHtmlSample1.xlsx");
             }
             return View(model);
         }
@@ -90,7 +90,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
             var file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"data\\Allsvenskan2001.xlsx");
             using var package = new ExcelPackage(file);
             var fileBytes = await package.GetAsByteArrayAsync();
-            return File(fileBytes, ContentType, "SwedishSoccerLeage2001.xlsx");
+            return File(fileBytes, ContentType, "EPPlusHtmlSample5.xlsx");
         }
     }
 }

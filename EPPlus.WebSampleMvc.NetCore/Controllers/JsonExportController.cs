@@ -20,6 +20,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
             return View();
         }
 
+        [HttpGet, Route("/api/currencyrates")]
         public async Task<JsonResult> Sample1GetJsonData()
         {
             using(var package = new ExcelPackage())

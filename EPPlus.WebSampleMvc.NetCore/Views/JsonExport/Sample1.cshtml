@@ -149,6 +149,7 @@
     <div class="col">
         <pre>
         <code class="language-csharp hljs">
+@Html.Raw("[HttpGet, Route(\"/api/currencyrates\")]")
 public async Task&lt;JsonResult&gt; Sample1GetJsonData()
 {
     using(var package = new ExcelPackage())
@@ -176,7 +177,7 @@ public async Task&lt;JsonResult&gt; Sample1GetJsonData()
 // runs when the DOM content has been fully loaded and fetches
 // the exported json data via an ajax (jQuery.getJSON) call.
 document.addEventListener('DOMContentLoaded', function () {
-    $.getJSON("/JsonExport/Sample1GetJsonData", function(data){
+    $.getJSON("/api/currencyrates", function(data){
         let jsonData = JSON.parse(data);
         let config = {
             type: 'line',
