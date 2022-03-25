@@ -1,0 +1,45 @@
+﻿@model EPPlus.WebSampleMvc.NetCore.Models.HtmlExport.ExportRanges6Model
+<style type="text/css">
+    @Html.Raw(Model.Css)
+</style>
+<div class="row">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/HtmlExport">Html export</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Export range</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<div class="row">
+    <div class="col text-center">
+        <h4>Html export - export range</h4>
+    </div>
+</div>
+<div class="row my-2">
+    <div class="col bg-light rounded">
+        <div class="row">
+            <div class="col-6">
+                <a href="/HtmlExport/ExportRange5">&laquo; Previous sample</a>
+            </div>
+            <div class="col-6 text-right">
+                <a href="#" class="text-secondary">Next sample &raquo;</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <p>Here are two different ranges that are exported from the same worksheet with a common CSS.</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12 col-md-5">
+        @Html.Raw(Model.Html1);
+    </div>
+    <div class="col-sm-12 col-md-5">
+        @Html.Raw(Model.Html2);
+    </div>
+</div>

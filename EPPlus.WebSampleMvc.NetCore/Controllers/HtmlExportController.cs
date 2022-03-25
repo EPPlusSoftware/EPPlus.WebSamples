@@ -85,6 +85,13 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
             return View(model);
         }
 
+        public IActionResult ExportRanges6()
+        {
+            var model = new ExportRanges6Model();
+            model.SetupSampleData();
+            return View(model);
+        }
+
         public async Task<IActionResult> GetWorkbookSample5()
         {
             var file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"data\\Allsvenskan2001.xlsx");

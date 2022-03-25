@@ -13,7 +13,6 @@
   <ItemGroup>
     <None Remove="data\Allsvenskan2001.xlsx" />
     <None Remove="data\currencies2011weekly.csv" />
-    <None Remove="data\SwedishGeography.xlsx" />
     <None Remove="themes\Banded.thmx" />
     <None Remove="themes\Ion.thmx" />
     <None Remove="themes\Parallax.thmx" />
@@ -24,9 +23,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\currencies2011weekly.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="data\SwedishGeography.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="themes\Banded.thmx">
@@ -41,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EPPlus" Version="6.0.2-beta" />
+    <PackageReference Include="EPPlus" Version="6.0.0-beta" />
     <PackageReference Include="Faker.Net" Version="1.5.150" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.9" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
