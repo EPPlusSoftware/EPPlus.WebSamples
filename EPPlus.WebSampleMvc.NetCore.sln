@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29806.167
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPPlus.WebSampleMvc.NetCore", "EPPlus.WebSampleMvc.NetCore\EPPlus.WebSampleMvc.NetCore.csproj", "{A8E619E5-BBBA-44C9-873A-5A1B962FDE1A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPPlus.WebSampleMvc.NetCore.WebAssemblySamples", "EPPlus.WebSampleMvc.NetCore.WebAssemblySamples\EPPlus.WebSampleMvc.NetCore.WebAssemblySamples.csproj", "{0CEBF45E-056A-4E40-88E8-225171151E8A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPPlus", "..\EPPlus\src\EPPlus\EPPlus.csproj", "{D394F1C0-E240-47E4-9B74-FE15A48D6510}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +21,6 @@ Global
 		{0CEBF45E-056A-4E40-88E8-225171151E8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CEBF45E-056A-4E40-88E8-225171151E8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CEBF45E-056A-4E40-88E8-225171151E8A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D394F1C0-E240-47E4-9B74-FE15A48D6510}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D394F1C0-E240-47E4-9B74-FE15A48D6510}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D394F1C0-E240-47E4-9B74-FE15A48D6510}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D394F1C0-E240-47E4-9B74-FE15A48D6510}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

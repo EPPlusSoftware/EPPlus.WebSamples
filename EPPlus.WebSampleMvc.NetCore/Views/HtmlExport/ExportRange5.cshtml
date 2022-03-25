@@ -32,7 +32,7 @@
 </div>
 <div class="row">
     <div class="col-12">
-        <p>Here is an exported range (not a table in Excel) exported to Html. Styling (including pattern fill and gradient fill) and column widths has been exported to the CSS.</p>
+        <p>Here is an exported range (not a table in Excel) exported to Html. Styling (including pattern fill and gradient fill) and column widths has been exported to the CSS. Pictures in the exported cells are also included and the actual image data is stored as base64 encoded strings in the css.</p>
     </div>
 </div>
 <div class="row">
@@ -54,7 +54,7 @@
     </div>
 </div>
 <div class="row demo">
-    <div class="col p-3">
+    <div class="col p-3 table-responsive">
         @Html.Raw(Model.Html)
     </div>
 </div>
@@ -86,6 +86,9 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 
                 // use column width from the workbook
                 settings.SetColumnWidth = true;
+
+                // include pictures in the exported cells
+                settings.Pictures.Include = ePictureInclude.Include;
                 
                 // when Minify is false the output will be formated with indentation and linebreaks.
                 settings.Minify = false;
