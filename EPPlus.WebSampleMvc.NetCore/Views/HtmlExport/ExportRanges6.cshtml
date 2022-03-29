@@ -15,7 +15,7 @@
 </div>
 <div class="row">
     <div class="col text-center">
-        <h4>Html export - export range</h4>
+        <h4>Html export - export multiple ranges</h4>
     </div>
 </div>
 <div class="row my-2">
@@ -36,10 +36,153 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-sm-12 col-md-5">
-        @Html.Raw(Model.Html1);
-    </div>
-    <div class="col-sm-12 col-md-5">
-        @Html.Raw(Model.Html2);
+    <div class="col my-3">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" id="tab-demo">Demo</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="tab-csharp">C#</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="tab-html">Html</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="tab-css">Css</a>
+            </li>
+        </ul>
     </div>
 </div>
+<div class="row demo">
+        <div class="col-sm-12 col-md-5">
+        @Html.Raw(Model.Html1)
+    </div>
+    <div class="col-sm-12 col-md-5">
+        @Html.Raw(Model.Html2)
+    </div>
+</div>
+<div class="row csharp">
+    <div class="col">
+        <pre>
+        <code class="language-csharp hljs">
+using OfficeOpenXml;
+using System;
+using System.IO;
+
+namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
+{
+    public class ExportRanges6Model
+    {
+        public void SetupSampleData()
+        {
+            using(var package = new ExcelPackage(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"data\\SwedishGeography.xlsx")))
+            {
+                var sheet = package.Workbook.Worksheets[0];
+                var exporter = package.Workbook.CreateHtmlExporter(sheet.Cells["A1:D10"], sheet.Cells["G1:J10"]);
+                exporter.Settings.Minify = false;
+                Html1 = exporter.GetHtmlString(0, x =>
+                {
+                    x.TableId = "cities-table";
+                    x.Accessibility.TableSettings.AriaLabel = "Largest cities in Sweden";
+                });
+                Html2 = exporter.GetHtmlString(1, x =>
+                {
+                    x.TableId = "lakes-table";
+                    x.Accessibility.TableSettings.AriaLabel = "Largest lakes in Sweden";
+                });
+                Css = exporter.GetCssString();
+            }
+        }
+
+        public string Css { get; set; }
+
+        public string Html1 { get; set; }
+
+        public string Html2 { get; set; }
+    }
+}
+            </code>
+        </pre>
+    </div>
+</div>
+<div class="row demo">
+    <div class="col mt-3">
+        <a href="/HtmlExport/GetWorkbookSample5" class="btn btn-secondary">Get the workbook</a>
+    </div>
+</div>
+<div class="row html">
+    <div class="col">
+        <p>Html as it was exported</p>
+        <pre style="white-space: pre-wrap">
+        <code class="language-html hljs" id="html-code">
+ @Model.Html1.Trim()
+            </code>
+        </pre>
+                <pre style="white-space: pre-wrap">
+        <code class="language-html hljs" id="html-code">
+ @Model.Html2.Trim()
+            </code>
+        </pre>
+    </div>
+</div>
+<div class="row css" style="display:none">
+    <div class="col table-responsive">
+        <pre style="white-space: pre-wrap">
+        <code class="language-css hljs" id="css-code">
+ @Model.Css.Trim()
+            </code>
+        </pre>
+    </div>
+</div>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        jQuery(".csharp").hide();
+        jQuery(".html").hide();
+        jQuery(".css").hide();
+        hljs.highlightAll();
+        jQuery("#tab-csharp").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").hide();
+            jQuery(".csharp").show();
+            jQuery(".css").hide();
+            jQuery(".html").hide();
+            jQuery("#tab-demo").removeClass("active");
+            jQuery("#tab-csharp").addClass("active");
+            jQuery("#tab-html").removeClass("active");
+            jQuery("#tab-css").removeClass("active");
+        });
+        jQuery("#tab-demo").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").show();
+            jQuery(".csharp").hide();
+            jQuery(".css").hide();
+            jQuery(".html").hide();
+            jQuery("#tab-demo").addClass("active");
+            jQuery("#tab-csharp").removeClass("active");
+            jQuery("#tab-css").removeClass("active");
+            jQuery("#tab-html").removeClass("active");
+        });
+        jQuery("#tab-css").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").hide();
+            jQuery(".csharp").hide();
+            jQuery(".css").show();
+            jQuery(".html").hide();
+            jQuery("#tab-demo").removeClass("active");
+            jQuery("#tab-csharp").removeClass("active");
+            jQuery("#tab-css").addClass("active");
+            jQuery("#tab-html").removeClass("active");
+        });
+        jQuery("#tab-html").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").hide();
+            jQuery(".csharp").hide();
+            jQuery(".html").show();
+            jQuery(".css").hide();
+            jQuery("#tab-demo").removeClass("active");
+            jQuery("#tab-csharp").removeClass("active");
+            jQuery("#tab-css").removeClass("active");
+            jQuery("#tab-html").addClass("active");
+        });
+    });
+</script>

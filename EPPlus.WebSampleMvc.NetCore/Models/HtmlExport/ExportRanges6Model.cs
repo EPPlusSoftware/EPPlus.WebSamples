@@ -12,8 +12,17 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
             {
                 var sheet = package.Workbook.Worksheets[0];
                 var exporter = package.Workbook.CreateHtmlExporter(sheet.Cells["A1:D10"], sheet.Cells["G1:J10"]);
-                Html1 = exporter.GetHtmlString(0);
-                Html2 = exporter.GetHtmlString(1);
+                exporter.Settings.Minify = false;
+                Html1 = exporter.GetHtmlString(0, x =>
+                {
+                    x.TableId = "cities-table";
+                    x.Accessibility.TableSettings.AriaLabel = "Largest cities in Sweden";
+                });
+                Html2 = exporter.GetHtmlString(1, x =>
+                {
+                    x.TableId = "lakes-table";
+                    x.Accessibility.TableSettings.AriaLabel = "Largest lakes in Sweden";
+                });
                 Css = exporter.GetCssString();
             }
         }
