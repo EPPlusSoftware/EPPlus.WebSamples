@@ -32,7 +32,7 @@
 </div>
 <div class="row">
     <div class="col-12">
-        <p>Here are two different ranges that are exported from the same worksheet with a common CSS.</p>
+        <p>This sample uses three separate ranges and one table from different worksheets in the same workbook. They are exported as separate html blocks with a common CSS.</p>
     </div>
 </div>
 <div class="row">
@@ -61,11 +61,45 @@
         @Html.Raw(Model.Html2)
     </div>
 </div>
+<div class="row demo mt-3">
+    <div class="col bg-light rounded box-shadow p-3">
+       <h5>Swedish monarchs during the period 1126-1250 a.d.</h5>
+       <p>Exported from the second worksheet of the sample workbook. This one is a bit more complex with images, rich text and hyperlinks.</p>
+       <p>The data and images are in the public domain (from Wikipedia).</p>
+       <a href="#" class="btn btn-secondary" data-toggle="modal" data-target="#swedish-monarchs-modal">Open modal</a>
+    </div>
+</div>
+<div class="modal" id="swedish-monarchs-modal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">Some swedish kings</h1>
+                <button type="button" class="close" data-dismiss="modal">x</button>
+            </div>
+             <div class="modal-body">
+                 <div>
+                @Html.Raw(Model.Html3)
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-danger" data-dismiss="modal" id="btn-close-user-form">Close</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row demo mt-3">
+    <div class="col bg-light rounded box-shadow p-3">
+       <h5>List of Swedish municipalities</h5>
+       <p>Exported from the third worksheet of the sample workbook. The data and images are in the public domain (from Wikipedia). Here we are using bootstrap table classes and the DataTables UI library to enhance the tables appearance.</p>
+       @Html.Raw(Model.Html4)
+    </div>
+</div>
 <div class="row csharp">
     <div class="col">
         <pre>
         <code class="language-csharp hljs">
 using OfficeOpenXml;
+using OfficeOpenXml.Export.HtmlExport;
 using System;
 using System.IO;
 
@@ -78,8 +112,13 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
             using(var package = new ExcelPackage(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"data\\SwedishGeography.xlsx")))
             {
                 var sheet = package.Workbook.Worksheets[0];
-                var exporter = package.Workbook.CreateHtmlExporter(sheet.Cells["A1:D10"], sheet.Cells["G1:J10"]);
-                exporter.Settings.Minify = false;
+                var sheet2 = package.Workbook.Worksheets[1];
+                var table = package.Workbook.Worksheets[2].Tables["Municipalities"];
+                var exporter = package.Workbook.CreateHtmlExporter(sheet.Cells["A1:D10"], sheet.Cells["G1:J10"], sheet2.Cells["A1:E73"], table.Range);
+                exporter.Settings.Pictures.Include = ePictureInclude.Include;
+                exporter.Settings.Minify = true;
+                // all hyperlinks should open in a new browser window.
+                exporter.Settings.HyperlinkTarget = "_blank";
                 Html1 = exporter.GetHtmlString(0, x =>
                 {
                     x.TableId = "cities-table";
@@ -90,6 +129,19 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                     x.TableId = "lakes-table";
                     x.Accessibility.TableSettings.AriaLabel = "Largest lakes in Sweden";
                 });
+                Html3 = exporter.GetHtmlString(2, x =>
+                {
+                    x.TableId = "kings-table";
+                    x.Accessibility.TableSettings.AriaLabel = "Some kings in Sweden";
+                });
+                Html4 = exporter.GetHtmlString(3, x =>
+                {
+                    x.TableId = "municipalities-table";
+                    x.Accessibility.TableSettings.AriaLabel = "Swedish municipalities";
+                    // Add bootstrap table classes
+                    x.AdditionalTableClassNames.Add("table");
+                    x.AdditionalTableClassNames.Add("table-sm");
+                });
                 Css = exporter.GetCssString();
             }
         }
@@ -99,6 +151,10 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
         public string Html1 { get; set; }
 
         public string Html2 { get; set; }
+
+        public string Html3 { get; set; }
+
+        public string Html4 { get; set; }
     }
 }
             </code>
@@ -112,15 +168,22 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 </div>
 <div class="row html">
     <div class="col">
-        <p>Html as it was exported</p>
+        <p>Html for the cities as it was exported</p>
         <pre style="white-space: pre-wrap">
         <code class="language-html hljs" id="html-code">
  @Model.Html1.Trim()
             </code>
         </pre>
-                <pre style="white-space: pre-wrap">
+        <p>Html for the lakes as it was exported</p>
+        <pre style="white-space: pre-wrap">
         <code class="language-html hljs" id="html-code">
  @Model.Html2.Trim()
+            </code>
+        </pre>
+         <p>Html for the monarchs as it was exported</p>
+        <pre style="white-space: pre-wrap">
+        <code class="language-html hljs" id="html-code">
+ @Model.Html3.Trim()
             </code>
         </pre>
     </div>
@@ -184,5 +247,11 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
             jQuery("#tab-css").removeClass("active");
             jQuery("#tab-html").addClass("active");
         });
+    });
+</script>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        jQuery.noConflict();
+        jQuery('#municipalities-table').DataTable();
     });
 </script>
