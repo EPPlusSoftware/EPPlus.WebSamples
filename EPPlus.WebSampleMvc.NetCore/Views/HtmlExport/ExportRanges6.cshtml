@@ -90,11 +90,11 @@
 <div class="row demo mt-3">
     <div class="col bg-light rounded box-shadow p-3">
        <h5>List of Swedish municipalities</h5>
-       <p>Exported from the third worksheet of the sample workbook. The data and images are in the public domain (from Wikipedia). Here we are using bootstrap table classes and the DataTables UI library to enhance the tables appearance.</p>
+       <p>Exported from the third worksheet of the sample workbook. The data is from the public domain (from Wikipedia). Here we are using bootstrap table classes and the DataTables UI library to enhance the tables appearance.</p>
        @Html.Raw(Model.Html4)
     </div>
 </div>
-<div class="row csharp">
+<div class="row csharp" style="display:none">
     <div class="col">
         <pre>
         <code class="language-csharp hljs">
@@ -166,7 +166,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
         <a href="/HtmlExport/GetWorkbookSample5" class="btn btn-secondary">Get the workbook</a>
     </div>
 </div>
-<div class="row html">
+<div class="row html" style="display:none">
     <div class="col">
         <p>Html for the cities as it was exported</p>
         <pre style="white-space: pre-wrap">
