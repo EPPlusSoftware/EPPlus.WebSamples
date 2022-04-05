@@ -99,5 +99,13 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
             var fileBytes = await package.GetAsByteArrayAsync();
             return File(fileBytes, ContentType, "EPPlusHtmlSample5.xlsx");
         }
+
+        public async Task<IActionResult> GetWorkbookSample6()
+        {
+            var file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"data\\SwedishGeography.xlsx");
+            using var package = new ExcelPackage(file);
+            var fileBytes = await package.GetAsByteArrayAsync();
+            return File(fileBytes, ContentType, "EPPlusHtmlSample6.xlsx");
+        }
     }
 }

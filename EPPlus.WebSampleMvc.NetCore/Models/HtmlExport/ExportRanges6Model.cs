@@ -19,30 +19,33 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 exporter.Settings.Minify = false;
                 // all hyperlinks should open in a new browser window.
                 exporter.Settings.HyperlinkTarget = "_blank";
-                Css = exporter.GetCssString();
-                Html1 = exporter.GetHtmlString(0, x =>
+                // change name of the data-value attribute to data-sort
+                // to make the dataset sortable in DataTables.js.
+                exporter.Settings.DataValueAttributeName = "sort";
+                Css = exporter.GetCssStringAsync().Result;
+                Html1 = exporter.GetHtmlStringAsync(0, x =>
                 {
                     x.TableId = "cities-table";
                     x.Accessibility.TableSettings.AriaLabel = "Largest cities in Sweden";
-                });
-                Html3 = exporter.GetHtmlString(2, x =>
+                }).Result;
+                Html3 = exporter.GetHtmlStringAsync(2, x =>
                 {
                     x.TableId = "kings-table";
                     x.Accessibility.TableSettings.AriaLabel = "Some kings in Sweden";
-                });
-                Html2 = exporter.GetHtmlString(1, x =>
+                }).Result;
+                Html2 = exporter.GetHtmlStringAsync(1, x =>
                 {
                     x.TableId = "lakes-table";
                     x.Accessibility.TableSettings.AriaLabel = "Largest lakes in Sweden";
-                });
-                Html4 = exporter.GetHtmlString(3, x =>
+                }).Result;
+                Html4 = exporter.GetHtmlStringAsync(3, x =>
                 {
                     x.TableId = "municipalities-table";
                     x.Accessibility.TableSettings.AriaLabel = "Swedish municipalities";
                     // Add bootstrap table classes
                     x.AdditionalTableClassNames.Add("table");
                     x.AdditionalTableClassNames.Add("table-sm");
-                });
+                }).Result;
             }
         }
 

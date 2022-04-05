@@ -43,8 +43,8 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 settings.AdditionalTableClassNames.Add("table-borderless");
 
                 // export css and html
-                Css = exporter.GetCssString();
-                Html = exporter.GetHtmlString();
+                Css = exporter.GetCssStringAsync().Result;
+                Html = exporter.GetHtmlStringAsync().Result;
             }
         }
 

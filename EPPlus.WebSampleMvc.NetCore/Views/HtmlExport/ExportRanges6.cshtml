@@ -33,6 +33,7 @@
 <div class="row">
     <div class="col-12">
         <p>This sample uses three separate ranges and one table from different worksheets in the same workbook. They are exported as separate html blocks with a common CSS.</p>
+        <p><a href="/HtmlExport/GetWorkbookSample6" class="btn btn-sm btn-secondary">Download the workbook</a></p>
     </div>
 </div>
 <div class="row">
@@ -54,11 +55,17 @@
     </div>
 </div>
 <div class="row demo">
-        <div class="col-sm-12 col-md-5">
-        @Html.Raw(Model.Html1)
+    <div class="col-sm-12 col-md-5">
+        <div class="border border-success rounded p-3">
+            <p class="text-success">Geography!A1:D10</p>
+            @Html.Raw(Model.Html1)
+        </div>
     </div>
     <div class="col-sm-12 col-md-5">
+        <div class="border border-success rounded p-3">
+            <p class="text-success">Geography!G1:J10</p>
         @Html.Raw(Model.Html2)
+        </div>
     </div>
 </div>
 <div class="row demo mt-3">
@@ -66,7 +73,10 @@
        <h5>Swedish monarchs during the period 1126-1250 a.d.</h5>
        <p>Exported from the second worksheet of the sample workbook. This one is a bit more complex with images, rich text and hyperlinks.</p>
        <p>The data and images are in the public domain (from Wikipedia).</p>
+       <div class="border border-success rounded p-3 w-50">
+           <p class="text-success">Monarchs!A1:E73</p>
        <a href="#" class="btn btn-secondary" data-toggle="modal" data-target="#swedish-monarchs-modal">Open modal</a>
+       </div>
     </div>
 </div>
 <div class="modal" id="swedish-monarchs-modal">
@@ -77,8 +87,8 @@
                 <button type="button" class="close" data-dismiss="modal">x</button>
             </div>
              <div class="modal-body">
-                 <div>
-                @Html.Raw(Model.Html3)
+                 <div class="table-responsive">
+                    @Html.Raw(Model.Html3)
                 </div>
             </div>
             <div class="modal-footer">
@@ -90,8 +100,11 @@
 <div class="row demo mt-3">
     <div class="col bg-light rounded box-shadow p-3">
        <h5>List of Swedish municipalities</h5>
-       <p>Exported from the third worksheet of the sample workbook. The data is from the public domain (from Wikipedia). Here we are using bootstrap table classes and the DataTables UI library to enhance the tables appearance.</p>
-       @Html.Raw(Model.Html4)
+       <p>Exported from the third worksheet of the sample workbook. The data is from the public domain (from Wikipedia). Here we are using bootstrap table classes and the DataTables UI library to enhance the table's appearance.</p>
+       <div class="table-responsive border border-success rounded p-3">
+           <p class="text-success">Exported from the Municipalities table in the third worksheet.</p>
+            @Html.Raw(Model.Html4)
+       </div>
     </div>
 </div>
 <div class="row csharp" style="display:none">
@@ -119,6 +132,9 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 exporter.Settings.Minify = true;
                 // all hyperlinks should open in a new browser window.
                 exporter.Settings.HyperlinkTarget = "_blank";
+                // change name of the data-value attribute to data-sort
+                // to make the dataset sortable in DataTables.js.
+                exporter.Settings.DataValueAttributeName = "sort";
                 Html1 = exporter.GetHtmlString(0, x =>
                 {
                     x.TableId = "cities-table";
@@ -159,11 +175,6 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 }
             </code>
         </pre>
-    </div>
-</div>
-<div class="row demo">
-    <div class="col mt-3">
-        <a href="/HtmlExport/GetWorkbookSample5" class="btn btn-secondary">Get the workbook</a>
     </div>
 </div>
 <div class="row html" style="display:none">
