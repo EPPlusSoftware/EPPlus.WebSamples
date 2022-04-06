@@ -31,7 +31,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 sheet.Cells[tableRange.Start.Row, 1, tableRange.End.Row, 1].Style.Numberformat.Format = "yyyy-MM-dd";
                 sheet.Cells[tableRange.Start.Row, 2, tableRange.End.Row, 5].Style.Numberformat.Format = "#,##0.0000";
 
-                var table = sheet.Tables.GetFromRange(tableRange);
+                var table = tableRange.GetTable();
                 table.ShowFirstColumn = true;
 
                 var exporter = table.CreateHtmlExporter();
@@ -43,8 +43,8 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 settings.AdditionalTableClassNames.Add("table-borderless");
 
                 // export css and html
-                Css = exporter.GetCssStringAsync().Result;
-                Html = exporter.GetHtmlStringAsync().Result;
+                Css = exporter.GetCssString();
+                Html = exporter.GetHtmlString();
             }
         }
 
