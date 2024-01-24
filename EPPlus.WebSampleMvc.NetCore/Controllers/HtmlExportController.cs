@@ -4,6 +4,7 @@ using OfficeOpenXml;
 using OfficeOpenXml.Table;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -89,6 +90,22 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
         {
             var model = new ExportRanges6Model();
             model.SetupSampleData();
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult ExportRange7()
+        {
+            var model = new ExportRange7Model();
+            model.bgColBetween = KnownColor.Goldenrod;
+            model.SetupSampleData();
+            return View(model);
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult ExportRange7(ExportRange7Model model)
+        {
+            model.SetupSampleData(model.bgColBetween);
             return View(model);
         }
 

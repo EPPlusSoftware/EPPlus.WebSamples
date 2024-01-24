@@ -106,7 +106,6 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 sheet.Cells[totalRow, 3].Style.Numberformat.Format = "#,##0 \"km2\"";
                 sheet.Cells[totalRow, 4].Style.Numberformat.Format = "\"Avg: \"#,##0.0 ";
 
-
                 // Configure export settings
                 var exporter = table.CreateHtmlExporter();
                 var settings = exporter.Settings;

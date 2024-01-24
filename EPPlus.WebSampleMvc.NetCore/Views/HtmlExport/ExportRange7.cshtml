@@ -1,0 +1,214 @@
+﻿@model EPPlus.WebSampleMvc.NetCore.Models.HtmlExport.ExportRange7Model
+<style type="text/css">
+    @Html.Raw(Model.Css)
+</style>
+<div class="row">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/HtmlExport">Html export</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Export range</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<div class="row">
+    <div class="col text-center">
+        <h4>Html export - export range</h4>
+    </div>
+</div>
+<div class="row my-2">
+    <div class="col bg-light rounded">
+        <div class="row">
+            <div class="col-6">
+                <a href="/HtmlExport/ExportTable4">&laquo; Previous sample</a>
+            </div>
+            <div class="col-6 text-right">
+                <a href="/HtmlExport/ExportRanges6">Next sample &raquo;</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+       <p>Here is an exported range (not a table in Excel) exported to Html. Styling (including pattern fill and gradient fill) and column widths has been exported to the CSS. Pictures in the exported cells are also included and the actual image data is stored as base64 encoded strings in the css.</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col my-3">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" id="tab-demo">Demo</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="tab-csharp">C#</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="tab-html">Html</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="tab-css">Css</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div>
+    <form asp-action="ExportRange7" method="post" id="form42">
+        @Html.AntiForgeryToken()
+        <div class="row justify-content-center">
+            <div class="col-sm-12 col-md-6 p-3">
+                <div class="bg-light rounded p-2">
+                <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                    <div class="form-group">
+                        <label>Table style</label>
+                        @Html.DropDownListFor(x => x.bgColBetween, Model.AllBuiltInColors, new { @class = "form-control" })
+                    </div>
+                </div>
+                    <div class="form-group mt-2">
+                        <button type="submit" class="btn btn-sm btn-primary float-right" id="btn-submit-form">Reload</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row demo">
+            <div class="col p-3 table-responsive">
+                @Html.Raw(Model.Html)
+            </div>
+        </div>
+    </form>
+</div>
+<div class="row csharp" style="display:none">
+    <div class="col">
+        <pre>
+        <code class="language-csharp hljs">
+using OfficeOpenXml;
+using OfficeOpenXml.Export.HtmlExport;
+using System;
+using System.Drawing;
+using System.IO;
+
+namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
+{
+    public class ExportRange7Model
+    {
+        void SetupSampleData()
+        {
+            using (var package = new ExcelPackage(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"data\\SwedishGeography.xlsx")))
+            {
+                var ws = package.Workbook.Worksheets.Add("CF_ws");
+
+                ws.Cells["A1:A11"].Formula = "ROW()-5";
+
+                var cfBetween = ws.Cells["A1:A11"].ConditionalFormatting.AddBetween();
+
+                cfBetween.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                cfBetween.Style.Fill.BackgroundColor.Color = Color.PaleVioletRed;
+
+                cfBetween.Formula = "A1 > -4";
+                cfBetween.Formula2 = "A1 < 4";
+
+                var exporter = package.Workbook.CreateHtmlExporter(ws.Cells["A1:D11"]);
+
+                //exporter.Settings.Minify = false;
+                //// all hyperlinks should open in a new browser window.
+                //exporter.Settings.HyperlinkTarget = "_blank";
+                //// change name of the data-value attribute to data-sort
+                //// to make the dataset sortable in DataTables.js.
+                //exporter.Settings.DataValueAttributeName = "sort";
+                //Css = exporter.GetCssString();
+                //Html1 = exporter.GetHtmlString(0, x =>
+                //{
+                //    x.TableId = "cities-table";
+                //    x.Accessibility.TableSettings.AriaLabel = "Largest cities in Sweden";
+                //});
+            }
+        }
+    }
+}
+            </code>
+        </pre>
+    </div>
+</div>
+<div class="row demo">
+    <div class="col">
+        <a href="/HtmlExport/GetWorkbookSample5" class="btn btn-secondary">Get the workbook</a>
+    </div>
+</div>
+<div class="row html" style="display:none">
+    <div class="col">
+        <p>Html as it was exported</p>
+        <pre style="white-space: pre-wrap">
+        <code class="language-html hljs" id="html-code">
+ @Model.Html.Trim()
+            </code>
+        </pre>
+    </div>
+</div>
+<div class="row css" style="display:none">
+    <div class="col table-responsive">
+        <pre style="white-space: pre-wrap">
+        <code class="language-css hljs" id="css-code">
+ @Model.Css.Trim()
+            </code>
+        </pre>
+    </div>
+</div>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        jQuery(".csharp").hide();
+        jQuery(".html").hide();
+        jQuery(".css").hide();
+        hljs.highlightAll();
+        jQuery("#tab-csharp").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").hide();
+            jQuery(".csharp").show();
+            jQuery(".css").hide();
+            jQuery(".html").hide();
+            jQuery("#tab-demo").removeClass("active");
+            jQuery("#tab-csharp").addClass("active");
+            jQuery("#tab-html").removeClass("active");
+            jQuery("#tab-css").removeClass("active");
+        });
+        jQuery("#tab-demo").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").show();
+            jQuery(".csharp").hide();
+            jQuery(".css").hide();
+            jQuery(".html").hide();
+            jQuery("#tab-demo").addClass("active");
+            jQuery("#tab-csharp").removeClass("active");
+            jQuery("#tab-css").removeClass("active");
+            jQuery("#tab-html").removeClass("active");
+        });
+        jQuery("#tab-css").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").hide();
+            jQuery(".csharp").hide();
+            jQuery(".css").show();
+            jQuery(".html").hide();
+            jQuery("#tab-demo").removeClass("active");
+            jQuery("#tab-csharp").removeClass("active");
+            jQuery("#tab-css").addClass("active");
+            jQuery("#tab-html").removeClass("active");
+        });
+        jQuery("#tab-html").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").hide();
+            jQuery(".csharp").hide();
+            jQuery(".html").show();
+            jQuery(".css").hide();
+            jQuery("#tab-demo").removeClass("active");
+            jQuery("#tab-csharp").removeClass("active");
+            jQuery("#tab-css").removeClass("active");
+            jQuery("#tab-html").addClass("active");
+        });
+        jQuery("#btn-submit-form").click(function (e) {
+        e.preventDefault();
+        jQuery("#get-workbook").val(false);
+        jQuery("#form42").submit();
+        });
+    });
+</script>
