@@ -105,7 +105,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public IActionResult ExportRange7(ExportRange7Model model)
         {
-            model.SetupSampleData(model.bgColBetween);
+            model.SetupSampleData(model.bgColBetween, model.Formula1, model.Formula2);
             return View(model);
         }
 

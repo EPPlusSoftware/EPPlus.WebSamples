@@ -12,7 +12,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 {
     public class ExportRange7Model
     {
-        public void SetupSampleData(KnownColor col = KnownColor.Goldenrod)
+        public void SetupSampleData(KnownColor col = KnownColor.Goldenrod, string Formula1 = "-3", string Formula2 = "3")
         {
             using (var package = new ExcelPackage(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"data\\SwedishGeography.xlsx")))
             {
@@ -29,8 +29,8 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 cfBetween.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                 cfBetween.Style.Fill.BackgroundColor.Color = Color.FromKnownColor(col);
 
-                cfBetween.Formula = "-3";
-                cfBetween.Formula2 = "3";
+                cfBetween.Formula = Formula1;
+                cfBetween.Formula2 = Formula2;
 
                 var exporter = ws.Cells["A1:D11"].CreateHtmlExporter();
 
@@ -65,6 +65,44 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
             }
         }
 
+        public IEnumerable<SelectListItem> ValueOperators
+        {
+            get
+            {
+                return Enum.GetValues(typeof(CellValueOperator))
+                    .Cast<CellValueOperator>()
+                    .Where(x => x == x)
+                    .Select(x => new SelectListItem(x.ToString(), x.ToString()));
+            }
+        }
+
+        public IEnumerable<SelectListItem> WithTypes
+        {
+            get
+            {
+                return new SelectListItem[] { new SelectListItem { Text = "Cell Value" } };
+            }
+        }
+
+        public string Formula1 { get; set; }
+        public string Formula2 { get; set; }
+
         public KnownColor bgColBetween { get; set; }
+
+        public CellValueOperator valueOperator { get; set; }
+
+        public string withType =  "Cell Value";
+
+        public enum CellValueOperator
+        {
+            Between,
+            Not_Between,
+            Equal_To,
+            Not_Equal_To,
+            Greater_Than,
+            Less_Than,
+            Greater_Than_Or_Equal_To,
+            Less_Than_Or_Equal_To
+        }
     }
 }
