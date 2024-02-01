@@ -64,7 +64,36 @@
                     </div>
                 </div>
                 <label style="text-align: center">Format Only Cells With:</label>
-                <div class="row" style="justify-content: left; margin:auto;">
+                <div class="row" style="justify-content: left; margin:auto; flex: 1;">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group" style="align-content: center">
+                            <select class="form-control" id="dropdown-update">
+                                @foreach (var item in Model.GetEnumValues())
+                                {
+                                    <option value="@item">@item</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <select class="form-control" id="dropdown-updatee">
+                        </select>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <input class="form-control" type="text" id="formula-field">
+                        <input class="form-control" type="text" id="formula-field2">
+                    </div>
+                </div>
+@*                 <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="col-sm-12 col-md-6">
+                        <input type="text" id="formula-field">
+                        <input type="text" id="formula-field2">
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="justify-content: left; margin:auto;">
                  @Html.DropDownListFor(x => x.cellContains, Model.CellContents, new { @id = "drop-update" })
                  @if(Model.GetConditionList() != null)
                     {
@@ -76,11 +105,16 @@
                             @Html.TextBoxFor(x => x.Formula2, Model.Formula2)   
                         }   
                     }
-                </div>
+                </div> *@
                 <div class="form-group">
                     <label>Format</label>
                     <label>Fill Colors</label>
-                    @Html.DropDownListFor(x => x.bgColBetween, Model.AllBuiltInColors, new { @class = "form-control" })
+                    <select class="form-control" id="dropdown-color">
+                        @foreach (var item in Model.AllBuiltInColors)
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    </select>
                 </div>
                 <div class="form-group mt-2 row" style="margin: auto; flex: 1">
                     <button type="submit" class="btn btn-sm btn-primary float-right" id="btn-submit-form">Reload</button>
@@ -221,15 +255,53 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
             jQuery("#tab-css").removeClass("active");
             jQuery("#tab-html").addClass("active");
         });
-        jQuery("#btn-submit-form").click(function (e) {
-        e.preventDefault();
-        jQuery("#get-workbook").val(false);
-        jQuery("#form42").submit();
-        });
-        jQuery("#drop-update").change(function (e) {
-        e.preventDefault();
-        jQuery("#get-workbook").val(false);
-        jQuery("#form42").submit();
-        });
+        // jQuery("#btn-submit-form").click(function (e) {
+        // e.preventDefault();
+        // jQuery("#get-workbook").val(false);
+        // jQuery("#form42").submit();
+        // });
+        // jQuery("#drop-update").change(function (e) {
+        // e.preventDefault();
+        // jQuery("#get-workbook").val(false);
+        // jQuery("#form42").submit();
+        // });
+
+        var jsonData = @Html.Raw(Model.JsonData);
+        $(document).ready(function()
+        {
+            $("#dropdown-update").change( function () {
+
+                let operatorArr = jsonData[$(this).val()];
+
+                $("#dropdown-updatee").empty();
+
+                if (operatorArr != null) {
+
+                    $("#dropdown-updatee").show();
+
+                    operatorArr.forEach((element) => {
+                        let html = '<option value=' + element + '>' + element + '</option>';
+                        $("#dropdown-updatee").append(html);
+                    });
+                }
+                else {
+                    $("#dropdown-updatee").hide();
+                }
+            })
+            $("#dropdown-update").change();
+
+            // $("#formula-field").change(function () { 
+            //      @Model.Formula1 = $(this).val();
+            //     // @Model.Formula1 = $(this).val();
+            // })
+
+            // $("#formula-field2").change(function () {
+            //     @Model.Formula2 = $(this).val();
+            // })
+
+            // $("#dropdown-color").change( function () {
+            //     @Model.bgColBetween = $(this).val();
+            // })
+        })
     });
 </script>

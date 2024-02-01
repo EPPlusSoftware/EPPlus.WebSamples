@@ -109,6 +109,23 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
             return View(model);
         }
 
+        [HttpPost, Route("/api/types/{model, formula, index}")]
+        public void UpdateFormula(ExportRange7Model model, string formula, int index)
+        {
+            if (index == 1)
+            {
+                model.Formula1 = formula;
+            }
+            else if (index == 2)
+            {
+                model.Formula2 = formula;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public async Task<IActionResult> GetWorkbookSample5()
         {
             var file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"data\\Allsvenskan2001.xlsx");
