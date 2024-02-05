@@ -96,8 +96,14 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
         [HttpGet]
         public IActionResult ExportRange7()
         {
-            var model = new ExportRange7Model();
-            model.bgColBetween = KnownColor.Goldenrod;
+            var model = new ExportRange7Model
+            {
+                DropOption = CellContains.Cell_Value,
+                DropCF = CellValueCondition.Between,
+                Formula1 = "3",
+                Formula2 = "-3",
+                AppliedColor = KnownColor.Goldenrod
+            };
             model.SetupSampleData();
             return View(model);
         }
@@ -105,26 +111,41 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public IActionResult ExportRange7(ExportRange7Model model)
         {
-            model.SetupSampleData(model.bgColBetween, model.Formula1, model.Formula2);
+            model.SetupSampleData();
             return View(model);
         }
 
-        [HttpPost, Route("/api/types/{model, formula, index}")]
-        public void UpdateFormula(ExportRange7Model model, string formula, int index)
-        {
-            if (index == 1)
-            {
-                model.Formula1 = formula;
-            }
-            else if (index == 2)
-            {
-                model.Formula2 = formula;
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
+        //[HttpPost, Route("/api/types/{model, formula, index}")]
+        //public void UpdateFormula(ExportRange7Model model, string formula, int index)
+        //{
+        //    if (index == 1)
+        //    {
+        //        model.Formula1 = formula;
+        //    }
+        //    else if (index == 2)
+        //    {
+        //        model.Formula2 = formula;
+        //    }
+        //    else
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
+
+        //[HttpPost, Route("/api/types/update")]
+        //public JsonResult UpdateFormula1(string dropA, string dropB)
+        //{
+
+        //    //model.Formula1 = changedFormula;
+        //    //return Json(Ok(model.Formula1));
+        //}
+
+        //[HttpPost, Route("/api/types/{model}/{test}")]
+        //public JsonResult UpdateFormula1(ExportRange7Model model, string changedFormula)
+        //{
+        //    model.Formula1 = changedFormula;
+        //    return Json(Ok(model.Formula1));
+        //}
 
         public async Task<IActionResult> GetWorkbookSample5()
         {

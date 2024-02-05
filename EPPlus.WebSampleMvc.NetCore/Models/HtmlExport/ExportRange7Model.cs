@@ -64,7 +64,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 
     public class ExportRange7Model
     {
-        public void SetupSampleData(KnownColor col = KnownColor.Goldenrod, string Formula1 = "-3", string Formula2 = "3")
+        public void SetupSampleData()
         {
             using (var package = new ExcelPackage())
             {
@@ -78,12 +78,12 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 ws.Cells["A1:D11"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                 ws.Cells["A1:D11"].Style.Fill.BackgroundColor.SetColor(Color.AliceBlue);
 
-                //var cf = GetCFCellContains(ws.Cells["A1:A11"].ConditionalFormatting);
+                var cf = GetCFCellContains(ws.Cells["A1:A11"].ConditionalFormatting);
 
-                var cf = ws.Cells["A1:A11"].ConditionalFormatting.AddBetween();
+               // var cf = ws.Cells["A1:A11"].ConditionalFormatting.AddBetween();
 
                 cf.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                cf.Style.Fill.BackgroundColor.Color = Color.FromKnownColor(col);
+                cf.Style.Fill.BackgroundColor.Color = Color.FromKnownColor(AppliedColor);
 
                 cf.Formula = Formula1 == null ? "" : Formula1;
                 if (cf.Type == eExcelConditionalFormattingRuleType.Between || cf.Type == eExcelConditionalFormattingRuleType.NotBetween)
@@ -118,45 +118,92 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 
         public string JsonData = "";
 
-        //ExcelConditionalFormattingRule GetCFCellContains(IRangeConditionalFormatting targetRange)
-        //{
-        //    switch (valueCondition)
-        //    {
-        //        case CellValueCondition.Between:
-        //            return (ExcelConditionalFormattingRule)targetRange.AddBetween();
-        //        case CellValueCondition.Not_Between:
-        //            return (ExcelConditionalFormattingRule)targetRange.AddNotBetween();
-        //        case CellValueCondition.Equal_To:
-        //            return (ExcelConditionalFormattingRule)targetRange.AddEqual();
-        //        case CellValueCondition.Not_Equal_To:
-        //            return (ExcelConditionalFormattingRule)targetRange.AddNotEqual();
-        //        case CellValueCondition.Greater_Than:
-        //            return (ExcelConditionalFormattingRule)targetRange.AddGreaterThan();
-        //        case CellValueCondition.Less_Than:
-        //            return (ExcelConditionalFormattingRule)targetRange.AddLessThan();
-        //        case CellValueCondition.Greater_Than_Or_Equal_To:
-        //            return (ExcelConditionalFormattingRule)targetRange.AddGreaterThanOrEqual();
-        //        case CellValueCondition.Less_Than_Or_Equal_To:
-        //            return (ExcelConditionalFormattingRule)targetRange.AddLessThanOrEqual();
-        //        default:
-        //            throw new NotImplementedException();
-        //    }
-        //}
+        ExcelConditionalFormattingRule GetCFCellContains(IRangeConditionalFormatting targetRange)
+        {
+            switch (DropOption)
+            {
+                case CellContains.Cell_Value:
+                    valueCondition = (CellValueCondition)DropCF;
+                    switch (valueCondition)
+                    {
+                        case CellValueCondition.Between:
+                            return (ExcelConditionalFormattingRule)targetRange.AddBetween();
+                        case CellValueCondition.Not_Between:
+                            return (ExcelConditionalFormattingRule)targetRange.AddNotBetween();
+                        case CellValueCondition.Equal_To:
+                            return (ExcelConditionalFormattingRule)targetRange.AddEqual();
+                        case CellValueCondition.Not_Equal_To:
+                            return (ExcelConditionalFormattingRule)targetRange.AddNotEqual();
+                        case CellValueCondition.Greater_Than:
+                            return (ExcelConditionalFormattingRule)targetRange.AddGreaterThan();
+                        case CellValueCondition.Less_Than:
+                            return (ExcelConditionalFormattingRule)targetRange.AddLessThan();
+                        case CellValueCondition.Greater_Than_Or_Equal_To:
+                            return (ExcelConditionalFormattingRule)targetRange.AddGreaterThanOrEqual();
+                        case CellValueCondition.Less_Than_Or_Equal_To:
+                            return (ExcelConditionalFormattingRule)targetRange.AddLessThanOrEqual();
+                        default:
+                            throw new NotImplementedException();
+                    }
+                case CellContains.Specific_Text:
+                    textCondition = (SpecificTextCondition)DropCF;
+                    switch (textCondition)
+                    {
+                        //case SpecificTextCondition.Containing:
+                        //    break;
+                        //case SpecificTextCondition.Not_Containing:
+                        //    break;
+                        //case SpecificTextCondition.Beginning_With:
+                        //    break;
+                        //case SpecificTextCondition.Ending_With:
+                        //    break;
+                        default:
+                            throw new NotImplementedException();
+                    }
+                case CellContains.Dates_Occuring:
+                    dateCondition = (DateCondition)DropCF;
+                    switch (textCondition)
+                    {
+                        //case SpecificTextCondition.Containing:
+                        //    break;
+                        //case SpecificTextCondition.Not_Containing:
+                        //    break;
+                        //case SpecificTextCondition.Beginning_With:
+                        //    break;
+                        //case SpecificTextCondition.Ending_With:
+                        //    break;
+                        default:
+                            throw new NotImplementedException();
+                    }
+                case CellContains.Blanks:
+                case CellContains.No_Blanks:
+                case CellContains.Errors:
+                case CellContains.No_Errors:
+                    throw new NotImplementedException();
+                default:
+                    throw new NotImplementedException();
+            }
+        }
 
         public string Css { get; set; }
 
         public string Html { get; set; }
 
-        public IEnumerable<SelectListItem> AllBuiltInColors
-        {
-            get
-            {
-                return Enum.GetValues(typeof(KnownColor))
-                    .Cast<KnownColor>()
-                    .Where(x => x == x)
-                    .Select(x => new SelectListItem(x.ToString(), x.ToString()));
-            }
-        }
+        //public Array AllBuiltInColors()
+        //{
+        //    return Enum.GetValues(typeof(Color));
+        //}
+
+        //public IEnumerable<SelectListItem> AllBuiltInColors
+        //{
+        //    get
+        //    {
+        //        return Enum.GetValues(typeof(KnownColor))
+        //            .Cast<KnownColor>()
+        //            .Where(x => x == x)
+        //            .Select(x => new SelectListItem(x.ToString(), x.ToString()));
+        //    }
+        //}
 
         //public IEnumerable<SelectListItem> ValueOperators
         //{
@@ -202,13 +249,31 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
         public string Formula1 { get; set; }
         public string Formula2 { get; set; }
 
-        public KnownColor bgColBetween { get; set; }
+        public CellContains DropOption { get; set; }
+
+        Enum tester;
+
+        public CellValueCondition DropCF { get { return (CellValueCondition)tester; } 
+            set 
+            { 
+                tester = value; 
+            } 
+        }
+
+        public string DropCFSting { get { return JsonSerializer.Serialize(DropCF.ToString()); } } 
+
+        public KnownColor AppliedColor { get; set; }
 
         private CellContains _cellContains = CellContains.Cell_Value;
 
         public Array GetEnumValues()
         {
             return Enum.GetValues(typeof(CellContains));
+        }
+
+        public Array GetColValues()
+        {
+            return Enum.GetValues(typeof(KnownColor));
         }
 
         //public CellContains cellContains 
@@ -226,7 +291,6 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 
         public SpecificTextCondition textCondition { get; set; }
 
-       // public Enum enumVariable { get { return GetEnumVariable(); } set { SetEnumVariable(value); } }
 
         //public Enum GetEnumVariable()
         //{
@@ -247,25 +311,23 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
         //    }
         //}
 
-        //public void SetEnumVariable(object setValue)
+        //public Enum GetChildEnum()
         //{
-        //    switch (cellContains)
+        //    switch (DropCF)
         //    {
         //        case CellContains.Cell_Value:
-        //            valueCondition = (CellValueCondition)setValue;
-        //            break;
+        //            return (CellValueCondition)DropCF;
         //        case CellContains.Specific_Text:
-        //            textCondition = (SpecificTextCondition)setValue;
-        //            break;
+        //            return (SpecificTextCondition)DropCF;
         //        case CellContains.Dates_Occuring:
-        //            dateCondition = (DateCondition)setValue;
-        //            break;
+        //            return (DateCondition)DropCF;
         //        case CellContains.Blanks:
         //        case CellContains.No_Blanks:
         //        case CellContains.Errors:
         //        case CellContains.No_Errors:
-        //            break;
+        //            return null;
         //    }
+        //    return null;
         //}
 
         //internal IEnumerable<SelectListItem> GetConditionList()

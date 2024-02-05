@@ -67,21 +67,28 @@
                 <div class="row" style="justify-content: left; margin:auto; flex: 1;">
                     <div class="col-sm-12 col-md-6">
                         <div class="form-group" style="align-content: center">
-                            <select class="form-control" id="dropdown-update">
+                            <select class="form-control" id="dropdown-update" name= "DropOption">
                                 @foreach (var item in Model.GetEnumValues())
                                 {
-                                    <option value="@item">@item</option>
+                                    if(item.Equals(Model.DropOption))
+                                    {
+                                        <option value="@item" selected="selected">@item</option>
+                                    }
+                                    else
+                                    {
+                                       <option value="@item">@item</option>   
+                                    }
                                 }
                             </select>
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6">
-                        <select class="form-control" id="dropdown-updatee">
+                        <select class="form-control" id="dropdown-updatee" name= "DropCF">
                         </select>
                     </div>
                     <div class="col-sm-12 col-md-6">
-                        <input class="form-control" type="text" id="formula-field">
-                        <input class="form-control" type="text" id="formula-field2">
+                        <input class="form-control" value= "@Model.Formula1" type="text" id="formula-field1" name = "Formula1">
+                        <input class="form-control" value= "@Model.Formula2" type="text" id="formula-field2" name = "Formula2">
                     </div>
                 </div>
 @*                 <div class="row">
@@ -109,10 +116,17 @@
                 <div class="form-group">
                     <label>Format</label>
                     <label>Fill Colors</label>
-                    <select class="form-control" id="dropdown-color">
-                        @foreach (var item in Model.AllBuiltInColors)
+                    <select class="form-control" id="dropdown-color" name="AppliedColor">
+                        @foreach (var item in Model.GetColValues())
                         {
-                            <option value="@item">@item</option>
+                            if(item.Equals(Model.AppliedColor))
+                            {
+                                <option value="@item" selected="selected">@item</option>
+                            }
+                            else
+                            {
+                                <option value="@item">@item</option>   
+                            }
                         }
                     </select>
                 </div>
@@ -255,11 +269,11 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
             jQuery("#tab-css").removeClass("active");
             jQuery("#tab-html").addClass("active");
         });
-        // jQuery("#btn-submit-form").click(function (e) {
-        // e.preventDefault();
-        // jQuery("#get-workbook").val(false);
-        // jQuery("#form42").submit();
-        // });
+        jQuery("#btn-submit-form").click(function (e) {
+          e.preventDefault();
+        //jQuery("#get-workbook").val(false);
+          jQuery("#form42").submit();
+        });
         // jQuery("#drop-update").change(function (e) {
         // e.preventDefault();
         // jQuery("#get-workbook").val(false);
@@ -267,6 +281,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
         // });
 
         var jsonData = @Html.Raw(Model.JsonData);
+
         $(document).ready(function()
         {
             $("#dropdown-update").change( function () {
@@ -278,20 +293,57 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 if (operatorArr != null) {
 
                     $("#dropdown-updatee").show();
+                    $("#formula-field1").show();
 
                     operatorArr.forEach((element) => {
-                        let html = '<option value=' + element + '>' + element + '</option>';
+                        let html = "";
+
+                        if (element == @Html.Raw(Model.DropCFSting)) {
+                            html = '<option value=' + element + ' selected= "selected">' + element + '</option>';
+                        }
+                        else 
+                        { 
+                            html = '<option value=' + element + '>' + element + '</option>';
+                        }
                         $("#dropdown-updatee").append(html);
                     });
                 }
                 else {
                     $("#dropdown-updatee").hide();
+                    $("#formula-field1").hide();
+                    $("#formula-field2").hide();
                 }
             })
             $("#dropdown-update").change();
 
-            // $("#formula-field").change(function () { 
-            //      @Model.Formula1 = $(this).val();
+            $("#dropdown-updatee").change(function () {
+                if ($(this).val() == 'Between' || $(this).val() == 'Not_Between') { 
+                $("#formula-field2").show();
+                }
+                else
+                {
+                    $("#formula-field2").hide();
+                }
+            })
+
+            // $("#dropdown-update").val(JSON.stringify(@Model.DropOption));
+            // $("#dropdown-color").val(JSON.stringify(@Model.AppliedColor));
+
+            // $("#formula-field").change(function (e) 
+            // { 
+            //     e.preventDefault();
+
+            //     let newFormula = $(this).val();
+
+            //     req = $.ajax({
+            //         url: '/api/types/update',
+            //         type: 'POST',
+            //         data: { model: jQuery("#form42"), formula: newFormula }
+            //     })
+
+
+            //     //$.getJSON("/api/types/" + @Model + "/" + $(this).val())
+            //      //@Model.Formula1 = $(this).val();
             //     // @Model.Formula1 = $(this).val();
             // })
 
@@ -300,7 +352,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
             // })
 
             // $("#dropdown-color").change( function () {
-            //     @Model.bgColBetween = $(this).val();
+            //     @Model.AppliedColor = $(this).val();
             // })
         })
     });
