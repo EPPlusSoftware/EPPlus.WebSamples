@@ -83,7 +83,7 @@
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6">
-                        <select class="form-control" id="dropdown-updatee" name= "DropCF">
+                        <select class="form-control" id="dropdown-updatee" name= "valueCondition">
                         </select>
                     </div>
                     <div class="col-sm-12 col-md-6">
@@ -91,28 +91,6 @@
                         <input class="form-control" value= "@Model.Formula2" type="text" id="formula-field2" name = "Formula2">
                     </div>
                 </div>
-@*                 <div class="row">
-                    <div class="col-sm-12 col-md-6">
-                        <div class="col-sm-12 col-md-6">
-                        <input type="text" id="formula-field">
-                        <input type="text" id="formula-field2">
-                    </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row" style="justify-content: left; margin:auto;">
-                 @Html.DropDownListFor(x => x.cellContains, Model.CellContents, new { @id = "drop-update" })
-                 @if(Model.GetConditionList() != null)
-                    {
-                     @Html.DropDownListFor(x => x.enumVariable, Model.GetConditionList(), new { @id = "drop-update"})
-                     @Html.TextBoxFor(x => x.Formula1, Model.Formula1 ,new { @style = "margin-left: 10px"})
-                     @if (Model.renderFormula2)
-                        {
-                            <label style="margin: 10px">and</label>
-                            @Html.TextBoxFor(x => x.Formula2, Model.Formula2)   
-                        }   
-                    }
-                </div> *@
                 <div class="form-group">
                     <label>Format</label>
                     <label>Fill Colors</label>
@@ -271,14 +249,8 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
         });
         jQuery("#btn-submit-form").click(function (e) {
           e.preventDefault();
-        //jQuery("#get-workbook").val(false);
           jQuery("#form42").submit();
         });
-        // jQuery("#drop-update").change(function (e) {
-        // e.preventDefault();
-        // jQuery("#get-workbook").val(false);
-        // jQuery("#form42").submit();
-        // });
 
         var jsonData = @Html.Raw(Model.JsonData);
 
@@ -294,6 +266,25 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 
                     $("#dropdown-updatee").show();
                     $("#formula-field1").show();
+
+                    let updateeName = '';
+
+                    switch ($(this).val()) {
+                        case "Cell_Value":
+                            updateeName = "valueCondition";
+                            break;
+                        case "Specific_Text":
+                            updateeName = "textCondition";
+                            break;
+                        case "Dates_Occuring":
+                            updateeName = "dateCondition";
+                            break;
+                          default:
+                            updateeName = "valueCondition";
+                            break;
+                        }
+
+                    $("#dropdown-updatee").attr("name", updateeName);
 
                     operatorArr.forEach((element) => {
                         let html = "";
@@ -314,9 +305,9 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                     $("#formula-field2").hide();
                 }
             })
-            $("#dropdown-update").change();
 
             $("#dropdown-updatee").change(function () {
+
                 if ($(this).val() == 'Between' || $(this).val() == 'Not_Between') { 
                 $("#formula-field2").show();
                 }
@@ -326,34 +317,8 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 }
             })
 
-            // $("#dropdown-update").val(JSON.stringify(@Model.DropOption));
-            // $("#dropdown-color").val(JSON.stringify(@Model.AppliedColor));
-
-            // $("#formula-field").change(function (e) 
-            // { 
-            //     e.preventDefault();
-
-            //     let newFormula = $(this).val();
-
-            //     req = $.ajax({
-            //         url: '/api/types/update',
-            //         type: 'POST',
-            //         data: { model: jQuery("#form42"), formula: newFormula }
-            //     })
-
-
-            //     //$.getJSON("/api/types/" + @Model + "/" + $(this).val())
-            //      //@Model.Formula1 = $(this).val();
-            //     // @Model.Formula1 = $(this).val();
-            // })
-
-            // $("#formula-field2").change(function () {
-            //     @Model.Formula2 = $(this).val();
-            // })
-
-            // $("#dropdown-color").change( function () {
-            //     @Model.AppliedColor = $(this).val();
-            // })
+            $("#dropdown-update").change();
+            $("#dropdown-updatee").change();
         })
     });
 </script>

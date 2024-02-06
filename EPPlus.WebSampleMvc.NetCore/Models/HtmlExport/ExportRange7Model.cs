@@ -74,11 +74,12 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 var ws = package.Workbook.Worksheets.Add("CF_ws");
 
                 ws.Cells["A1:A11"].Formula = "ROW()-5";
+                ws.Cells["B1:B11"].Formula = "\"Row number \" & ROW()";
 
                 ws.Cells["A1:D11"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                 ws.Cells["A1:D11"].Style.Fill.BackgroundColor.SetColor(Color.AliceBlue);
 
-                var cf = GetCFCellContains(ws.Cells["A1:A11"].ConditionalFormatting);
+                var cf = GetCFCellContains(ws.Cells["A1:B11"].ConditionalFormatting);
 
                // var cf = ws.Cells["A1:A11"].ConditionalFormatting.AddBetween();
 
@@ -89,11 +90,6 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 if (cf.Type == eExcelConditionalFormattingRuleType.Between || cf.Type == eExcelConditionalFormattingRuleType.NotBetween)
                 {
                     cf.Formula2 = Formula2 == null ? "" : Formula2;
-                    renderFormula2 = true;
-                }
-                else
-                {
-                    renderFormula2 = false;
                 }
 
                 var exporter = ws.Cells["A1:D11"].CreateHtmlExporter();
@@ -113,8 +109,6 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 Html = exporter.GetHtmlString();
             }
         }
-
-        public bool renderFormula2 = true;
 
         public string JsonData = "";
 
@@ -149,37 +143,52 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                     textCondition = (SpecificTextCondition)DropCF;
                     switch (textCondition)
                     {
-                        //case SpecificTextCondition.Containing:
-                        //    break;
-                        //case SpecificTextCondition.Not_Containing:
-                        //    break;
-                        //case SpecificTextCondition.Beginning_With:
-                        //    break;
-                        //case SpecificTextCondition.Ending_With:
-                        //    break;
+                        case SpecificTextCondition.Containing:
+                            return (ExcelConditionalFormattingRule)targetRange.AddContainsText();
+                        case SpecificTextCondition.Not_Containing:
+                            return (ExcelConditionalFormattingRule)targetRange.AddNotContainsText();
+                        case SpecificTextCondition.Beginning_With:
+                            return (ExcelConditionalFormattingRule)targetRange.AddBeginsWith();
+                        case SpecificTextCondition.Ending_With:
+                            return (ExcelConditionalFormattingRule)targetRange.AddEndsWith();
                         default:
                             throw new NotImplementedException();
                     }
                 case CellContains.Dates_Occuring:
                     dateCondition = (DateCondition)DropCF;
-                    switch (textCondition)
+                    switch (dateCondition)
                     {
-                        //case SpecificTextCondition.Containing:
-                        //    break;
-                        //case SpecificTextCondition.Not_Containing:
-                        //    break;
-                        //case SpecificTextCondition.Beginning_With:
-                        //    break;
-                        //case SpecificTextCondition.Ending_With:
-                        //    break;
+                        case DateCondition.Yesterday:
+                            return (ExcelConditionalFormattingRule)targetRange.AddYesterday();
+                        case DateCondition.Today:
+                            return (ExcelConditionalFormattingRule)targetRange.AddToday();
+                        case DateCondition.Tomorrow:
+                            return (ExcelConditionalFormattingRule)targetRange.AddTomorrow();
+                        case DateCondition.Last_7_Days:
+                            return (ExcelConditionalFormattingRule)targetRange.AddLast7Days();
+                        case DateCondition.Last_Week:
+                            return (ExcelConditionalFormattingRule)targetRange.AddLastWeek();
+                        case DateCondition.This_Week:
+                            return (ExcelConditionalFormattingRule)targetRange.AddThisWeek();
+                        case DateCondition.Next_Week:
+                            return (ExcelConditionalFormattingRule)targetRange.AddNextWeek();
+                        case DateCondition.Last_Month:
+                            return (ExcelConditionalFormattingRule)targetRange.AddLastMonth();
+                        case DateCondition.This_Month:
+                            return (ExcelConditionalFormattingRule)targetRange.AddThisMonth();
+                        case DateCondition.Next_Month:
+                            return (ExcelConditionalFormattingRule)targetRange.AddNextMonth();
                         default:
                             throw new NotImplementedException();
                     }
                 case CellContains.Blanks:
+                    return (ExcelConditionalFormattingRule)targetRange.AddContainsBlanks();
                 case CellContains.No_Blanks:
+                    return (ExcelConditionalFormattingRule)targetRange.AddNotContainsBlanks();
                 case CellContains.Errors:
+                    return (ExcelConditionalFormattingRule)targetRange.AddContainsErrors();
                 case CellContains.No_Errors:
-                    throw new NotImplementedException();
+                    return (ExcelConditionalFormattingRule)targetRange.AddNotContainsErrors();
                 default:
                     throw new NotImplementedException();
             }
@@ -189,82 +198,16 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 
         public string Html { get; set; }
 
-        //public Array AllBuiltInColors()
-        //{
-        //    return Enum.GetValues(typeof(Color));
-        //}
-
-        //public IEnumerable<SelectListItem> AllBuiltInColors
-        //{
-        //    get
-        //    {
-        //        return Enum.GetValues(typeof(KnownColor))
-        //            .Cast<KnownColor>()
-        //            .Where(x => x == x)
-        //            .Select(x => new SelectListItem(x.ToString(), x.ToString()));
-        //    }
-        //}
-
-        //public IEnumerable<SelectListItem> ValueOperators
-        //{
-        //    get
-        //    {
-        //        return Enum.GetValues(typeof(CellValueCondition))
-        //            .Cast<CellValueCondition>()
-        //            .Where(x => x == x)
-        //            .Select(x => new SelectListItem(x.ToString(), x.ToString()));
-        //    }
-        //}
-
-        //public IEnumerable<SelectListItem> TextConditions
-        //{
-        //    get
-        //    {
-        //        return Enum.GetValues(typeof(SpecificTextCondition))
-        //            .Cast<SpecificTextCondition>()
-        //            .Select(x => new SelectListItem(x.ToString(), x.ToString()));
-        //    }
-        //}
-
-        //public IEnumerable<SelectListItem> DateConditions
-        //{
-        //    get
-        //    {
-        //        return Enum.GetValues(typeof(DateCondition))
-        //            .Cast<DateCondition>()
-        //            .Select(x => new SelectListItem(x.ToString(), x.ToString()));
-        //    }
-        //}
-
-        //public IEnumerable<SelectListItem> CellContents
-        //{
-        //    get
-        //    {
-        //        return Enum.GetValues(typeof(CellContains))
-        //            .Cast<CellContains>()
-        //            .Select(x => new SelectListItem(x.ToString(), x.ToString()));
-        //    }
-        //}
-
         public string Formula1 { get; set; }
         public string Formula2 { get; set; }
 
         public CellContains DropOption { get; set; }
 
-        Enum tester;
+        public Enum DropCF { get { return GetCFEnumVariable(); } set { SetCFVariable(value); } }
 
-        public CellValueCondition DropCF { get { return (CellValueCondition)tester; } 
-            set 
-            { 
-                tester = value; 
-            } 
-        }
-
-        public string DropCFSting { get { return JsonSerializer.Serialize(DropCF.ToString()); } } 
+        public string DropCFSting { get { return GetSerializedDropB(); } } 
 
         public KnownColor AppliedColor { get; set; }
-
-        private CellContains _cellContains = CellContains.Cell_Value;
 
         public Array GetEnumValues()
         {
@@ -276,77 +219,69 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
             return Enum.GetValues(typeof(KnownColor));
         }
 
-        //public CellContains cellContains 
-        //{   get { return _cellContains; } 
-        //    set 
-        //    {
-        //        _cellContains = value;
-        //        enumVariable = GetEnumVariable(); 
-        //    } 
-        //}
-
         public CellValueCondition valueCondition { get; set; }
 
         public DateCondition dateCondition { get; set; }
 
         public SpecificTextCondition textCondition { get; set; }
 
+        private Enum GetCFEnumVariable()
+        {
+            switch (DropOption)
+            {
+                case CellContains.Cell_Value:
+                    return valueCondition;
+                case CellContains.Specific_Text:
+                    return textCondition;
+                case CellContains.Dates_Occuring:
+                    return dateCondition;
+                case CellContains.Blanks:
+                case CellContains.No_Blanks:
+                case CellContains.Errors:
+                case CellContains.No_Errors:
+                default:
+                    return null;
+            }
+        }
 
-        //public Enum GetEnumVariable()
-        //{
-        //    switch (cellContains)
-        //    {
-        //        case CellContains.Cell_Value:
-        //            return valueCondition;
-        //        case CellContains.Specific_Text:
-        //            return textCondition;
-        //        case CellContains.Dates_Occuring:
-        //            return dateCondition;
-        //        case CellContains.Blanks:
-        //        case CellContains.No_Blanks:
-        //        case CellContains.Errors:
-        //        case CellContains.No_Errors:
-        //            return null;
-        //        default: return null;
-        //    }
-        //}
+        private string GetSerializedDropB()
+        {
+            switch (DropOption)
+            {
+                case CellContains.Cell_Value:
+                    return JsonSerializer.Serialize(Enum.GetName(valueCondition));
+                case CellContains.Specific_Text:
+                    return JsonSerializer.Serialize(Enum.GetName(textCondition));
+                case CellContains.Dates_Occuring:
+                    return JsonSerializer.Serialize(Enum.GetName(dateCondition));
+                case CellContains.Blanks:
+                case CellContains.No_Blanks:
+                case CellContains.Errors:
+                case CellContains.No_Errors:
+                default:
+                    return null;
+            }
+        }
 
-        //public Enum GetChildEnum()
-        //{
-        //    switch (DropCF)
-        //    {
-        //        case CellContains.Cell_Value:
-        //            return (CellValueCondition)DropCF;
-        //        case CellContains.Specific_Text:
-        //            return (SpecificTextCondition)DropCF;
-        //        case CellContains.Dates_Occuring:
-        //            return (DateCondition)DropCF;
-        //        case CellContains.Blanks:
-        //        case CellContains.No_Blanks:
-        //        case CellContains.Errors:
-        //        case CellContains.No_Errors:
-        //            return null;
-        //    }
-        //    return null;
-        //}
-
-        //internal IEnumerable<SelectListItem> GetConditionList()
-        //{
-        //    switch (cellContains)
-        //    {
-        //        case CellContains.Cell_Value:
-        //            return ValueOperators;
-        //        case CellContains.Specific_Text:
-        //            return TextConditions;
-        //        case CellContains.Dates_Occuring:
-        //            return DateConditions;
-        //        case CellContains.Blanks:
-        //        case CellContains.No_Blanks:
-        //        case CellContains.Errors:
-        //        case CellContains.No_Errors:
-        //            return null;
-        //        default: return null;
-        //    }
-        //}
+        private void SetCFVariable(object aValue)
+        {
+            switch (DropOption)
+            {
+                case CellContains.Cell_Value:
+                    valueCondition = (CellValueCondition)aValue;
+                    break;
+                case CellContains.Specific_Text:
+                    textCondition = (SpecificTextCondition)aValue;
+                    break;
+                case CellContains.Dates_Occuring:
+                    dateCondition = (DateCondition)aValue;
+                    break;
+                case CellContains.Blanks:
+                case CellContains.No_Blanks:
+                case CellContains.Errors:
+                case CellContains.No_Errors:
+                    break;
+            }
+        }
     }
 }
