@@ -1,6 +1,9 @@
 ﻿@model EPPlus.WebSampleMvc.NetCore.Models.HtmlExport.ExportRange7Model
 <style type="text/css">
     @Html.Raw(Model.Css)
+    button.plain { background:none; border: thin solid 1pt; width: 100%; border-bottom: thin; border-color:black; text-align:left;}
+    button:hover { background-color:cornflowerblue;}
+    button:focus { background-color:deepskyblue;}
 </style>
 <div class="row">
     <div class="col">
@@ -58,15 +61,26 @@
     <div class="row justify-content-center">
         <div class="col-sm-12 p-3">
             <div class="bg-light rounded p-2">
+                <label>Select a Rule Type:</label>
+                <div class="col-sm-12 col-md-6">
+                    <div style="border: 1px solid black;">
+                    <button class="plain" id="all-cells">>Format all cells based on their values</button>
+                    <button class="plain" id="only-contain">>Format only cells that contain</button>
+                    <button class="plain" id="ranked">>Format only top or bottom ranked values</button>
+                    <button class="plain" id="average">>Format only values that are above or below average</button>
+                    <button class="plain" id="unique">>Format only unique or duplicate values</button>
+                    <button class="plain" id="formula">>Use a formula to determine which cells to format</button>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-sm-12 col-md-6">
                         <label>Edit The Rule Description</label>
                     </div>
                 </div>
-                <label style="text-align: center">Format Only Cells With:</label>
+                <label style="text-align: center" id="rule-type-format-label">Format Only Cells With:</label>
                 <div class="row" style="justify-content: left; margin:auto; flex: 1;">
                     <div class="col-sm-12 col-md-6">
-                        <div class="form-group" style="align-content: center">
+                        <div class="form-group" style= "display: flex; flex-direction: row; align-items: center;">
                             <select class="form-control" id="dropdown-update" name= "DropOption">
                                 @foreach (var item in Model.GetEnumValues())
                                 {
@@ -80,15 +94,12 @@
                                     }
                                 }
                             </select>
+                            <select class="form-control"  id="dropdown-updatee" name= "valueCondition" style="display: none;">
+                            </select>
+                            <input class="form-control" value= "@Model.Formula1" type="text" id="formula-field1" name = "Formula1" style="display: none;">
+                            <input class="form-control" value= "@Model.Formula2" type="text" id="formula-field2" name = "Formula2" style="display: none;">
+                            <input type="checkbox" id="percent-checkbox" name="% of the selected range" style="display: none;" />
                         </div>
-                    </div>
-                    <div class="col-sm-12 col-md-6">
-                        <select class="form-control" id="dropdown-updatee" name= "valueCondition">
-                        </select>
-                    </div>
-                    <div class="col-sm-12 col-md-6">
-                        <input class="form-control" value= "@Model.Formula1" type="text" id="formula-field1" name = "Formula1">
-                        <input class="form-control" value= "@Model.Formula2" type="text" id="formula-field2" name = "Formula2">
                     </div>
                 </div>
                 <div class="form-group">
@@ -247,25 +258,41 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
             jQuery("#tab-css").removeClass("active");
             jQuery("#tab-html").addClass("active");
         });
-        jQuery("#btn-submit-form").click(function (e) {
-          e.preventDefault();
-          jQuery("#form42").submit();
+        jQuery(".plain").click(function (e) {
+            e.preventDefault();
         });
+        // jQuery("#btn-submit-form").click(function (e) {
+        //   e.preventDefault();
+        //   jQuery("#form42").submit();
+        // });
 
         var jsonData = @Html.Raw(Model.JsonData);
+        var dropDownString = @Html.Raw(Model.DropCFSting);
 
         $(document).ready(function()
         {
+            $("#ranked").click(function (e) {
+                $("#rule-type-format-label").text = "Format values that rank in the:";
+                $("#dropdown-update").empty();
+                let html = '<option value="Top">Top</option>';
+                html += '<option value="Bottom">Bottom</option>'
+                $("#dropdown-update").append(html);
+
+                $("#dropdown-updatee").hide();
+                $("#formula-field2").hide();
+
+                $("#percent-checkbox").show();
+            });
+
             $("#dropdown-update").change( function () {
 
                 let operatorArr = jsonData[$(this).val()];
 
                 $("#dropdown-updatee").empty();
 
-                if (operatorArr != null) {
+                if (operatorArr != null && operatorArr != "undefined") {
 
                     $("#dropdown-updatee").show();
-                    $("#formula-field1").show();
 
                     let updateeName = '';
 
@@ -284,12 +311,16 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                             break;
                         }
 
-                    $("#dropdown-updatee").attr("name", updateeName);
-
+                    ($("#dropdown-updatee").attr("name", updateeName));
                     operatorArr.forEach((element) => {
                         let html = "";
 
-                        if (element == @Html.Raw(Model.DropCFSting)) {
+                        var val = $(this).val();
+                        if (val == 'Between' || val == 'Not_Between') { 
+                            $("#formula-field2").show();
+                        }
+
+                        if (element == dropDownString) {
                             html = '<option value=' + element + ' selected= "selected">' + element + '</option>';
                         }
                         else 
@@ -298,6 +329,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                         }
                         $("#dropdown-updatee").append(html);
                     });
+                    $("#dropdown-updatee").change();
                 }
                 else {
                     $("#dropdown-updatee").hide();
@@ -307,6 +339,8 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
             })
 
             $("#dropdown-updatee").change(function () {
+
+                $("#formula-field1").show();
 
                 if ($(this).val() == 'Between' || $(this).val() == 'Not_Between') { 
                 $("#formula-field2").show();
@@ -318,7 +352,6 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
             })
 
             $("#dropdown-update").change();
-            $("#dropdown-updatee").change();
         })
     });
 </script>

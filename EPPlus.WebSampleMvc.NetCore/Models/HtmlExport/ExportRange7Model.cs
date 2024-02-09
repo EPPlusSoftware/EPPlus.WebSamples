@@ -11,6 +11,8 @@ using OfficeOpenXml.ConditionalFormatting.Contracts;
 using OfficeOpenXml.Utils.Extensions;
 using EPPlus.WebSampleMvc.NetCore.HelperClasses;
 using System.Text.Json;
+using OfficeOpenXml.Style;
+using System.Globalization;
 
 
 
@@ -75,11 +77,22 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 
                 ws.Cells["A1:A11"].Formula = "ROW()-5";
                 ws.Cells["B1:B11"].Formula = "\"Row number \" & ROW()";
+                ws.Cells["C1:C11"].Formula = "TODAY() -2 + ROW()";
+                ws.Cells["D1"].Formula = "TODAY() -6";
+                ws.Cells["D2"].Formula = "TODAY()";
+                ws.Cells["D3"].Formula = "TODAY() + 7";
+                ws.Cells["D5"].Formula = "TODAY() -31";
+                ws.Cells["D6"].Formula = "TODAY()";
+                ws.Cells["D7"].Formula = "TODAY() + 31";
+                ws.Cells["E1:E5"].Formula = "E10-E11+NULL";
 
-                ws.Cells["A1:D11"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                ws.Cells["A1:D11"].Style.Fill.BackgroundColor.SetColor(Color.AliceBlue);
 
-                var cf = GetCFCellContains(ws.Cells["A1:B11"].ConditionalFormatting);
+                ws.Cells["C1:D11"].Style.Numberformat.Format = "mm-dd-yy";
+
+                ws.Cells["A1:E11"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                ws.Cells["A1:E11"].Style.Fill.BackgroundColor.SetColor(Color.AliceBlue);
+
+                var cf = GetCFCellContains(ws.Cells["A1:E11"].ConditionalFormatting);
 
                // var cf = ws.Cells["A1:A11"].ConditionalFormatting.AddBetween();
 
@@ -92,7 +105,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                     cf.Formula2 = Formula2 == null ? "" : Formula2;
                 }
 
-                var exporter = ws.Cells["A1:D11"].CreateHtmlExporter();
+                var exporter = ws.Cells["A1:E11"].CreateHtmlExporter();
 
                 var settings = exporter.Settings;
                 settings.Pictures.Include = ePictureInclude.Include;
@@ -259,7 +272,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 case CellContains.Errors:
                 case CellContains.No_Errors:
                 default:
-                    return null;
+                    return JsonSerializer.Serialize("");
             }
         }
 
