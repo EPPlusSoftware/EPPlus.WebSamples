@@ -1,4 +1,6 @@
-﻿using EPPlus.WebSampleMvc.NetCore.Models.HtmlExport;
+﻿using EPPlus.WebSampleMvc.NetCore.HelperClasses;
+using EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting;
+using EPPlus.WebSampleMvc.NetCore.Models.HtmlExport;
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
@@ -98,11 +100,11 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
         {
             var model = new ExportRange7Model
             {
-                DropOption = CellContains.Cell_Value,
-                DropCF = CellValueCondition.Between,
+                CurrentRuleType = CFRuleType.CellContains,
+                CurrentRuleTypeStr = "CellContains",
                 Formula1 = "3",
                 Formula2 = "-3",
-                AppliedColor = KnownColor.Goldenrod
+                Settings = new FormatSettings(CFColor.Blue),
             };
             model.SetupSampleData();
             return View(model);

@@ -64,12 +64,10 @@
                 <label>Select a Rule Type:</label>
                 <div class="col-sm-12 col-md-6">
                     <div style="border: 1px solid black;">
-                    <button class="plain" id="all-cells">>Format all cells based on their values</button>
-                    <button class="plain" id="only-contain">>Format only cells that contain</button>
-                    <button class="plain" id="ranked">>Format only top or bottom ranked values</button>
-                    <button class="plain" id="average">>Format only values that are above or below average</button>
-                    <button class="plain" id="unique">>Format only unique or duplicate values</button>
-                    <button class="plain" id="formula">>Use a formula to determine which cells to format</button>
+                        @foreach (var item in Model.CFRules)
+                        {
+                            <button class="plain" id=@item.FormatType.ToString()>>@item.ListOptionText</button>
+                        }
                     </div>
                 </div>
                 <div class="row">
@@ -77,28 +75,26 @@
                         <label>Edit The Rule Description</label>
                     </div>
                 </div>
-                <label style="text-align: center" id="rule-type-format-label">Format Only Cells With:</label>
+                <label style="text-align: center" id="rule-type-format-label">Format only cells with:</label>
                 <div class="row" style="justify-content: left; margin:auto; flex: 1;">
                     <div class="col-sm-12 col-md-6">
                         <div class="form-group" style= "display: flex; flex-direction: row; align-items: center;">
-                            <select class="form-control" id="dropdown-update" name= "DropOption">
+                            <select class="form-control" id="format-style" name= "selectedEnums[0]">
                                 @foreach (var item in Model.GetEnumValues())
                                 {
-                                    if(item.Equals(Model.DropOption))
-                                    {
-                                        <option value="@item" selected="selected">@item</option>
-                                    }
-                                    else
-                                    {
-                                       <option value="@item">@item</option>   
-                                    }
+                                    <option value="@item">@item</option>   
                                 }
                             </select>
-                            <select class="form-control"  id="dropdown-updatee" name= "valueCondition" style="display: none;">
+                            <select class="form-control"  id="dropdown-dependent" name= "selectedEnums[1]">
+                                @foreach (var item in Model.GetEnumValuesDependent())
+                                {
+                                    <option value="@item">@item</option>
+                                }
                             </select>
-                            <input class="form-control" value= "@Model.Formula1" type="text" id="formula-field1" name = "Formula1" style="display: none;">
-                            <input class="form-control" value= "@Model.Formula2" type="text" id="formula-field2" name = "Formula2" style="display: none;">
-                            <input type="checkbox" id="percent-checkbox" name="% of the selected range" style="display: none;" />
+                            <input class="form-control" value= "@Model.Formula1" type="text" id="formula-field1" name = "Formula1">
+                             <label id="content-label">and</label>
+                            <input class="form-control" value= "@Model.Formula2" type="text" id="formula-field2" name = "Formula2">
+                            <input type="checkbox" id="percent-checkbox" style="display: none;" />
                         </div>
                     </div>
                 </div>
@@ -108,14 +104,7 @@
                     <select class="form-control" id="dropdown-color" name="AppliedColor">
                         @foreach (var item in Model.GetColValues())
                         {
-                            if(item.Equals(Model.AppliedColor))
-                            {
-                                <option value="@item" selected="selected">@item</option>
-                            }
-                            else
-                            {
-                                <option value="@item">@item</option>   
-                            }
+                            <option value="@item">@item</option>   
                         }
                     </select>
                 </div>
@@ -135,51 +124,7 @@
 <div class="row csharp" style="display:none">
     <div class="col">
         <pre>
-        <code class="language-csharp hljs">
-using OfficeOpenXml;
-using OfficeOpenXml.Export.HtmlExport;
-using System;
-using System.Drawing;
-using System.IO;
-
-namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
-{
-    public class ExportRange7Model
-    {
-        void SetupSampleData()
-        {
-            using (var package = new ExcelPackage(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"data\\SwedishGeography.xlsx")))
-            {
-                var ws = package.Workbook.Worksheets.Add("CF_ws");
-
-                ws.Cells["A1:A11"].Formula = "ROW()-5";
-
-                var cfBetween = ws.Cells["A1:A11"].ConditionalFormatting.AddBetween();
-
-                cfBetween.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                cfBetween.Style.Fill.BackgroundColor.Color = Color.PaleVioletRed;
-
-                cfBetween.Formula = "A1 > -4";
-                cfBetween.Formula2 = "A1 < 4";
-
-                var exporter = package.Workbook.CreateHtmlExporter(ws.Cells["A1:D11"]);
-
-                //exporter.Settings.Minify = false;
-                //// all hyperlinks should open in a new browser window.
-                //exporter.Settings.HyperlinkTarget = "_blank";
-                //// change name of the data-value attribute to data-sort
-                //// to make the dataset sortable in DataTables.js.
-                //exporter.Settings.DataValueAttributeName = "sort";
-                //Css = exporter.GetCssString();
-                //Html1 = exporter.GetHtmlString(0, x =>
-                //{
-                //    x.TableId = "cities-table";
-                //    x.Accessibility.TableSettings.AriaLabel = "Largest cities in Sweden";
-                //});
-            }
-        }
-    }
-}
+            <code class="language-csharp hljs">
             </code>
         </pre>
     </div>
@@ -209,149 +154,102 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
     </div>
 </div>
 <script type="text/javascript">
-    document.addEventListener("DOMContentLoaded", function () {
-        jQuery(".csharp").hide();
-        jQuery(".html").hide();
-        jQuery(".css").hide();
-        hljs.highlightAll();
-        jQuery("#tab-csharp").click(function (e) {
-            e.preventDefault();
-            jQuery(".demo").hide();
-            jQuery(".csharp").show();
-            jQuery(".css").hide();
-            jQuery(".html").hide();
-            jQuery("#tab-demo").removeClass("active");
-            jQuery("#tab-csharp").addClass("active");
-            jQuery("#tab-html").removeClass("active");
-            jQuery("#tab-css").removeClass("active");
-        });
-        jQuery("#tab-demo").click(function (e) {
-            e.preventDefault();
-            jQuery(".demo").show();
-            jQuery(".csharp").hide();
-            jQuery(".css").hide();
-            jQuery(".html").hide();
-            jQuery("#tab-demo").addClass("active");
-            jQuery("#tab-csharp").removeClass("active");
-            jQuery("#tab-css").removeClass("active");
-            jQuery("#tab-html").removeClass("active");
-        });
-        jQuery("#tab-css").click(function (e) {
-            e.preventDefault();
-            jQuery(".demo").hide();
-            jQuery(".csharp").hide();
-            jQuery(".css").show();
-            jQuery(".html").hide();
-            jQuery("#tab-demo").removeClass("active");
-            jQuery("#tab-csharp").removeClass("active");
-            jQuery("#tab-css").addClass("active");
-            jQuery("#tab-html").removeClass("active");
-        });
-        jQuery("#tab-html").click(function (e) {
-            e.preventDefault();
-            jQuery(".demo").hide();
-            jQuery(".csharp").hide();
-            jQuery(".html").show();
-            jQuery(".css").hide();
-            jQuery("#tab-demo").removeClass("active");
-            jQuery("#tab-csharp").removeClass("active");
-            jQuery("#tab-css").removeClass("active");
-            jQuery("#tab-html").addClass("active");
-        });
+     document.addEventListener("DOMContentLoaded", function () {
+
         jQuery(".plain").click(function (e) {
-            e.preventDefault();
+                e.preventDefault();
         });
-        // jQuery("#btn-submit-form").click(function (e) {
-        //   e.preventDefault();
-        //   jQuery("#form42").submit();
-        // });
+        jQuery("#btn-submit-form").click(function (e) {
+            e.preventDefault();
+            jQuery("#form42").submit();
+        });
 
-        var jsonData = @Html.Raw(Model.JsonData);
-        var dropDownString = @Html.Raw(Model.DropCFSting);
+        //var jsonData = JSON.parse('@Html.Raw(Model.JsonData)');
+        var jsonData = JSON.parse('@Html.Raw(Model.JsonData)');
 
-        $(document).ready(function()
-        {
-            $("#ranked").click(function (e) {
-                $("#rule-type-format-label").text = "Format values that rank in the:";
-                $("#dropdown-update").empty();
-                let html = '<option value="Top">Top</option>';
-                html += '<option value="Bottom">Bottom</option>'
-                $("#dropdown-update").append(html);
+        var CellContains = jsonData[0];
+        var Ranked = jsonData[1];
 
-                $("#dropdown-updatee").hide();
-                $("#formula-field2").hide();
+        var ActiveRule = CellContains;
 
-                $("#percent-checkbox").show();
+        const UpdateFormatStyle = function () {
+            $("#format-style").empty();
+
+            $("#content-label").text(ActiveRule.ContentLabel);
+
+            let keys = Object.keys(ActiveRule.Collection.Dict);
+
+            keys.forEach((element) => {
+                let html = '<option value=' + element + '>' + element + '</option>';
+                $("#format-style").append(html);
             });
 
-            $("#dropdown-update").change( function () {
+            $("#format-style").change();
+        }
 
-                let operatorArr = jsonData[$(this).val()];
+        $("#AllCells").click(function (e) {
+        });
+        $("#CellContains").click(function (e) {
+            $("#debug-type-node").text = "CellContains";
+            ActiveRule = CellContains;
 
-                $("#dropdown-updatee").empty();
+            $("percent-checkbox").hide();
 
-                if (operatorArr != null && operatorArr != "undefined") {
+            UpdateFormatStyle();
+        });
+        $("#Ranked").click(function (e) {
+            $("#debug-type-node").text = "Ranked";
+            ActiveRule = Ranked;
 
-                    $("#dropdown-updatee").show();
+            alert(JSON.stringify(ActiveRule));
 
-                    let updateeName = '';
+            $("#percent-checkbox").show();
+            $("#formula-field2").hide();
+                
+            UpdateFormatStyle();
+            //alert(jsonData);
+        });
+        $("#Average").click(function (e) {
+        });
+        $("#UniqueDuplicates").click(function (e) {
+        });
+        $("#CustomExpression").click(function (e) {
+        });
 
-                    switch ($(this).val()) {
-                        case "Cell_Value":
-                            updateeName = "valueCondition";
-                            break;
-                        case "Specific_Text":
-                            updateeName = "textCondition";
-                            break;
-                        case "Dates_Occuring":
-                            updateeName = "dateCondition";
-                            break;
-                          default:
-                            updateeName = "valueCondition";
-                            break;
-                        }
+        $("#format-style").change( function () {
 
-                    ($("#dropdown-updatee").attr("name", updateeName));
-                    operatorArr.forEach((element) => {
-                        let html = "";
+            let dropListOptions = ActiveRule.Collection.Dict[$(this).val()];
 
-                        var val = $(this).val();
-                        if (val == 'Between' || val == 'Not_Between') { 
-                            $("#formula-field2").show();
-                        }
+            $("#dropdown-dependent").empty();
 
-                        if (element == dropDownString) {
-                            html = '<option value=' + element + ' selected= "selected">' + element + '</option>';
-                        }
-                        else 
-                        { 
-                            html = '<option value=' + element + '>' + element + '</option>';
-                        }
-                        $("#dropdown-updatee").append(html);
-                    });
-                    $("#dropdown-updatee").change();
-                }
-                else {
-                    $("#dropdown-updatee").hide();
-                    $("#formula-field1").hide();
-                    $("#formula-field2").hide();
-                }
-            })
+            alert(dropListOptions);
 
-            $("#dropdown-updatee").change(function () {
+            if (dropListOptions != null && dropListOptions != undefined && dropListOptions != "") {
+                $("#dropdown-dependent").show();
 
-                $("#formula-field1").show();
+                dropListOptions.forEach((element) => {
+                    let html = '<option value=' + element + '>' + element + '</option>';
+                    $("#dropdown-dependent").append(html);
+                });
+                $("#dropdown-dependent").change();
+            }
+            else {
+                $("#dropdown-dependent").hide();
+            }
+        });
 
-                if ($(this).val() == 'Between' || $(this).val() == 'Not_Between') { 
+        $("#dropdown-dependent").change(function () {
+
+            $("#formula-field1").show();
+
+            if ($(this).val() == 'Between' || $(this).val() == 'Not_Between') {
                 $("#formula-field2").show();
-                }
-                else
-                {
-                    $("#formula-field2").hide();
-                }
-            })
-
-            $("#dropdown-update").change();
-        })
+                $("#content-label").show();
+            }
+            else {
+                $("#formula-field2").hide();
+                $("#content-label").hide();
+            }
+        });
     });
 </script>
