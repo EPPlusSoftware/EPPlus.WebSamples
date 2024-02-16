@@ -92,9 +92,10 @@
                                 }
                             </select>
                             <input class="form-control" value= "@Model.Formula1" type="text" id="formula-field1" name = "Formula1">
-                             <label id="content-label">and</label>
+                            <label id="content-label">and</label>
                             <input class="form-control" value= "@Model.Formula2" type="text" id="formula-field2" name = "Formula2">
-                            <input type="checkbox" id="percent-checkbox" style="display: none;" />
+                            <input type="checkbox" id="percent-checkbox" style="display: none;" name="Checkbox" value="false" onchange="this.value=this.checked">
+                            <input type="text" id="debug-type-node" name="CurrentRuleTypeStr" value="CellContains" style="display: none;">
                         </div>
                     </div>
                 </div>
@@ -163,6 +164,10 @@
             e.preventDefault();
             jQuery("#form42").submit();
         });
+         // jQuery("#debug-type-node").change(function (e) {
+         //     if($(this).is(":checked"))
+         //     $(this).attr("checked",$(this).is(":checked"))
+         // });
 
         //var jsonData = JSON.parse('@Html.Raw(Model.JsonData)');
         var jsonData = JSON.parse('@Html.Raw(Model.JsonData)');
@@ -170,7 +175,7 @@
         var CellContains = jsonData[0];
         var Ranked = jsonData[1];
 
-        var ActiveRule = CellContains;
+        var ActiveRule = jsonData[0];
 
         const UpdateFormatStyle = function () {
             $("#format-style").empty();
@@ -190,7 +195,7 @@
         $("#AllCells").click(function (e) {
         });
         $("#CellContains").click(function (e) {
-            $("#debug-type-node").text = "CellContains";
+            $("#debug-type-node").attr("value", "CellContains");
             ActiveRule = CellContains;
 
             $("percent-checkbox").hide();
@@ -198,16 +203,13 @@
             UpdateFormatStyle();
         });
         $("#Ranked").click(function (e) {
-            $("#debug-type-node").text = "Ranked";
+            $("#debug-type-node").attr("value", "Ranked");
             ActiveRule = Ranked;
-
-            alert(JSON.stringify(ActiveRule));
 
             $("#percent-checkbox").show();
             $("#formula-field2").hide();
                 
             UpdateFormatStyle();
-            //alert(jsonData);
         });
         $("#Average").click(function (e) {
         });
@@ -221,8 +223,6 @@
             let dropListOptions = ActiveRule.Collection.Dict[$(this).val()];
 
             $("#dropdown-dependent").empty();
-
-            alert(dropListOptions);
 
             if (dropListOptions != null && dropListOptions != undefined && dropListOptions != "") {
                 $("#dropdown-dependent").show();

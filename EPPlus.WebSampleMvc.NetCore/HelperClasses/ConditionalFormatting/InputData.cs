@@ -11,7 +11,7 @@
 
         public InputData(string[]? selectedEnums = null, string[]? formulas = null, FormatSettings? settings = null, bool? checkbox = null)
         {
-            CheckBox = null;
+            CheckBox = checkbox;
             SelectedEnums = selectedEnums;
             Formulas = formulas == null ? new string[1] { "" } : formulas;
             Settings = settings == null ?
