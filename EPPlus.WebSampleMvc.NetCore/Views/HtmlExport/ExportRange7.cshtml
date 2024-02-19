@@ -212,6 +212,9 @@
             ActiveRule = Ranked;
 
             $("#percent-checkbox").show();
+            let checkBoxResult = '@(Model.Checkbox != null ? Model.Checkbox : false)';
+            $("#percent-checkbox").prop('checked', checkBoxResult == 'True');
+
             $("#formula-field2").hide();
                 
             UpdateFormatStyle();
