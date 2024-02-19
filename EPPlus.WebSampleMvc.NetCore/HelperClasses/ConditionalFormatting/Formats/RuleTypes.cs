@@ -9,6 +9,8 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
         public List<IExcelConditionalFormattingHTMLRuleGroup> Types;
 
         public IExcelConditionalFormattingHTMLRuleGroup ActiveRule;
+
+        public int ActiveIndex = 0;
         //Dictionary<CFRuleType, IExcelConditionalFormattingHTMLRuleGroup?> dict = new Dictionary<CFRuleType, IExcelConditionalFormattingHTMLRuleGroup?>()
         //{
         //    { CFRuleType.CellContains, null},
@@ -28,26 +30,33 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
         {
             Types = new List<IExcelConditionalFormattingHTMLRuleGroup>();
             var input = new InputData(selectedEnums, formulas, settings, checkbox);
+            //int inListOrder = -1;
 
             switch (ruleType)
             {
-                case CFRuleType.CellContains:
-                    Types.Add(new CellContainsFormat(input));
-                    break;
                 case CFRuleType.AllCells:
+                    ActiveIndex = 0;
+                    break;
+                case CFRuleType.CellContains:
+                    ActiveRule = new CellContainsFormat(input);
+                    ActiveIndex = 0;
                     break;
                 case CFRuleType.Ranked:
-                    Types.Add(new RankedFormat(input));
+                    ActiveRule = new RankedFormat(input);
+                    ActiveIndex = 1;
                     break;
                 case CFRuleType.Average:
+                    ActiveIndex = 3;
                     break;
                 case CFRuleType.UniqueDuplicates:
+                    ActiveIndex = 4;
                     break;
                 case CFRuleType.CustomExpression:
+                    ActiveIndex = 5;
                     break;
             }
 
-            ActiveRule = Types[0];
+            //ActiveRule = Types[0];
 
             foreach (var item in Enum.GetValues(typeof(CFRuleType)))
             {
@@ -56,6 +65,8 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
                     InitializeTypes((CFRuleType)item);
                 }
             }
+
+            Types.Insert(ActiveIndex, ActiveRule);
         }
 
         void InitializeTypes(CFRuleType ruleType)

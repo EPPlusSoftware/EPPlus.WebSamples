@@ -175,7 +175,7 @@
         var CellContains = jsonData[0];
         var Ranked = jsonData[1];
 
-        var ActiveRule = jsonData[0];
+        var ActiveRule = jsonData[@Model.ActiveIndex];
 
         const UpdateFormatStyle = function () {
             $("#format-style").empty();
@@ -185,7 +185,12 @@
             let keys = Object.keys(ActiveRule.Collection.Dict);
 
             keys.forEach((element) => {
-                let html = '<option value=' + element + '>' + element + '</option>';
+                let selected = "";
+                if (element == ActiveRule.Collection.SelectedKey) { 
+                    selected = ' selected= "selected"';
+                }
+
+                let html = '<option value=' + element + selected + '>' + element + '</option>';
                 $("#format-style").append(html);
             });
 
@@ -228,7 +233,12 @@
                 $("#dropdown-dependent").show();
 
                 dropListOptions.forEach((element) => {
-                    let html = '<option value=' + element + '>' + element + '</option>';
+                    let selected = "";
+                    if (element == ActiveRule.Collection.SelectedValue) { 
+                        selected = ' selected= "selected"';
+                    }
+
+                    let html = '<option value=' + element + selected + '>' + element + '</option>';
                     $("#dropdown-dependent").append(html);
                 });
                 $("#dropdown-dependent").change();
@@ -251,5 +261,7 @@
                 $("#content-label").hide();
             }
         });
+
+        $('#@Model.CurrentRuleTypeStr').click();
     });
 </script>

@@ -20,7 +20,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
         public override string[] Formulas { get; set; }
         public override FormatSettings Settings { get; set; }
 
-        public override bool? CheckBox { get; } = false;
+        public override bool? CheckBox { get; protected set; } = false;
 
         public RankedFormat() : this(new InputData())
         {
@@ -49,6 +49,11 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
 
         public override ExcelConditionalFormattingRule GetCFForRange(IRangeConditionalFormatting targetRange)
         {
+            if(CheckBox == null)
+            {
+                CheckBox = false;
+            }
+
             switch (Collection.SelectedKey)
             {
                 case "Top":

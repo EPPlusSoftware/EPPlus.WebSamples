@@ -88,6 +88,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 CurrentRuleType = (CFRuleType)Enum.Parse(typeof(CFRuleType), CurrentRuleTypeStr);
 
                 var types = new RuleTypes(CurrentRuleType, SelectedEnums, Formulas, Settings, Checkbox);
+                ActiveIndex = types.ActiveIndex;
                 CFRules = types.Types;
 
                 var options = new JsonSerializerOptions()

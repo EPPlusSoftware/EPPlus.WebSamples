@@ -18,7 +18,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
 
         abstract public string ContentLabel { get; }
 
-        abstract public bool? CheckBox { get; }
+        abstract public bool? CheckBox { get; protected set; }
         abstract public ExcelConditionalFormattingRule GetCFForRange(IRangeConditionalFormatting targetRange);
     }
 }
