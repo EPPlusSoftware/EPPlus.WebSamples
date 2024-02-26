@@ -2,6 +2,7 @@
 using System.Text.Json;
 using OfficeOpenXml.ConditionalFormatting;
 using System;
+using System.Collections.Generic;
 
 namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Formats
 {
@@ -113,6 +114,52 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
                     throw new NotImplementedException();
             }
         }
+
+        public Dictionary<string, int> lookup = new Dictionary<string, int>()
+        {
+            {"Between", 2},
+            {"NotBetween", 2},
+            {"Equal_To", 1},
+            {"Not_Equal_To", 1}
+        };
+
+        public override int ActiveFormulaFields(string selectedValue)
+        {
+            switch(selectedValue)
+            {
+                case "Between":
+                case "Not_Between":
+                    return 2;
+                case "Equal_To":
+                case "Not_Equal_To":
+                case "Greater_Than":
+                case "Less_Than":
+                case "Greater_Than_Or_Equal_To":
+                case "Less_Than_Or_Equal_To":
+                case "Containing":
+                case "Not_Containing":
+                case "Beginning_With":
+                case "Ending_With":
+                    return 1;
+                case "Yesterday":
+                case "Today":
+                case "Tomorrow":
+                case "Last_7_Days":
+                case "Last_Week":
+                case "This_Week":
+                case "Next_Week":
+                case "Last_Month":
+                case "This_Month":
+                case "Next_Month":
+                case "Blanks":
+                case "No_Blanks":
+                case "Errors":
+                case "No_Errors":
+                    return 0;
+                default: return 0;
+            }
+        }
+
 
         //public CellContainsFormat(CFColor color, string[] formulas, FormatSettings settings)
         //{

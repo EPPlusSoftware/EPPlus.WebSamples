@@ -20,5 +20,10 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
 
         abstract public bool? CheckBox { get; protected set; }
         abstract public ExcelConditionalFormattingRule GetCFForRange(IRangeConditionalFormatting targetRange);
+
+        virtual public int ActiveFormulaFields(string selectedValue)
+        {
+            return 0;
+        }
     }
 }

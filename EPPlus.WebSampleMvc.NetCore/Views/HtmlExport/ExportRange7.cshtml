@@ -102,7 +102,7 @@
                 <div class="form-group">
                     <label>Format</label>
                     <label>Fill Colors</label>
-                    <select class="form-control" id="dropdown-color" name="AppliedColor">
+                    <select class="form-control" id="dropdown-color" name="ActiveColor">
                         @foreach (var item in Model.GetColValues())
                         {
                             <option value="@item">@item</option>   
@@ -177,6 +177,20 @@
 
         var ActiveRule = jsonData[@Model.ActiveIndex];
 
+         let test = Array.from($("#dropdown-color"));
+
+         var x = document.getElementById("dropdown-color");
+
+         for (i = 0; i < x.length; i++) {
+             if(x.options[i].text == '@Model.ActiveColor')
+             {
+                 alert(x.options[i].text);
+                 $('#dropdown-color').append('<option value=' + x.options[i].text + ' selected= "selected"' + '>' + x.options[i].text + '</option>');
+                 x.options[i].remove();
+                 break;
+             }
+         }
+
         const UpdateFormatStyle = function () {
             $("#format-style").empty();
 
@@ -204,12 +218,15 @@
             ActiveRule = CellContains;
 
             $("percent-checkbox").hide();
+            $("#formula-field1").show();
 
             UpdateFormatStyle();
         });
         $("#Ranked").click(function (e) {
             $("#debug-type-node").attr("value", "Ranked");
             ActiveRule = Ranked;
+
+            $("#formula-field1").show();
 
             $("#percent-checkbox").show();
             let checkBoxResult = '@(Model.Checkbox != null ? Model.Checkbox : false)';
@@ -252,8 +269,6 @@
         });
 
         $("#dropdown-dependent").change(function () {
-
-            $("#formula-field1").show();
 
             if ($(this).val() == 'Between' || $(this).val() == 'Not_Between') {
                 $("#formula-field2").show();

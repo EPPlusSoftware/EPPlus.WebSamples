@@ -95,9 +95,10 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 {
                     IncludeFields = true,
                 };
+                types.ActiveRule.Settings.SetColor(ActiveColor);
                 JsonData = JsonSerializer.Serialize(CFRules, options);
 
-                var ws = package.Workbook.Worksheets.Add("CF_ws");
+               var ws = package.Workbook.Worksheets.Add("CF_ws");
 
                 ws.Cells["A1:A11"].Formula = "ROW()-5";
                 ws.Cells["B1:B11"].Formula = "\"Row number \" & ROW()";
@@ -195,6 +196,8 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
         public string Css { get; set; }
 
         public string Html { get; set; }
+
+        public CFColor ActiveColor { get; set; }
 
         public Array GetColValues()
         {

@@ -72,5 +72,10 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
                 default: throw new InvalidOperationException();
             }
         }
+
+        public override int ActiveFormulaFields(string selectedValue)
+        {
+            return 1;
+        }
     }
 }
