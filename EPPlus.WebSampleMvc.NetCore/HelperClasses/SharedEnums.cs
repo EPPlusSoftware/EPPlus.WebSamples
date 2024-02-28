@@ -20,6 +20,26 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses
         Bottom
     }
 
+    public enum Averages
+    {
+        Above,
+        Below,
+        Equal_Or_Above,
+        Equal_Or_Below,
+        One_Std_Dev_Above,
+        One_Std_Dev_Below,
+        Two_Std_Dev_Above,
+        Two_Std_Dev_Below,
+        Three_Std_Dev_Above,
+        Three_Std_Dev_Below,
+    }
+
+    public enum UniqueDuplicate
+    {
+        Duplicate,
+        Unique
+    }
+
     public enum CellValueCondition
     {
         Between,

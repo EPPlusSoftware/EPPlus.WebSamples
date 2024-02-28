@@ -46,13 +46,16 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
                     ActiveIndex = 1;
                     break;
                 case CFRuleType.Average:
-                    ActiveIndex = 3;
+                    ActiveRule = new AverageFormat(input);
+                    ActiveIndex = 2;
                     break;
                 case CFRuleType.UniqueDuplicates:
-                    ActiveIndex = 4;
+                    ActiveRule = new UniqueDuplicateFormat(input);
+                    ActiveIndex = 3;
                     break;
                 case CFRuleType.CustomExpression:
-                    ActiveIndex = 5;
+                    ActiveRule = new ExpressionFormat(input);
+                    ActiveIndex = 4;
                     break;
             }
 
@@ -73,23 +76,23 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
         {
             switch (ruleType)
             {
-                case CFRuleType.CellContains:
-                    Types.Add(new CellContainsFormat());
-                    break;
                 case CFRuleType.AllCells:
                     //Types.Add(new CellContainsFormat());
+                    break;
+                case CFRuleType.CellContains:
+                    Types.Add(new CellContainsFormat());
                     break;
                 case CFRuleType.Ranked:
                     Types.Add(new RankedFormat());
                     break;
                 case CFRuleType.Average:
-                    //Types.Add(new CellContainsFormat());
+                    Types.Add(new AverageFormat());
                     break;
                 case CFRuleType.UniqueDuplicates:
-                    //Types.Add(new CellContainsFormat());
+                    Types.Add(new UniqueDuplicateFormat());
                     break;
                 case CFRuleType.CustomExpression:
-                    //Types.Add(new CellContainsFormat());
+                    Types.Add(new ExpressionFormat());
                     break;
             }
         }

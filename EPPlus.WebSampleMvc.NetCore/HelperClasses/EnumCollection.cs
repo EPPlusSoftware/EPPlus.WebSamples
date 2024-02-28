@@ -18,7 +18,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses
             for (int i = 0; i < arr.Length; i++)
             {
                 string[] names = new string[0];
-                if (i < enums.Length - 1)
+                if (i < enums.Length)
                 {
                     names = Enum.GetNames(enums[i]);
                 }

@@ -105,6 +105,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
                 Formula1 = "3",
                 Formula2 = "-3",
                 Settings = new FormatSettings(CFColor.Blue),
+                Checkbox = null,
             };
             model.SetupSampleData();
             return View(model);

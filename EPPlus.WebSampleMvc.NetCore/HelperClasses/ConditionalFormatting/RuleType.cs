@@ -5,7 +5,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting
 {
     public class RuleType
     {
-        Dictionary<Enum, FormatStyle> FormatStyles;
+        //Dictionary<Enum, FormatStyle> FormatStyles;
 
         //Enum BaseDropdown { get; set; }
 

@@ -92,11 +92,16 @@
                                 }
                             </select>
                             <input class="form-control" value= "@Model.Formula1" type="text" id="formula-field1" name = "Formula1">
-                            <label id="content-label">and</label>
+                            <input type="checkbox" id="percent-checkbox" style="display: none; margin:5px;" name="Checkbox" onchange="this.value=this.checked">
+                            <label style="margin:5px;" id="content-label">and</label>
                             <input class="form-control" value= "@Model.Formula2" type="text" id="formula-field2" name = "Formula2">
-                            <input type="checkbox" id="percent-checkbox" style="display: none;" name="Checkbox" value="false" onchange="this.value=this.checked">
                             <input type="text" id="debug-type-node" name="CurrentRuleTypeStr" value="CellContains" style="display: none;">
                         </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6" style="display: none" id="formula-error">
+                        <text class="form-control" style="background-color: darkred; color: white;">
+                            Faulty Formula. Error: @Model.ErrorMessage
+                        </text>
                     </div>
                 </div>
                 <div class="form-group">
@@ -157,6 +162,14 @@
 <script type="text/javascript">
      document.addEventListener("DOMContentLoaded", function () {
 
+        $("#form42").on("keypress", function (event) { 
+            let key = event.keyCode || event.which; 
+            if (key === 13) { 
+                event.preventDefault(); 
+                return false; 
+            } 
+        }); 
+        
         jQuery(".plain").click(function (e) {
                 e.preventDefault();
         });
@@ -164,16 +177,14 @@
             e.preventDefault();
             jQuery("#form42").submit();
         });
-         // jQuery("#debug-type-node").change(function (e) {
-         //     if($(this).is(":checked"))
-         //     $(this).attr("checked",$(this).is(":checked"))
-         // });
 
-        //var jsonData = JSON.parse('@Html.Raw(Model.JsonData)');
         var jsonData = JSON.parse('@Html.Raw(Model.JsonData)');
 
         var CellContains = jsonData[0];
         var Ranked = jsonData[1];
+        var Average = jsonData[2];
+        var UniqueDuplicates = jsonData[3];
+        var CustomExpression = jsonData[4];
 
         var ActiveRule = jsonData[@Model.ActiveIndex];
 
@@ -184,31 +195,47 @@
          for (i = 0; i < x.length; i++) {
              if(x.options[i].text == '@Model.ActiveColor')
              {
-                 alert(x.options[i].text);
                  $('#dropdown-color').append('<option value=' + x.options[i].text + ' selected= "selected"' + '>' + x.options[i].text + '</option>');
                  x.options[i].remove();
                  break;
              }
          }
 
+         if ("@Model.ErrorMessage" != "") {
+             $("#formula-error").show();
+         }
+         else { 
+             $("#formula-error").hide();
+         }
+
         const UpdateFormatStyle = function () {
             $("#format-style").empty();
 
             $("#content-label").text(ActiveRule.ContentLabel);
+            $("#content-label").show();
 
-            let keys = Object.keys(ActiveRule.Collection.Dict);
+            if (ActiveRule.Collection != null) {
 
-            keys.forEach((element) => {
-                let selected = "";
-                if (element == ActiveRule.Collection.SelectedKey) { 
-                    selected = ' selected= "selected"';
-                }
+                $("#format-style").show();
 
-                let html = '<option value=' + element + selected + '>' + element + '</option>';
-                $("#format-style").append(html);
-            });
+                let keys = Object.keys(ActiveRule.Collection.Dict);
 
-            $("#format-style").change();
+                keys.forEach((element) => {
+                    let selected = "";
+                    if (element == ActiveRule.Collection.SelectedKey) {
+                        selected = ' selected= "selected"';
+                    }
+
+                    let html = '<option value=' + element + selected + '>' + element + '</option>';
+                    $("#format-style").append(html);
+                });
+                $("#format-style").change();
+            }
+            else
+            {
+                $("#format-style").hide();
+                $("#dropdown-dependent").hide();
+            }
         }
 
         $("#AllCells").click(function (e) {
@@ -219,6 +246,7 @@
 
             $("percent-checkbox").hide();
             $("#formula-field1").show();
+            $("#percent-checkbox").hide();
 
             UpdateFormatStyle();
         });
@@ -231,16 +259,41 @@
             $("#percent-checkbox").show();
             let checkBoxResult = '@(Model.Checkbox != null ? Model.Checkbox : false)';
             $("#percent-checkbox").prop('checked', checkBoxResult == 'True');
+            $("#percent-checkbox").change();
 
             $("#formula-field2").hide();
                 
             UpdateFormatStyle();
         });
         $("#Average").click(function (e) {
+            $("#debug-type-node").attr("value", "Average");
+            ActiveRule = Average;
+
+            $("#formula-field1").hide();
+            $("#formula-field2").hide();
+            $("#percent-checkbox").hide();
+                
+            UpdateFormatStyle();
         });
         $("#UniqueDuplicates").click(function (e) {
+            $("#debug-type-node").attr("value", "UniqueDuplicates");
+            ActiveRule = UniqueDuplicates;
+
+            $("#formula-field1").hide();
+            $("#formula-field2").hide();
+            $("#percent-checkbox").hide();
+                
+            UpdateFormatStyle();
         });
         $("#CustomExpression").click(function (e) {
+            $("#debug-type-node").attr("value", "CustomExpression");
+            ActiveRule = CustomExpression;
+
+            $("#formula-field1").show();
+            $("#formula-field2").hide();
+            $("#percent-checkbox").hide();
+            
+            UpdateFormatStyle();
         });
 
         $("#format-style").change( function () {
@@ -248,6 +301,15 @@
             let dropListOptions = ActiveRule.Collection.Dict[$(this).val()];
 
             $("#dropdown-dependent").empty();
+
+            let name = $(this).val();
+
+            if ((ActiveRule == CellContains && ((name == "Cell_Value") || (name == "Specific_Text")))) {
+                $("#formula-field1").show();
+            }
+            else if (ActiveRule == CellContains) {
+                $("#formula-field1").hide();
+            }
 
             if (dropListOptions != null && dropListOptions != undefined && dropListOptions != "") {
                 $("#dropdown-dependent").show();
@@ -264,6 +326,7 @@
                 $("#dropdown-dependent").change();
             }
             else {
+                $("#dropdown-dependent").change();
                 $("#dropdown-dependent").hide();
             }
         });
@@ -276,7 +339,9 @@
             }
             else {
                 $("#formula-field2").hide();
-                $("#content-label").hide();
+                if (ActiveRule == CellContains) {
+                   $("#content-label").hide();
+                }
             }
         });
 

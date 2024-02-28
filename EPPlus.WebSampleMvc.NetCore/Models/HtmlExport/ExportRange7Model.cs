@@ -16,66 +16,14 @@ using System.Globalization;
 using EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting;
 using EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Formats;
 
-
-
 namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 {
-    //public enum CellContains
-    //{
-    //    Cell_Value,
-    //    Specific_Text,
-    //    Dates_Occuring,
-    //    Blanks,
-    //    No_Blanks,
-    //    Errors,
-    //    No_Errors
-    //}
-
-    //public enum CellValueCondition
-    //{
-    //    Between,
-    //    Not_Between,
-    //    Equal_To,
-    //    Not_Equal_To,
-    //    Greater_Than,
-    //    Less_Than,
-    //    Greater_Than_Or_Equal_To,
-    //    Less_Than_Or_Equal_To
-    //}
-
-    //public enum SpecificTextCondition
-    //{
-    //    Containing,
-    //    Not_Containing,
-    //    Beginning_With,
-    //    Ending_With
-    //}
-
-    //public enum DateCondition
-    //{
-    //    Yesterday,
-    //    Today,
-    //    Tomorrow,
-    //    Last_7_Days,
-    //    Last_Week,
-    //    This_Week,
-    //    Next_Week,
-    //    Last_Month,
-    //    This_Month,
-    //    Next_Month
-    //}
-
-
     public class ExportRange7Model
     {
         public void SetupSampleData()
         {
             using (var package = new ExcelPackage())
             {
-                //var collection = new EnumCollection<CellContains>(new Type[] {typeof(CellValueCondition), typeof(SpecificTextCondition), typeof(DateCondition)});
-                //JsonData = JsonSerializer.Serialize(collection.dict);
-
-                //SelectedEnums = new string[] { SelectedKey, SelectedValue };
                 if (Formula1 != null)
                 {
                     Formulas[0] = Formula1;
@@ -109,7 +57,9 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 ws.Cells["D5"].Formula = "TODAY() -31";
                 ws.Cells["D6"].Formula = "TODAY()";
                 ws.Cells["D7"].Formula = "TODAY() + 31";
-                ws.Cells["E1:E5"].Formula = "E10-E11+NULL";
+
+                //Add in to test errors
+                //ws.Cells["E1:E5"].Formula = "E10-E11+NULL";
 
                 ws.Cells["C1:D11"].Style.Numberformat.Format = "mm-dd-yy";
 
@@ -122,24 +72,24 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 cf.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                 cf.Style.Fill.BackgroundColor.Color = types.ActiveRule.Settings.Color;
 
+                if (((int)cf.Type < 10) && ((int)cf.Type > 3))
+                {
+                    if(int.TryParse(Formula1, out int newRank))
+                    {
+                        cf.Rank = (ushort)newRank;
+                    }
+                    else
+                    {
+                        //Faulty rank input becomes 1
+                        cf.Rank = 1;
+                    }
+                }
+
                 cf.Formula = Formula1 == null ? "" : Formula1;
                 if (cf.Type == eExcelConditionalFormattingRuleType.Between || cf.Type == eExcelConditionalFormattingRuleType.NotBetween)
                 {
                     cf.Formula2 = Formula2 == null ? "" : Formula2;
                 }
-
-                // var cf = GetCFCellContains(ws.Cells["A1:E11"].ConditionalFormatting);
-
-                //// var cf = ws.Cells["A1:A11"].ConditionalFormatting.AddBetween();
-
-                // cf.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                // cf.Style.Fill.BackgroundColor.Color = Color.FromKnownColor(AppliedColor);
-
-                // cf.Formula = Formula1 == null ? "" : Formula1;
-                // if (cf.Type == eExcelConditionalFormattingRuleType.Between || cf.Type == eExcelConditionalFormattingRuleType.NotBetween)
-                // {
-                //     cf.Formula2 = Formula2 == null ? "" : Formula2;
-                // }
 
                 var exporter = ws.Cells["A1:E11"].CreateHtmlExporter();
 
@@ -156,12 +106,27 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 // export css and html
                 Css = exporter.GetCssString();
                 Html = exporter.GetHtmlString();
+
+                //try
+                //{
+                //    ws.Calculate();
+
+                //    // export css and html
+                //    Css = exporter.GetCssString();
+                //    Html = exporter.GetHtmlString();
+                //}
+                //catch (Exception e)
+                //{
+                //    ErrorMessage = e.Message;
+                //}
             }
         }
 
         public CFRuleType CurrentRuleType { get; set; } = CFRuleType.CellContains;
 
-        public bool? Checkbox { get; set; } = null;
+        public string ErrorMessage { get; set; } = "";
+
+        public bool? Checkbox { get; set; }
 
         public List<IExcelConditionalFormattingHTMLRuleGroup> CFRules = new List<IExcelConditionalFormattingHTMLRuleGroup>();
 
