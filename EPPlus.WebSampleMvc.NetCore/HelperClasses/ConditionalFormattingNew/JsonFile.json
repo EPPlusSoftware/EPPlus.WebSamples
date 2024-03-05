@@ -1,0 +1,441 @@
+﻿{
+  "Types": [
+    {
+      "ListOptionText": "Format all cells based on their values",
+      "FormatTitle": "Format all cells based on their values",
+      "DropDown": {
+        "Selected": 0,
+        "Names": [ "Two Color Scale", "Three Color Scale", "Data Bar" ],
+        "SelectedName": ""
+      },
+      "Types": {
+        "Two_Color_Scale": {
+          "Minimum": {
+            "CurrentOption": 0,
+            "Value": "",
+            "Color": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 0,
+              "IsKnownColor": false,
+              "IsEmpty": true,
+              "IsNamedColor": false,
+              "IsSystemColor": false,
+              "Name": "0"
+            },
+            "Names": [ "Lowest Value", "Number", "Percent", "Formula", "Percentile" ]
+          },
+          "Maximum": {
+            "CurrentOption": 0,
+            "Value": "",
+            "Color": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 0,
+              "IsKnownColor": false,
+              "IsEmpty": true,
+              "IsNamedColor": false,
+              "IsSystemColor": false,
+              "Name": "0"
+            },
+            "Names": [ "Highest Value", "Number", "Percent", "Formula", "Percentile" ]
+          }
+        },
+        "Three_Color_Scale": {
+          "Minimum": {
+            "CurrentOption": 0,
+            "Value": "",
+            "Color": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 0,
+              "IsKnownColor": false,
+              "IsEmpty": true,
+              "IsNamedColor": false,
+              "IsSystemColor": false,
+              "Name": "0"
+            },
+            "Names": [ "Lowest Value", "Number", "Percent", "Formula", "Percentile" ]
+          },
+          "Maximum": {
+            "CurrentOption": 0,
+            "Value": "",
+            "Color": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 0,
+              "IsKnownColor": false,
+              "IsEmpty": true,
+              "IsNamedColor": false,
+              "IsSystemColor": false,
+              "Name": "0"
+            },
+            "Names": [ "Highest Value", "Number", "Percent", "Formula", "Percentile" ]
+          }
+        },
+        "Data_Bar": {
+          "ShowBarOnly": false,
+          "Minimum": {
+            "Formula": "",
+            "Selected": 0,
+            "Names": [ "Automatic", "Lowest Value", "Number", "Percent", "Formula", "Percentile" ],
+            "SelectedName": ""
+          },
+          "Maximum": {
+            "Formula": "",
+            "Selected": 0,
+            "Names": [ "Automatic", "Lowest Value", "Number", "Percent", "Formula", "Percentile" ],
+            "SelectedName": ""
+          },
+          "PositiveFill": {
+            "ColorProp": {
+              "R": 0,
+              "G": 0,
+              "B": 255,
+              "A": 255,
+              "IsKnownColor": true,
+              "IsEmpty": false,
+              "IsNamedColor": true,
+              "IsSystemColor": false,
+              "Name": "Blue"
+            },
+            "Selected": 0,
+            "Names": [ "Solid Fill", "Gradient Fill" ],
+            "SelectedName": ""
+          },
+          "NegativeFill": {
+            "ColorProp": {
+              "R": 255,
+              "G": 0,
+              "B": 0,
+              "A": 255,
+              "IsKnownColor": true,
+              "IsEmpty": false,
+              "IsNamedColor": true,
+              "IsSystemColor": false,
+              "Name": "Red"
+            },
+            "Selected": 0,
+            "Names": [ "Solid Fill", "Gradient Fill" ],
+            "SelectedName": ""
+          },
+          "PositiveBorderFill": {
+            "ColorProp": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255,
+              "IsKnownColor": true,
+              "IsEmpty": false,
+              "IsNamedColor": true,
+              "IsSystemColor": false,
+              "Name": "Black"
+            },
+            "Selected": 0,
+            "Names": [ "No Border", "Solid Border" ],
+            "SelectedName": ""
+          },
+          "NegativeBorderFill": {
+            "ColorProp": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255,
+              "IsKnownColor": true,
+              "IsEmpty": false,
+              "IsNamedColor": true,
+              "IsSystemColor": false,
+              "Name": "Black"
+            },
+            "Selected": 0,
+            "Names": [ "No Border", "Solid Border" ],
+            "SelectedName": ""
+          },
+          "BarDirection": {
+            "Selected": 0,
+            "Names": [ "Context", "LeftToRight", "RightToLeft" ],
+            "SelectedName": ""
+          },
+          "Axis": {
+            "ColorProp": {
+              "R": 0,
+              "G": 0,
+              "B": 0,
+              "A": 255,
+              "IsKnownColor": true,
+              "IsEmpty": false,
+              "IsNamedColor": true,
+              "IsSystemColor": false,
+              "Name": "Black"
+            },
+            "Selected": 0,
+            "Names": [ "Automatic", "Cell MidPoint", "None" ],
+            "SelectedName": ""
+          }
+        }
+      }
+    },
+    {
+      "AllOptions": {
+        "Cell_Value": {
+          "Between": [ null, null ],
+          "Not_Between": [ null, null ],
+          "Equal_To": [ null ],
+          "Not_Equal_To": [ null ],
+          "Greater_Than": [ null ],
+          "Less_Than": [ null ],
+          "Greater_Than_Or_Equal_To": [ null ],
+          "Less_Than_Or_Equal_To": [ null ]
+        },
+        "Specific_Text": {
+          "Formula": "",
+          "Selected": 0,
+          "Names": [ "Containing", "Not Containing", "Beginning With", "Ending With" ],
+          "SelectedName": ""
+        },
+        "Dates_Occuring": {
+          "Selected": 0,
+          "Names": [ "Yesterday", "Today", "Tomorrow", "Last 7 Days", "Last Week", "This Week", "Next Week", "Last Month", "This Month", "Next Month" ],
+          "SelectedName": ""
+        },
+        "Blanks": [],
+        "No_Blanks": [],
+        "Errors": [],
+        "No_Errors": []
+      }
+    },
+    {
+      "ListOptionText": "Format only values that are above or below average",
+      "FormatTitle": "Format values that are",
+      "ContentLabel": "the average for the selected range",
+      "DropDown": {
+        "Selected": 0,
+        "Names": [ "Above", "Below", "Equal Or Above", "Equal Or Below", "One Std Dev Above", "One Std Dev Below", "Two Std Dev Above", "Two Std Dev Below", "Three Std Dev Above", "Three Std Dev Below" ],
+        "SelectedName": ""
+      }
+    },
+    {
+      "ListOptionText": "Format only values that are above or below average",
+      "FormatTitle": "Format values that are",
+      "ContentLabel": "the average for the selected range",
+      "DropDown": {
+        "Selected": 0,
+        "Names": [ "Above", "Below", "Equal Or Above", "Equal Or Below", "One Std Dev Above", "One Std Dev Below", "Two Std Dev Above", "Two Std Dev Below", "Three Std Dev Above", "Three Std Dev Below" ],
+        "SelectedName": ""
+      }
+    },
+    {
+      "ListOptionText": "Format only unique or duplicate values",
+      "FormatTitle": "Format all",
+      "ContentLabel": "values in the selected range",
+      "dropDown": {
+        "Selected": 0,
+        "Names": [ "Duplicate", "Unique" ],
+        "SelectedName": ""
+      }
+    },
+    {
+      "ListOptionText": "Use a Formula to determine which cells to format",
+      "FormatTitle": "Format values where this formula is true",
+      "ContentLabel": "",
+      "Formula": ""
+    }
+  ],
+  "ActiveRule": {
+    "ListOptionText": "Format all cells based on their values",
+    "FormatTitle": "Format all cells based on their values",
+    "DropDown": {
+      "Selected": 0,
+      "Names": [ "Two Color Scale", "Three Color Scale", "Data Bar" ],
+      "SelectedName": ""
+    },
+    "Types": {
+      "Two_Color_Scale": {
+        "Minimum": {
+          "CurrentOption": 0,
+          "Value": "",
+          "Color": {
+            "R": 0,
+            "G": 0,
+            "B": 0,
+            "A": 0,
+            "IsKnownColor": false,
+            "IsEmpty": true,
+            "IsNamedColor": false,
+            "IsSystemColor": false,
+            "Name": "0"
+          },
+          "Names": [ "Lowest Value", "Number", "Percent", "Formula", "Percentile" ]
+        },
+        "Maximum": {
+          "CurrentOption": 0,
+          "Value": "",
+          "Color": {
+            "R": 0,
+            "G": 0,
+            "B": 0,
+            "A": 0,
+            "IsKnownColor": false,
+            "IsEmpty": true,
+            "IsNamedColor": false,
+            "IsSystemColor": false,
+            "Name": "0"
+          },
+          "Names": [ "Highest Value", "Number", "Percent", "Formula", "Percentile" ]
+        }
+      },
+      "Three_Color_Scale": {
+        "Minimum": {
+          "CurrentOption": 0,
+          "Value": "",
+          "Color": {
+            "R": 0,
+            "G": 0,
+            "B": 0,
+            "A": 0,
+            "IsKnownColor": false,
+            "IsEmpty": true,
+            "IsNamedColor": false,
+            "IsSystemColor": false,
+            "Name": "0"
+          },
+          "Names": [ "Lowest Value", "Number", "Percent", "Formula", "Percentile" ]
+        },
+        "Maximum": {
+          "CurrentOption": 0,
+          "Value": "",
+          "Color": {
+            "R": 0,
+            "G": 0,
+            "B": 0,
+            "A": 0,
+            "IsKnownColor": false,
+            "IsEmpty": true,
+            "IsNamedColor": false,
+            "IsSystemColor": false,
+            "Name": "0"
+          },
+          "Names": [ "Highest Value", "Number", "Percent", "Formula", "Percentile" ]
+        }
+      },
+      "Data_Bar": {
+        "ShowBarOnly": false,
+        "Minimum": {
+          "Formula": "",
+          "Selected": 0,
+          "Names": [ "Automatic", "Lowest Value", "Number", "Percent", "Formula", "Percentile" ],
+          "SelectedName": ""
+        },
+        "Maximum": {
+          "Formula": "",
+          "Selected": 0,
+          "Names": [ "Automatic", "Lowest Value", "Number", "Percent", "Formula", "Percentile" ],
+          "SelectedName": ""
+        },
+        "PositiveFill": {
+          "ColorProp": {
+            "R": 0,
+            "G": 0,
+            "B": 255,
+            "A": 255,
+            "IsKnownColor": true,
+            "IsEmpty": false,
+            "IsNamedColor": true,
+            "IsSystemColor": false,
+            "Name": "Blue"
+          },
+          "Selected": 0,
+          "Names": [ "Solid Fill", "Gradient Fill" ],
+          "SelectedName": ""
+        },
+        "NegativeFill": {
+          "ColorProp": {
+            "R": 255,
+            "G": 0,
+            "B": 0,
+            "A": 255,
+            "IsKnownColor": true,
+            "IsEmpty": false,
+            "IsNamedColor": true,
+            "IsSystemColor": false,
+            "Name": "Red"
+          },
+          "Selected": 0,
+          "Names": [ "Solid Fill", "Gradient Fill" ],
+          "SelectedName": ""
+        },
+        "PositiveBorderFill": {
+          "ColorProp": {
+            "R": 0,
+            "G": 0,
+            "B": 0,
+            "A": 255,
+            "IsKnownColor": true,
+            "IsEmpty": false,
+            "IsNamedColor": true,
+            "IsSystemColor": false,
+            "Name": "Black"
+          },
+          "Selected": 0,
+          "Names": [ "No Border", "Solid Border" ],
+          "SelectedName": ""
+        },
+        "NegativeBorderFill": {
+          "ColorProp": {
+            "R": 0,
+            "G": 0,
+            "B": 0,
+            "A": 255,
+            "IsKnownColor": true,
+            "IsEmpty": false,
+            "IsNamedColor": true,
+            "IsSystemColor": false,
+            "Name": "Black"
+          },
+          "Selected": 0,
+          "Names": [ "No Border", "Solid Border" ],
+          "SelectedName": ""
+        },
+        "BarDirection": {
+          "Selected": 0,
+          "Names": [ "Context", "LeftToRight", "RightToLeft" ],
+          "SelectedName": ""
+        },
+        "Axis": {
+          "ColorProp": {
+            "R": 0,
+            "G": 0,
+            "B": 0,
+            "A": 255,
+            "IsKnownColor": true,
+            "IsEmpty": false,
+            "IsNamedColor": true,
+            "IsSystemColor": false,
+            "Name": "Black"
+          },
+          "Selected": 0,
+          "Names": [ "Automatic", "Cell MidPoint", "None" ],
+          "SelectedName": ""
+        }
+      }
+    }
+  },
+  "ActiveIndex": 0,
+  "Settings": {
+    "Color": {
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 0,
+      "IsKnownColor": false,
+      "IsEmpty": true,
+      "IsNamedColor": false,
+      "IsSystemColor": false,
+      "Name": "0"
+    }
+  }
+}

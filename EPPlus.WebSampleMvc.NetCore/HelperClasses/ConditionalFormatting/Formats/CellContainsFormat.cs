@@ -23,7 +23,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
 
         public CellContainsFormat(InputData input)
         {
-            Collection = new EnumCollection(typeof(CellContains), new Type[] { typeof(CellValueCondition), typeof(SpecificTextCondition), typeof(DateCondition) }, input.SelectedEnums);
+            Collection = new EnumCollection(typeof(eCellContains), new Type[] { typeof(CellValueCondition), typeof(SpecificTextCondition), typeof(DateCondition) }, input.SelectedEnums);
 
             Settings = input.Settings;
             if (input.Formulas.Length < 2)

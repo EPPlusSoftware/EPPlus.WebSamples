@@ -1,4 +1,4 @@
-﻿@model EPPlus.WebSampleMvc.NetCore.Models.HtmlExport.ExportRange7Model
+﻿@model EPPlus.WebSampleMvc.NetCore.Models.HtmlExport.ExportRanges8Model
 <style type="text/css">
     @Html.Raw(Model.Css)
     button.plain { background:none; border: thin solid 1pt; width: 100%; border-bottom: thin; border-color:black; text-align:left;}
@@ -56,18 +56,18 @@
         </ul>
     </div>
 </div>
-<form asp-action="ExportRange7" method="post" id="form42">
+<form asp-action="ExportRanges8" method="post" id="form42">
     @Html.AntiForgeryToken()
     <div class="row justify-content-center">
         <div class="col-sm-12 p-3">
             <div class="bg-light rounded p-2">
                 <label>Select a Rule Type:</label>
                 <div class="col-sm-12 col-md-6">
-                    <div style="border: 1px solid black;">
-                        @foreach (var item in Model.CFRules)
+                    <div id="rule-buttons" style="border: 1px solid black;">
+@*                         @foreach (var item in Model.CFRules)
                         {
                             <button class="plain" id=@item.FormatType.ToString()>>@item.ListOptionText</button>
-                        }
+                        } *@
                     </div>
                 </div>
                 <div class="row">
@@ -99,9 +99,9 @@
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6" style="display: none" id="formula-error">
-                        <text class="form-control" style="background-color: darkred; color: white;">
+     @*                    <text class="form-control" style="background-color: darkred; color: white;">
                             Faulty Formula. Error: @Model.ErrorMessage
-                        </text>
+                        </text> *@
                     </div>
                 </div>
                 <div class="form-group">
@@ -178,7 +178,15 @@
             jQuery("#form42").submit();
         });
 
-        var jsonData = JSON.parse('@Html.Raw(Model.JsonData)');
+        var wholeCollection = JSON.parse('@Html.Raw(Model.JsonData)');
+
+        var ruleTypes = wholeCollection.Types;
+
+        jsonData.forEach((element) => {
+            $("#rule-buttons").append(
+                '<button class="plain" id='+ element.FormatName +'>>' + element.ListOptionText + '</button>';
+            );
+        });
 
         var AllCells = jsonData[0];
         var CellContains = jsonData[1];
@@ -187,27 +195,21 @@
         var UniqueDuplicates = jsonData[4];
         var CustomExpression = jsonData[5];
 
-        var ActiveRule = jsonData[@Model.ActiveIndex];
+        var ActiveRule = jsonData[wholeCollection.ActiveIndex];
 
-         let test = Array.from($("#dropdown-color"));
+        let test = Array.from($("#dropdown-color"));
 
-         var x = document.getElementById("dropdown-color");
+        var x = document.getElementById("dropdown-color");
 
-         for (i = 0; i < x.length; i++) {
-             if(x.options[i].text == '@Model.ActiveColor')
-             {
-                 $('#dropdown-color').append('<option value=' + x.options[i].text + ' selected= "selected"' + '>' + x.options[i].text + '</option>');
-                 x.options[i].remove();
-                 break;
-             }
-         }
+        for (i = 0; i < x.length; i++) {
+            if(x.options[i].text == '@Model.ActiveColor')
+            {
+                $('#dropdown-color').append('<option value=' + x.options[i].text + ' selected= "selected"' + '>' + x.options[i].text + '</option>');
+                x.options[i].remove();
+                break;
+            }
+        }
 
-         if ("@Model.ErrorMessage" != "") {
-             $("#formula-error").show();
-         }
-         else { 
-             $("#formula-error").hide();
-         }
 
         const UpdateFormatStyle = function () {
             $("#format-style").empty();

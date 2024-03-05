@@ -118,6 +118,29 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public IActionResult ExportRange8()
+        {
+            var model = new ExportRanges8Model();
+            //{
+            //    CurrentRuleType = CFRuleType.CellContains,
+            //    CurrentRuleTypeStr = "CellContains",
+            //    Formula1 = "3",
+            //    Formula2 = "-3",
+            //    Settings = new FormatSettings(CFColor.Blue),
+            //    Checkbox = null,
+            //};
+            model.SetupSampleData();
+            return View(model);
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult ExportRange8(ExportRanges8Model model)
+        {
+            model.SetupSampleData();
+            return View(model);
+        }
+
         //[HttpPost, Route("/api/types/{model, formula, index}")]
         //public void UpdateFormula(ExportRange7Model model, string formula, int index)
         //{

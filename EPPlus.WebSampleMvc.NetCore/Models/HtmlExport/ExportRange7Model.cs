@@ -7,6 +7,7 @@ using System.IO;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using OfficeOpenXml.ConditionalFormatting;
+using OfficeOpenXml.ConditionalFormatting.Rules;
 using OfficeOpenXml.ConditionalFormatting.Contracts;
 using OfficeOpenXml.Utils.Extensions;
 using EPPlus.WebSampleMvc.NetCore.HelperClasses;
@@ -14,6 +15,7 @@ using System.Text.Json;
 using OfficeOpenXml.Style;
 using System.Globalization;
 using EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting;
+
 using EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Formats;
 
 namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
@@ -46,7 +48,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 types.ActiveRule.Settings.SetColor(ActiveColor);
                 JsonData = JsonSerializer.Serialize(CFRules, options);
 
-               var ws = package.Workbook.Worksheets.Add("CF_ws");
+                var ws = package.Workbook.Worksheets.Add("CF_ws");
 
                 ws.Cells["A1:A11"].Formula = "ROW()-5";
                 ws.Cells["B1:B11"].Formula = "\"Row number \" & ROW()";
@@ -66,6 +68,8 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 ws.Cells["A1:E11"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                 ws.Cells["A1:E11"].Style.Fill.BackgroundColor.SetColor(Color.AliceBlue);
 
+                var cs = ws.Cells["Z1:Z10"].ConditionalFormatting.AddDatabar(Color.AliceBlue);
+                string testJson = JsonSerializer.Serialize(cs);
 
                 var cf = types.ActiveRule.GetCFForRange(ws.Cells["A1:E11"].ConditionalFormatting);
 
@@ -74,7 +78,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 
                 if (((int)cf.Type < 10) && ((int)cf.Type > 3))
                 {
-                    if(int.TryParse(Formula1, out int newRank))
+                    if (int.TryParse(Formula1, out int newRank))
                     {
                         cf.Rank = (ushort)newRank;
                     }
@@ -148,7 +152,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 
         public string[] GetEnumValues()
         {
-            return Enum.GetNames(typeof(CellContains));
+            return Enum.GetNames(typeof(eCellContains));
         }
 
         public string[] GetEnumValuesDependent()

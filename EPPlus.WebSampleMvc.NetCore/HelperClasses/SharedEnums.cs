@@ -52,7 +52,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses
         Less_Than_Or_Equal_To
     }
 
-    public enum CellContains
+    public enum eCellContains
     {
         Cell_Value,
         Specific_Text,
@@ -81,5 +81,49 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses
         Last_Month,
         This_Month,
         Next_Month
+    }
+
+    public enum AdvancedTypes
+    {
+        Two_Color_Scale,
+        Three_Color_Scale,
+        Data_Bar,
+        //Icon_Sets
+    }
+
+    public enum DataBarTypes
+    {
+        Automatic,
+        Lowest_Value,
+        Number,
+        Percent,
+        Formula,
+        Percentile
+    }
+
+    public enum TypeScale
+    {
+        Lowest_Value,
+        Number,
+        Percent,
+        Formula,
+        Percentile
+    }
+
+    public enum HighVal
+    {
+        Highest_Value,
+        Number,
+        Percent,
+        Formula,
+        Percentile
+    }
+
+    public enum TypeScaleMidpoint
+    {
+        Number = TypeScale.Number,
+        Percent = TypeScale.Percent,
+        Formula = TypeScale.Formula,
+        Percentile = TypeScale.Percentile
     }
 }
