@@ -7,9 +7,27 @@ using System.Threading.Tasks;
 
 namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew
 {
+    enum BetweenNotBetween
+    {
+        Between = CellValueCondition.Between,
+        Not_Between = CellValueCondition.Not_Between
+    }
+
+    enum CellValueConditionsLimited
+    {
+        Equal_To = CellValueCondition.Equal_To,
+        Not_Equal_To = CellValueCondition.Not_Equal_To,
+        Greater_Than = CellValueCondition.Greater_Than,
+        Less_Than = CellValueCondition.Less_Than,
+        Greater_Than_Or_Equal_To = CellValueCondition.Greater_Than_Or_Equal_To,
+        Less_Than_Or_Equal_To = CellValueCondition.Less_Than_Or_Equal_To
+    }
+
     internal class CellContains : SimpleFormattingRule
     {
-        public string FormatName => Enum.GetName(CFRuleType.CellContains);
+        public override string FormatName => Enum.GetName(CFRuleCategory.CellContains);
+
+        public override CFRuleCategory RuleCategory => CFRuleCategory.CellContains;
 
         public override string ListOptionText { get => "Format only cells that contain"; }
         public override string FormatTitle { get => "Format only cells with:"; }
@@ -28,9 +46,15 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew
                     {CellValueCondition.Less_Than_Or_Equal_To, new string[1] },
         };
 
+        private Dictionary<string, DropDown<Enum>> TypesOfCellValue = new Dictionary<string, DropDown<Enum>>();
+
+        private TypeDoubleFormula<BetweenNotBetween> _twoFormulas = new TypeDoubleFormula<BetweenNotBetween>(BetweenNotBetween.Between);
+        private TypeFormula<CellValueConditionsLimited> _oneFormula = new TypeFormula<CellValueConditionsLimited>(CellValueConditionsLimited.Equal_To);
+
         private TypeFormula<SpecificTextCondition> TextDropDown = new TypeFormula<SpecificTextCondition>(SpecificTextCondition.Containing);
         private DropDown<DateCondition> DatesDropDown = new DropDown<DateCondition>(DateCondition.Yesterday);
-        public Dictionary<eCellContains, object> AllOptions = new Dictionary<eCellContains, object>();
+        public Dictionary<eCellContains, object> DropDownDict = new Dictionary<eCellContains, object>();
+        public eCellContains CurrentType = eCellContains.Cell_Value;
 
         // public Dictionary<eCellContains, DropDownBase> AllOptionsExtra = new Dictionary<eCellContains, DropDownBase>();
 
@@ -40,13 +64,13 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew
 
             //AllOptionsExtra.Add(eCellContains.Specific_Text, TextDropDown);
 
-            AllOptions.Add(eCellContains.Cell_Value, FieldValuesDictionary);
-            AllOptions.Add(eCellContains.Specific_Text, TextDropDown);
-            AllOptions.Add(eCellContains.Dates_Occuring, DatesDropDown);
-            AllOptions.Add(eCellContains.Blanks, emptyArr);
-            AllOptions.Add(eCellContains.No_Blanks, emptyArr);
-            AllOptions.Add(eCellContains.Errors, emptyArr);
-            AllOptions.Add(eCellContains.No_Errors, emptyArr);
+            DropDownDict.Add(eCellContains.Cell_Value, FieldValuesDictionary);
+            DropDownDict.Add(eCellContains.Specific_Text, TextDropDown);
+            DropDownDict.Add(eCellContains.Dates_Occuring, DatesDropDown);
+            DropDownDict.Add(eCellContains.Blanks, emptyArr);
+            DropDownDict.Add(eCellContains.No_Blanks, emptyArr);
+            DropDownDict.Add(eCellContains.Errors, emptyArr);
+            DropDownDict.Add(eCellContains.No_Errors, emptyArr);
         }
     }
 }

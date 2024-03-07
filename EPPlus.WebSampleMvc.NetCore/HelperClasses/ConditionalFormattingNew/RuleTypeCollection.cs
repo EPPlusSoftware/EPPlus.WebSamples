@@ -20,14 +20,14 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew
         public RuleTypeCollection()
         {
             Types = new List<object>();
-            foreach (var type in Enum.GetValues(typeof(CFRuleType)))
+            foreach (var type in Enum.GetValues(typeof(CFRuleCategory)))
             {
-                InitializeTypes((CFRuleType)type);
+                InitializeTypes((CFRuleCategory)type);
             }
             ActiveRule = Types[0];
         }
 
-        public RuleTypeCollection(CFRuleType ruleType, string[] selectedEnums = null, string[] formulas = null, FormatSettings settings = null, bool? checkbox = null)
+        public RuleTypeCollection(CFRuleCategory ruleType, string[] selectedEnums = null, string[] formulas = null, FormatSettings settings = null, bool? checkbox = null)
         {
             Types = new List<object>();
             var input = new InputData(selectedEnums, formulas, settings, checkbox);
@@ -62,37 +62,37 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew
 
             //ActiveRule = Types[0];
 
-            foreach (var item in Enum.GetValues(typeof(CFRuleType)))
+            foreach (var item in Enum.GetValues(typeof(CFRuleCategory)))
             {
-                if ((CFRuleType)item != ruleType)
+                if ((CFRuleCategory)item != ruleType)
                 {
-                    InitializeTypes((CFRuleType)item);
+                    InitializeTypes((CFRuleCategory)item);
                 }
             }
 
             Types.Insert(ActiveIndex, ActiveRule);
         }
 
-        void InitializeTypes(CFRuleType ruleType)
+        void InitializeTypes(CFRuleCategory ruleType)
         {
             switch (ruleType)
             {
-                case CFRuleType.AllCells:
+                case CFRuleCategory.AllCells:
                     Types.Add(new AdvancedFormattingRules());
                     break;
-                case CFRuleType.CellContains:
+                case CFRuleCategory.CellContains:
                     Types.Add(new CellContains());
                     break;
-                case CFRuleType.Ranked:
+                case CFRuleCategory.Ranked:
+                    Types.Add(new RankedRule());
+                    break;
+                case CFRuleCategory.Average:
                     Types.Add(new AverageRule());
                     break;
-                case CFRuleType.Average:
-                    Types.Add(new AverageRule());
+                case CFRuleCategory.UniqueDuplicates:
+                    Types.Add(new DuplicateUniqueRule());
                     break;
-                case CFRuleType.UniqueDuplicates:
-                    Types.Add(new UniqueDuplicateRule());
-                    break;
-                case CFRuleType.CustomExpression:
+                case CFRuleCategory.CustomExpression:
                     Types.Add(new ExpressionRule());
                     break;
             }

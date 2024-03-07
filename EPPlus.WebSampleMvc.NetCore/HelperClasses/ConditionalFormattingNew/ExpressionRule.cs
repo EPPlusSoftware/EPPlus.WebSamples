@@ -8,7 +8,8 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew
 {
     public class ExpressionRule : SimpleFormattingRule
     {
-        public string FormatName => Enum.GetName(CFRuleType.CustomExpression);
+        public override string FormatName => Enum.GetName(CFRuleCategory.CustomExpression);
+        public override CFRuleCategory RuleCategory => CFRuleCategory.CustomExpression;
 
         public override string ListOptionText => "Use a Formula to determine which cells to format";
 

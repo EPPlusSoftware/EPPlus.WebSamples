@@ -15,7 +15,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
 
         public override EnumCollection Collection { get; protected set; }
 
-        public override CFRuleType FormatType => CFRuleType.Ranked;
+        public override CFRuleCategory FormatType => CFRuleCategory.Ranked;
 
         public override string[] Formulas { get; set; }
         public override FormatSettings Settings { get; set; }

@@ -9,7 +9,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
 
         public override string FormatTitle => "Format values that are";
 
-        public override CFRuleType FormatType => CFRuleType.Average;
+        public override CFRuleCategory FormatType => CFRuleCategory.Average;
 
         public override EnumCollection Collection { get; protected set; }
         public override string[] Formulas { get; set; }

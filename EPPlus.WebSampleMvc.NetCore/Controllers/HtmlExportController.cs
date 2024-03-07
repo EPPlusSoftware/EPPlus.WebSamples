@@ -100,7 +100,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
         {
             var model = new ExportRange7Model
             {
-                CurrentRuleType = CFRuleType.CellContains,
+                CurrentRuleType = CFRuleCategory.CellContains,
                 CurrentRuleTypeStr = "CellContains",
                 Formula1 = "3",
                 Formula2 = "-3",
@@ -121,7 +121,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
         [HttpGet]
         public IActionResult ExportRange8()
         {
-            var model = new ExportRanges8Model();
+            var model = new ExportRange8Model();
             //{
             //    CurrentRuleType = CFRuleType.CellContains,
             //    CurrentRuleTypeStr = "CellContains",
@@ -135,9 +135,9 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult ExportRange8(ExportRanges8Model model)
+        public IActionResult ExportRange8(ExportRange8Model model)
         {
-            model.SetupSampleData();
+            model.UpdateSampleData();
             return View(model);
         }
 

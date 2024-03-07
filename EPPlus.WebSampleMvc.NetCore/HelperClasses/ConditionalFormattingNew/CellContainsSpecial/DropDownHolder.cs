@@ -11,6 +11,8 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew.Cel
     {
         public TypeFormula<U> TypeFormula { get; set; }
 
+        public U SelectedTwo { get; set; }
+
         public DropDownHolder(T type, U type2) : base(type)
         {
             TypeFormula = new TypeFormula<U>(type2);

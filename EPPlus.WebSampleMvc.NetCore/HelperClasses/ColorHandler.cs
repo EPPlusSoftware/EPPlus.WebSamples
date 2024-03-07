@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Dynamic;
 
-namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting
+namespace EPPlus.WebSampleMvc.NetCore.HelperClasses
 {
     public enum CFColor
     {

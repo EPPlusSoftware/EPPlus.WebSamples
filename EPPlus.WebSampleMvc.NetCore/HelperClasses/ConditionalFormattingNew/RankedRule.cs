@@ -9,7 +9,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew
 {
     internal class RankedRule : SimpleFormattingRule
     {
-        public string FormatName => Enum.GetName(CFRuleType.Ranked);
+        public override string FormatName => Enum.GetName(CFRuleCategory.Ranked);
 
         public override string ListOptionText => "Format only top or bottom ranked values";
         public override string FormatTitle => "Format values that rank in the:";
@@ -19,7 +19,9 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew
 
         public DropDown<Ranked> DropDown { get; set; } = new DropDown<Ranked>(Ranked.Top);
 
-        RankedRule()
+        public override CFRuleCategory RuleCategory => CFRuleCategory.Ranked;
+
+        internal RankedRule()
         {
         }
 

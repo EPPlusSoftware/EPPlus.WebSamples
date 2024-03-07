@@ -2,16 +2,6 @@
 
 namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew
 {
-    public enum CFColor
-    {
-        Blue,
-        Orange,
-        Gray,
-        Gold,
-        Green,
-        Red
-    }
-
     public class FormatSettings
     {
         public Color Color;
@@ -25,7 +15,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew
 
         public void SetColor(CFColor inputColor)
         {
-            //Color = ColorHandler.GetColorAsColor(inputColor);
+            Color = ColorHandler.GetColorAsColor(inputColor);
         }
     }
 }

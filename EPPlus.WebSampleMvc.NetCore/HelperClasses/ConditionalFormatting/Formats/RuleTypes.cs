@@ -19,14 +19,14 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
         public RuleTypes()
         {
             Types = new List<IExcelConditionalFormattingHTMLRuleGroup>();
-            foreach (var item in Enum.GetValues(typeof(CFRuleType)))
+            foreach (var item in Enum.GetValues(typeof(CFRuleCategory)))
             {
-                InitializeTypes((CFRuleType)item);
+                InitializeTypes((CFRuleCategory)item);
             }
             ActiveRule = Types[0];
         }
 
-        public RuleTypes(CFRuleType ruleType, string[] selectedEnums = null, string[] formulas = null, FormatSettings settings = null, bool? checkbox = null)
+        public RuleTypes(CFRuleCategory ruleType, string[] selectedEnums = null, string[] formulas = null, FormatSettings settings = null, bool? checkbox = null)
         {
             Types = new List<IExcelConditionalFormattingHTMLRuleGroup>();
             var input = new InputData(selectedEnums, formulas, settings, checkbox);
@@ -34,26 +34,26 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
 
             switch (ruleType)
             {
-                case CFRuleType.AllCells:
+                case CFRuleCategory.AllCells:
                     ActiveIndex = 0;
                     break;
-                case CFRuleType.CellContains:
+                case CFRuleCategory.CellContains:
                     ActiveRule = new CellContainsFormat(input);
                     ActiveIndex = 0;
                     break;
-                case CFRuleType.Ranked:
+                case CFRuleCategory.Ranked:
                     ActiveRule = new RankedFormat(input);
                     ActiveIndex = 1;
                     break;
-                case CFRuleType.Average:
+                case CFRuleCategory.Average:
                     ActiveRule = new AverageFormat(input);
                     ActiveIndex = 2;
                     break;
-                case CFRuleType.UniqueDuplicates:
+                case CFRuleCategory.UniqueDuplicates:
                     ActiveRule = new UniqueDuplicateFormat(input);
                     ActiveIndex = 3;
                     break;
-                case CFRuleType.CustomExpression:
+                case CFRuleCategory.CustomExpression:
                     ActiveRule = new ExpressionFormat(input);
                     ActiveIndex = 4;
                     break;
@@ -61,37 +61,37 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
 
             //ActiveRule = Types[0];
 
-            foreach (var item in Enum.GetValues(typeof(CFRuleType)))
+            foreach (var item in Enum.GetValues(typeof(CFRuleCategory)))
             {
-                if ((CFRuleType)item != ruleType)
+                if ((CFRuleCategory)item != ruleType)
                 {
-                    InitializeTypes((CFRuleType)item);
+                    InitializeTypes((CFRuleCategory)item);
                 }
             }
 
             Types.Insert(ActiveIndex, ActiveRule);
         }
 
-        void InitializeTypes(CFRuleType ruleType)
+        void InitializeTypes(CFRuleCategory ruleType)
         {
             switch (ruleType)
             {
-                case CFRuleType.AllCells:
+                case CFRuleCategory.AllCells:
                     //Types.Add(new CellContainsFormat());
                     break;
-                case CFRuleType.CellContains:
+                case CFRuleCategory.CellContains:
                     Types.Add(new CellContainsFormat());
                     break;
-                case CFRuleType.Ranked:
+                case CFRuleCategory.Ranked:
                     Types.Add(new RankedFormat());
                     break;
-                case CFRuleType.Average:
+                case CFRuleCategory.Average:
                     Types.Add(new AverageFormat());
                     break;
-                case CFRuleType.UniqueDuplicates:
+                case CFRuleCategory.UniqueDuplicates:
                     Types.Add(new UniqueDuplicateFormat());
                     break;
-                case CFRuleType.CustomExpression:
+                case CFRuleCategory.CustomExpression:
                     Types.Add(new ExpressionFormat());
                     break;
             }

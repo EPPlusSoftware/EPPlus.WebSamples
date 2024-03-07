@@ -18,7 +18,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting
 
         public string ContentLabel { get; }
 
-        public CFRuleType FormatType { get; }
+        public CFRuleCategory FormatType { get; }
 
         public bool? CheckBox { get; }
 

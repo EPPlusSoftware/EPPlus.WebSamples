@@ -9,7 +9,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
 
         public override string FormatTitle => "Format values where this formula is true";
 
-        public override CFRuleType FormatType => CFRuleType.CustomExpression;
+        public override CFRuleCategory FormatType => CFRuleCategory.CustomExpression;
 
         public override EnumCollection Collection { get { return null; } protected set { throw new NotImplementedException("should never be set"); } }
         public override string[] Formulas { get; set; }

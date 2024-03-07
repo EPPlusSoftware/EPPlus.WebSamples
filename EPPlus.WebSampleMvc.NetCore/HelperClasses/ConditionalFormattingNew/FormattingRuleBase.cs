@@ -10,5 +10,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew
     {
         public abstract string ListOptionText { get; }
         public abstract string FormatTitle { get; }
+        public abstract string FormatName { get; }
+        public abstract CFRuleCategory RuleCategory { get; }
     }
 }

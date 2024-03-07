@@ -4,7 +4,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew.Adv
 {
     internal class ThreeColorScale : TwoColorScale
     {
-        internal TypeValueColor<TypeScaleMidpoint> Midpoint { get; set; }
+        public TypeValueColor<TypeScaleMidpoint> Midpoint { get; set; }
 
         internal ThreeColorScale()
         {

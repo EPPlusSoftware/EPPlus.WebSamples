@@ -13,6 +13,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew.Con
         public string Value { get; set; }
         public Color Color { get; set; }
         public List<string> Names { get; }
+        public string SelectedName { get; }
 
         public TypeValueColor(T type, string value)
         {
@@ -20,6 +21,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew.Con
             Value = value;
             Color = Color;
             Names = GetNames();
+            SelectedName = Names[0];
         }
 
         public List<string> GetNames()

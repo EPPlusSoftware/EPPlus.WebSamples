@@ -12,7 +12,9 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew.Adv
 
         public DropDown<AdvancedTypes> DropDown = new DropDown<AdvancedTypes>(AdvancedTypes.Two_Color_Scale);
 
-        public string FormatName => Enum.GetName(CFRuleType.AllCells);
+        public override CFRuleCategory RuleCategory => CFRuleCategory.AllCells;
+
+        public override string FormatName => Enum.GetName(CFRuleCategory.AllCells);
 
         //internal override string ContentLabel => throw new NotImplementedException();
 

@@ -7,9 +7,10 @@ using EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew.Content
 
 namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew
 {
-    public class UniqueDuplicateRule : SimpleFormattingRule
+    public class DuplicateUniqueRule : SimpleFormattingRule
     {
-        public string FormatName => Enum.GetName(CFRuleType.UniqueDuplicates);
+        public override string FormatName => Enum.GetName(CFRuleCategory.UniqueDuplicates);
+        public override CFRuleCategory RuleCategory => CFRuleCategory.UniqueDuplicates;
 
         public override string ListOptionText => "Format only unique or duplicate values";
 
@@ -17,9 +18,9 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew
 
         public override string ContentLabel => "values in the selected range";
 
-        public DropDown<UniqueDuplicate> dropDown = new DropDown<UniqueDuplicate>(UniqueDuplicate.Duplicate);
+        public DropDown<DuplicateUnique> DropDown = new DropDown<DuplicateUnique>(DuplicateUnique.Duplicate);
 
-        public UniqueDuplicateRule()
+        public DuplicateUniqueRule()
         {
 
         }

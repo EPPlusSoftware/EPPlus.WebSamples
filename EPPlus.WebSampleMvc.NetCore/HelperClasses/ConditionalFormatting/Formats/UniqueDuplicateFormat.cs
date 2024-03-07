@@ -9,7 +9,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
 
         public override string FormatTitle => "Format all";
 
-        public override CFRuleType FormatType => CFRuleType.UniqueDuplicates;
+        public override CFRuleCategory FormatType => CFRuleCategory.UniqueDuplicates;
 
         public override EnumCollection Collection { get; protected set; }
         public override string[] Formulas { get; set; }
@@ -25,7 +25,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
 
         public UniqueDuplicateFormat(InputData input)
         {
-            Collection = new EnumCollection(typeof(UniqueDuplicate), new Type[0], input.SelectedEnums);
+            Collection = new EnumCollection(typeof(DuplicateUnique), new Type[0], input.SelectedEnums);
             Settings = input.Settings;
         }
 

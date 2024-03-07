@@ -1,9 +1,10 @@
 ﻿using System;
+using OfficeOpenXml.ConditionalFormatting;
 
 namespace EPPlus.WebSampleMvc.NetCore.HelperClasses
 {
     [Flags]
-    public enum CFRuleType
+    public enum CFRuleCategory
     {
         AllCells = 0,
         CellContains = 2,
@@ -16,40 +17,40 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses
 
     public enum Ranked
     {
-        Top,
-        Bottom
+        Top = eExcelConditionalFormattingRuleType.Top,
+        Bottom = eExcelConditionalFormattingRuleType.Bottom
     }
 
     public enum Averages
     {
-        Above,
-        Below,
-        Equal_Or_Above,
-        Equal_Or_Below,
-        One_Std_Dev_Above,
-        One_Std_Dev_Below,
-        Two_Std_Dev_Above,
-        Two_Std_Dev_Below,
-        Three_Std_Dev_Above,
-        Three_Std_Dev_Below,
+        Above = eExcelConditionalFormattingRuleType.AboveAverage,
+        Below = eExcelConditionalFormattingRuleType.BelowAverage,
+        Equal_Or_Above = eExcelConditionalFormattingRuleType.AboveOrEqualAverage,
+        Equal_Or_Below = eExcelConditionalFormattingRuleType.BelowOrEqualAverage,
+        One_Std_Dev_Above = eExcelConditionalFormattingRuleType.AboveStdDev,
+        One_Std_Dev_Below = eExcelConditionalFormattingRuleType.BelowStdDev,
+        Two_Std_Dev_Above = eExcelConditionalFormattingRuleType.AboveStdDev,
+        Two_Std_Dev_Below = eExcelConditionalFormattingRuleType.BelowStdDev,
+        Three_Std_Dev_Above = eExcelConditionalFormattingRuleType.AboveStdDev,
+        Three_Std_Dev_Below = eExcelConditionalFormattingRuleType.BelowStdDev,
     }
 
-    public enum UniqueDuplicate
+    public enum DuplicateUnique
     {
-        Duplicate,
-        Unique
+        Duplicate = eExcelConditionalFormattingRuleType.DuplicateValues,
+        Unique = eExcelConditionalFormattingRuleType.UniqueValues
     }
 
     public enum CellValueCondition
     {
-        Between,
-        Not_Between,
-        Equal_To,
-        Not_Equal_To,
-        Greater_Than,
-        Less_Than,
-        Greater_Than_Or_Equal_To,
-        Less_Than_Or_Equal_To
+        Between = eExcelConditionalFormattingRuleType.Between,
+        Not_Between = eExcelConditionalFormattingRuleType.NotBetween,
+        Equal_To = eExcelConditionalFormattingRuleType.Equal,
+        Not_Equal_To = eExcelConditionalFormattingRuleType.NotEqual,
+        Greater_Than = eExcelConditionalFormattingRuleType.GreaterThan,
+        Less_Than = eExcelConditionalFormattingRuleType.LessThan,
+        Greater_Than_Or_Equal_To = eExcelConditionalFormattingRuleType.GreaterThanOrEqual,
+        Less_Than_Or_Equal_To = eExcelConditionalFormattingRuleType.LessThanOrEqual
     }
 
     public enum eCellContains
@@ -64,30 +65,30 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses
     }
     public enum SpecificTextCondition
     {
-        Containing,
-        Not_Containing,
-        Beginning_With,
-        Ending_With
+        Containing = eExcelConditionalFormattingRuleType.ContainsText,
+        Not_Containing = eExcelConditionalFormattingRuleType.NotContainsText,
+        Beginning_With = eExcelConditionalFormattingRuleType.BeginsWith,
+        Ending_With = eExcelConditionalFormattingRuleType.EndsWith
     }
     public enum DateCondition
     {
-        Yesterday,
-        Today,
-        Tomorrow,
-        Last_7_Days,
-        Last_Week,
-        This_Week,
-        Next_Week,
-        Last_Month,
-        This_Month,
-        Next_Month
+        Yesterday = eExcelConditionalFormattingRuleType.Yesterday,
+        Today = eExcelConditionalFormattingRuleType.Today,
+        Tomorrow = eExcelConditionalFormattingRuleType.Tomorrow,
+        Last_7_Days = eExcelConditionalFormattingRuleType.Last7Days,
+        Last_Week = eExcelConditionalFormattingRuleType.LastWeek,
+        This_Week = eExcelConditionalFormattingRuleType.ThisWeek,
+        Next_Week = eExcelConditionalFormattingRuleType.NextWeek,
+        Last_Month = eExcelConditionalFormattingRuleType.LastMonth,
+        This_Month = eExcelConditionalFormattingRuleType.ThisMonth,
+        Next_Month = eExcelConditionalFormattingRuleType.NextMonth,
     }
 
     public enum AdvancedTypes
     {
-        Two_Color_Scale,
-        Three_Color_Scale,
-        Data_Bar,
+        Two_Color_Scale = eExcelConditionalFormattingRuleType.TwoColorScale,
+        Three_Color_Scale = eExcelConditionalFormattingRuleType.ThreeColorScale,
+        Data_Bar = eExcelConditionalFormattingRuleType.DataBar,
         //Icon_Sets
     }
 

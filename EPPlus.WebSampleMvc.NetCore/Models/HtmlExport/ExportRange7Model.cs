@@ -35,7 +35,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                     Formulas[1] = Formula2;
                 }
 
-                CurrentRuleType = (CFRuleType)Enum.Parse(typeof(CFRuleType), CurrentRuleTypeStr);
+                CurrentRuleType = (CFRuleCategory)Enum.Parse(typeof(CFRuleCategory), CurrentRuleTypeStr);
 
                 var types = new RuleTypes(CurrentRuleType, SelectedEnums, Formulas, Settings, Checkbox);
                 ActiveIndex = types.ActiveIndex;
@@ -126,7 +126,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
             }
         }
 
-        public CFRuleType CurrentRuleType { get; set; } = CFRuleType.CellContains;
+        public CFRuleCategory CurrentRuleType { get; set; } = CFRuleCategory.CellContains;
 
         public string ErrorMessage { get; set; } = "";
 
@@ -143,7 +143,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 
         public string[] SelectedEnums { get; set; } = new string[5];
 
-        public string[] Formulas { get; set; } = new string[2];
+        public string[] Formulas { get; set; } = new string[3];
 
         public string Formula1 { get; set; } = "";
         public string Formula2 { get; set; } = "";

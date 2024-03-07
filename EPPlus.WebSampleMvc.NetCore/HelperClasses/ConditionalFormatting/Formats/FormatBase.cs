@@ -8,7 +8,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
         abstract public string ListOptionText { get; }
         abstract public string FormatTitle { get; }
 
-        abstract public CFRuleType FormatType { get; }
+        abstract public CFRuleCategory FormatType { get; }
 
         abstract public EnumCollection Collection { get; protected set; }
 

@@ -14,7 +14,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
         public override EnumCollection Collection { get; protected set; }
         public override string[] Formulas { get; set; }
         public override FormatSettings Settings { get; set; }
-        public override CFRuleType FormatType => CFRuleType.CellContains;
+        public override CFRuleCategory FormatType => CFRuleCategory.CellContains;
         public override bool? CheckBox { get; protected set; } = null;
 
         public CellContainsFormat() : this(new InputData())
