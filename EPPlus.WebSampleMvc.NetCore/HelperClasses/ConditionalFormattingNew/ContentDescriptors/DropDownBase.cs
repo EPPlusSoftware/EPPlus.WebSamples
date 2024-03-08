@@ -8,7 +8,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew.Con
 {
     public abstract class DropDownBase
     {
-        public abstract List<string> Names { get; }
+        public abstract List<string> Names { get; set; }
 
         public abstract string SelectedName { get; set; }
     }

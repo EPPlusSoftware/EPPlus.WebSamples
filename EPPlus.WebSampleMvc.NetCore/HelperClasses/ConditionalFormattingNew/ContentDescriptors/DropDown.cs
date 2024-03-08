@@ -11,11 +11,11 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew.Con
     {
         public T Selected { get; set; }
 
-        public override List<string> Names { get; }
+        public override List<string> Names { get; set; }
 
         public override string SelectedName { get; set; } = "";
 
-        public List<T> EnumValues { get; }
+        public List<T> EnumValues { get; set; }
 
         public DropDown(T type)
         {

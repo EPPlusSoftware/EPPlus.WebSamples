@@ -89,7 +89,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew
                 case CFRuleCategory.Average:
                     Types.Add(new AverageRule());
                     break;
-                case CFRuleCategory.UniqueDuplicates:
+                case CFRuleCategory.DuplicateUnique:
                     Types.Add(new DuplicateUniqueRule());
                     break;
                 case CFRuleCategory.CustomExpression:

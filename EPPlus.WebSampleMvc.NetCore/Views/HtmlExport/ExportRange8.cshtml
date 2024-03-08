@@ -59,8 +59,9 @@
 <form asp-action="ExportRange8" method="post" id="form52">
     @Html.AntiForgeryToken()
     <input type="hidden" id="active-rule" name="ActiveRule" value="AllCells" style="display: none;">
-    <input type="hidden" id="rule-type" name="FormatStyle" style="display: none;">
-    <input type="hidden" id="rule-type" name="RuleTypeString" style="display: none;">
+    <input type="hidden" id="rule-type-string" name="RuleTypeString" style="display: none;">
+    <input type="hidden" id="rule-type" name="RuleTypeAlternate" style="display: none;">
+
 
     <input type="hidden" id="current-rule-type" name="CurrentRuleType" style="display: none;">
 
@@ -93,7 +94,7 @@
                             <input type="checkbox" id="percent-checkbox" style="display: none; margin:5px;" name="Checkbox" onchange="this.value=this.checked">
                             <label style="margin:5px;" id="content-label">and</label>
                             <input class="form-control" value= "@Model.Formula2" type="text" id="formula-field2" name = "Formula2">
-                            <input type="text" id="debug-type-node" name="CurrentRuleTypeStr" value="CellContains" style="display: none;">
+                            <input type="text" id="debug-type-node" name="CurrentRuleCategoryStr" value="CellContains" style="display: none;">
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6" style="display: none" id="formula-error">
@@ -176,399 +177,421 @@
 <script type="text/javascript">
      document.addEventListener("DOMContentLoaded", function () {
 
-        $("#form52").on("keypress", function (event) { 
+         $("#form52").on("keypress", function (event) { 
             let key = event.keyCode || event.which; 
             if (key === 13) { 
                 event.preventDefault(); 
                 return false; 
             } 
-        }); 
+         }); 
 
-        var wholeCollection = JSON.parse('@Html.Raw(Model.JsonData)');
+         var wholeCollection = JSON.parse('@Html.Raw(Model.JsonData)');
 
-        var jsonData = wholeCollection.Types;
+         var jsonData = wholeCollection.Types;
 
-        jsonData.forEach((element) => {
+         jsonData.forEach((element) => {
             $("#rule-buttons").append(
                 ('<button class="plain" id='+ element.FormatName +'>>' + element.ListOptionText + '</button>')
             );
-        });
+         });
 
-        var AllCells = jsonData[0];
-        var CellContains = jsonData[1];
-        var Ranked = jsonData[2];
-        var Average = jsonData[3];
-        var UniqueDuplicates = jsonData[4];
-        var CustomExpression = jsonData[5];
+         var AllCells = jsonData[0];
+         var CellContains = jsonData[1];
+         var Ranked = jsonData[2];
+         var Average = jsonData[3];
+         var DuplicateUnique = jsonData[4];
+         var CustomExpression = jsonData[5];
 
-        var ActiveRule = jsonData[wholeCollection.ActiveIndex];
+         var ActiveRule = jsonData[wholeCollection.ActiveIndex];
 
-        jQuery("#btn-submit-form").click(function (e) {
+         var ChosenTypeValue = '@Model.FormatStyleIntValue';
+         var RuleTypeString = '@Model.RuleTypeString';
+
+         $("#format-style")
+        
+         jQuery("#btn-submit-form").click(function (e) {
             e.preventDefault();
 
             // jQuery("#active-rule").val(JSON.stringify(ActiveRule));
             // jQuery("#current-rule-type").val(ActiveRule.RuleCategory);
             // jQuery("#rule-type").val(ActiveRule.DropDown.Selected);
-            // jQuery("#rule-type-string").val(ActiveRule.DropDown.SelectedName);
+            //jQuery("#rule-type-string").val(ActiveRule.DropDown.SelectedName);
 
             jQuery("#form52").submit();
-        });
+         });
 
-        jQuery(".plain").click(function (e) {
-        e.preventDefault();
-        });
-
-        var ColValues = JSON.parse('@Html.Raw(Model.GetColValuesString())');
-
-        let test = Array.from($("#dropdown-color"));
-
-        var x = document.getElementById("dropdown-color");
-
-        for (i = 0; i < x.length; i++) {
-            if(x.options[i].text == '@Model.ActiveColor')
-            {
-                $('#dropdown-color').append('<option value=' + x.options[i].text + ' selected= "selected"' + '>' + x.options[i].text + '</option>');
-                x.options[i].remove();
-                break;
-            }
-        }
-
+         jQuery(".plain").click(function (e) {
+         e.preventDefault();
+         });
+         
+         var ColValues = JSON.parse('@Html.Raw(Model.GetColValuesString())');
+         
+         let test = Array.from($("#dropdown-color"));
+         
+         var x = document.getElementById("dropdown-color");
+         
+         for (i = 0; i < x.length; i++) {
+             if(x.options[i].text == '@Model.ActiveColor')
+             {
+                 $('#dropdown-color').append('<option value=' + x.options[i].text + ' selected= "selected"' + '>' + x.options[i].text + '</option>');
+                 x.options[i].remove();
+                 break;
+             }
+         }
+         
          const CreateInputField = function (id, parentNode, databaseName) {
-             let html = '<input class="form-control" type="text" id="'+ id +'" name = "'+ databaseName +'">';
-             parentNode.append(html);
+              let html = '<input class="form-control" type="text" id="'+ id +'" name = "'+ databaseName +'">';
+              parentNode.append(html);
          }
-
+         
          const CreateDropDown = function (id, parentNode, databaseName) {
-
-             let dropdown = '<select class="form-control" id='+ id +'name='+ databaseName +'></select>'
-             parentNode.append(dropdown);
+         
+              let dropdown = '<select class="form-control" id='+ id +'name='+ databaseName +'></select>'
+              parentNode.append(dropdown);
+          };
+         
+         const UpdateDropDown = function (aDropDown, names, selectedName, enumValues) {
+         
+             aDropDown.empty();
+         
+             for (let i = 0; i < names.length; i++) { 
+                 let selected = "";
+                 if (names[i] == selectedName) {
+                     selected = ' selected= "selected"';
+                 }
+         
+                 let html = '<option value=' + enumValues[i] + selected + '>' + names[i] + '</option>';
+                 aDropDown.append(html);
+             }
          };
-
-        const UpdateDropDown = function (aDropDown, names, selectedName, enumValues) {
-
-            aDropDown.empty();
-
-            for (let i = 0; i < names.length; i++) { 
-                let selected = "";
-                if (names[i] == selectedName) {
-                    selected = ' selected= "selected"';
-                }
-
-                let html = '<option value=' + enumValues[i] + selected + '>' + names[i] + '</option>';
-                aDropDown.append(html);
-            }
-        };
-
-        const UpdateDropDownNameOnly = function (aDropDown, names, selectedName) {
-                names.forEach((element) => {
-                let selected = "";
-                if (element == selectedName) {
-                    selected = ' selected= "selected"';
-                }
-
-                let html = '<option value=' + element + selected + '>' + element + '</option>';
-                aDropDown.append(html);
-            });
-        }
-
-        const UpdateFormatStyle = function () {
-            $("#content-label").text(ActiveRule.ContentLabel);
-            $("#content-label").show();
-
-            if (ActiveRule.DropDown != null) {
-
-                $("#dropdown-dependent").empty();
-                $("#dropdown-dependent").hide();
-
-                $("#format-style").show();
-
-                UpdateDropDown($("#format-style"), ActiveRule.DropDown.Names, ActiveRule.DropDown.SelectedName, ActiveRule.DropDown.EnumValues);
-                
-                // let names = ActiveRule.DropDown.Names;
-
-                // names.forEach((element) => {
-                //     let selected = "";
-                //     if (element == ActiveRule.DropDown.SelectedName) {
-                //         selected = ' selected= "selected"';
-                //     }
-
-                //     let html = '<option value=' + element + selected + '>' + element + '</option>';
-                //     $("#format-style").append(html);
-                // });
-
-            }
-
-            $("#format-style").change();
-            // else
-            // {
-            //     $("#format-style").hide();
-            //     $("#dropdown-dependent").hide();
-            // }
-        }
-
-         const CreateTypeColor= function (id, parentNode, databaseName, title, input)
-         {
-            parentNode.append('<label>' + title + '\n' + '</label>');
-
-            let testnode = parentNode.append('<div></div>');
-
-            testnode.append('<label>Type</label>');
-            CreateDropDown(id + "dropDown ", testnode, databaseName + "dropDown ");
-
-            let testId = $("#" + id + "dropDown");
-
-            UpdateDropDown(testId, input.Names, input.SelectedName, input.EnumValues)
-
-            parentNode.append('<label>Color</label>');
-            CreateDropDown(id + "color ", parentNode, databaseName + "color ");
+         
+         const UpdateDropDownNameOnly = function (aDropDown, names, selectedName) {
+                 names.forEach((element) => {
+                 let selected = "";
+                 if (element == selectedName) {
+                     selected = ' selected= "selected"';
+                 }
+         
+                 let html = '<option value=' + element + selected + '>' + element + '</option>';
+                 aDropDown.append(html);
+             });
          }
+         
+         const UpdateFormatStyle = function () {
+             $("#content-label").text(ActiveRule.ContentLabel);
+             $("#content-label").show();
+         
+             if (ActiveRule.DropDown != null) {
+         
+                 $("#dropdown-dependent").empty();
+                 $("#dropdown-dependent").hide();
+         
+                 $("#format-style").show();
+         
+                 UpdateDropDown($("#format-style"), ActiveRule.DropDown.Names, ActiveRule.DropDown.SelectedName, ActiveRule.DropDown.EnumValues);
+                 
+                 $("#rule-type").val(null);
 
-         const CreateTypeValue= function (id, parentNode, databaseName, title, input)
-         {
-            parentNode.append('<label>' + title + '\n' + '</label>');
-
-            let testnode = parentNode.append('<div></div>');
-
-            testnode.append('<label>Type</label>');
-            CreateDropDown(id + "dropDown ", testnode, databaseName + "dropDown ");
-
-            let testId = $("#" + id + "dropDown");
-
-            UpdateDropDown(testId, input.Names, input.SelectedName, input.EnumValues)
-
-            parentNode.append('<label>Value</label>');
-            CreateInputField(id + "formula ", parentNode, databaseName + "formula ");
+                 // let names = ActiveRule.DropDown.Names;
+         
+                 // names.forEach((element) => {
+                 //     let selected = "";
+                 //     if (element == ActiveRule.DropDown.SelectedName) {
+                 //         selected = ' selected= "selected"';
+                 //     }
+         
+                 //     let html = '<option value=' + element + selected + '>' + element + '</option>';
+                 //     $("#format-style").append(html);
+                 // });
+         
+             }
+         
+             $("#format-style").change();
+             // else
+             // {
+             //     $("#format-style").hide();
+             //     $("#dropdown-dependent").hide();
+             // }
          }
-
-        
-        const CreateTypeValueColor = function (id, parentNode, databaseName, title, input) {
-            CreateTypeValue(id, parentNode, databaseName, title, input);
-
-            parentNode.append('<label>Color</label>');
-            CreateDropDown(id + "color ", parentNode, databaseName + "color ");
-            UpdateDropDownNameOnly($("#" + id + "color"), ColValues, ColValues[0]);
-        };
-
-        $("#AllCells").click(function (e) {
-            ActiveRule = AllCells;
-            $("#formula-field1").hide();
-            $("#formula-field2").hide();
-
-            let colorScale2 = ActiveRule.Types["Two_Color_Scale"];
-
-            CreateTypeValueColor("minimumTVC", $("#tvc1"), "minimum", "Minimum", colorScale2.Minimum);
-            CreateTypeValueColor("maximumTVC", $("#tvc2"), "maximum", "Maximum", colorScale2.Maximum);
-
-            UpdateFormatStyle();
-            $("#content-label").hide();
-        });
-        $("#CellContains").click(function (e) {
-            $("#debug-type-node").attr("value", "CellContains");
-            ActiveRule = CellContains;
-
-            $("#formula-field1").show();
-            $("#percent-checkbox").hide();
-
-            let keys = Object.keys(CellContains.DropDownDict);
-            UpdateDropDownNamesOnly($("#format-style"), keys, keys[0]);
-
-            UpdateFormatStyle();
-            $("#format-style").show();
-        });
-        $("#Ranked").click(function (e) {
-            $("#debug-type-node").attr("value", "Ranked");
-            ActiveRule = Ranked;
-
-            $("#formula-field1").show();
-
-            $("#percent-checkbox").show();
-            let checkBoxResult = '@(Model.Checkbox != null ? Model.Checkbox : false)';
-            $("#percent-checkbox").prop('checked', checkBoxResult == 'True');
-            $("#percent-checkbox").change();
-
-            $("#formula-field2").hide();
-                
-            UpdateFormatStyle();
-        });
-        $("#Average").click(function (e) {
-            $("#debug-type-node").attr("value", "Average");
-            ActiveRule = Average;
-
-            $("#formula-field1").hide();
-            $("#formula-field2").hide();
-            $("#percent-checkbox").hide();
-                
-            UpdateFormatStyle();
-        });
-        $("#UniqueDuplicates").click(function (e) {
-            $("#debug-type-node").attr("value", "UniqueDuplicates");
-            ActiveRule = UniqueDuplicates;
-
-            $("#formula-field1").hide();
-            $("#formula-field2").hide();
-            $("#percent-checkbox").hide();
-                
-            UpdateFormatStyle();
-        });
-        $("#CustomExpression").click(function (e) {
-            $("#debug-type-node").attr("value", "CustomExpression");
-            ActiveRule = CustomExpression;
-
-            $("#formula-field1").show();
-            $("#formula-field2").hide();
-            $("#percent-checkbox").hide();
-            UpdateFormatStyle();
-
-            //28 is Expression in the cf enum.
-            $("#rule-type").val(28);
-            $("#format-style").hide();
-        });
-
-        $("#format-style").change(function () {
-
-            if (ActiveRule == CellContains) {
-
-                let CellContainsElement = ActiveRule.DropDownDict[$(this).val()];
-
-                if ((CellContainsElement.SelectedName != undefined) || ($(this).val() == "Cell_Value")) {
-                    $("#dropdown-dependent").show();
-
-                    if ($(this).val() == "Cell_Value") {
-                        let keys = Object.keys(CellContainsElement);
-                        UpdateDropDownNamesOnly($("#dropdown-dependent"), keys, keys[0]);
-                    }
-                    else {
-                        UpdateDropDownNamesOnly($("#dropdown-dependent"), CellContainsElement.Names, CellContainsElement.SelectedName);
-                    }
-
-                    ActiveRule.CurrentType = $(this).val();
-                }
-                else { 
-                    $("#dropdown-dependent").empty();
-                    $("#dropdown-dependent").hide();
-                }
-
-                if (($(this).val() == "Cell_Value") || ($(this).val() == "Specific_Text")) { 
-                    $("#formula-field1").show();
-                }
-                else
-                {
-                    $("#formula-field1").hide();
-                }
-
-                $("#dropdown-dependent").change();
-            }
-            else { 
-                $("#dropdown-dependent").hide();
-            }
-
-            if (ActiveRule == AllCells) {
-                $("#tvc1").empty();
-                $("#tvc2").empty();
-                $("#tvc3").empty();
-
-                $("#percent-checkbox").hide();
-                $("#content-label").hide();
-
-                let advancedType = ActiveRule.Types[$(this).val()];
-
-                if ($(this).val() == "Three_Color_Scale") {
-                    CreateTypeValueColor("minimumTVC", $("#tvc1"), "minimum", "Minimum", advancedType.Minimum);
-                    CreateTypeValueColor("midpointTVC", $("#tvc2"), "midpoint", "Midpoint", advancedType.Midpoint);
-                    CreateTypeValueColor("maximumTVC", $("#tvc3"), "maximum", "Maximum", advancedType.Maximum);
-                }
-                else if ($(this).val() == "Two_Color_Scale") {
-                    CreateTypeValueColor("minimumTVC", $("#tvc1"), "minimum", "Minimum", advancedType.Minimum);
-                    CreateTypeValueColor("maximumTVC", $("#tvc2"), "maximum", "Maximum", advancedType.Maximum);
-                }
-                else { 
-                    $("#percent-checkbox").show();
-                    $("#content-label").show();
-                    CreateTypeValue("minimumTVC", $("#tvc1"), "minimum", "Minimum", advancedType.Minimum);
-                    CreateTypeValue("maximumTVC", $("#tvc2"), "maximum", "Maximum", advancedType.Maximum);
-
-                    CreateTypeColor("pos-fill", $("#db1"), "PosFill", "Fill", advancedType.PositiveFill);
-                    CreateTypeColor("border-color", $("#db2"), "BorderColor", "Border", advancedType.PositiveBorderFill);
-                    CreateDropDown("bar-direction", $("#db3"), "dbContext");
-                    CreateTypeColor("axis-color", $("#db3"), "AxisColor", "Axis Settings", advancedType.Axis);
-
-
-                    // CreateTypeColor("NegFill", $("#db1"), "NegFill", "Negative Fill", advancedType.NegativeFill);
-
-
-                }
-            }
-
-
-
-            //let dropListOptions = ActiveRule.DropDown.Names;
-
-            // let name = $(this).val();
-
-            // if ((ActiveRule == CellContains && ((name == "Cell_Value") || (name == "Specific_Text")))) {
-            //     $("#formula-field1").show();
-            // }
-            // else if (ActiveRule == CellContains) {
-            //     $("#formula-field1").hide();
-            // }
-
-            // if (dropListOptions != null && dropListOptions != undefined && dropListOptions != "") {
-            //     $("#dropdown-dependent").show();
-
-            //     dropListOptions.forEach((element) => {
-            //         let selected = "";
-            //         if (element == ActiveRule.DropDown.SelectedName) { 
-            //             selected = ' selected= "selected"';
-            //         }
-
-            //         let html = '<option value=' + element + selected + '>' + element + '</option>';
-            //         $("#dropdown-dependent").append(html);
-            //     });
-            //     $("#dropdown-dependent").change();
-            // }
-            // else {
-            //     $("#dropdown-dependent").change();
-            //     $("#dropdown-dependent").hide();
-            // }
-        });
-
-        $("#dropdown-dependent").change(function () {
-
-            if (ActiveRule == CellContains) { 
-                if(ActiveRule.CurrentType < 3)
-                {
-                    if (ActiveRule.CurrentType == 0) { 
-                      let valRule = (ActiveRule.DropDownDict[0])[$(this).val()];
-
-                    }
-                    
-                }
-            }
-            
-            if ($(this).val() == 'Between' || $(this).val() == 'Not_Between') {
-                $("#formula-field2").show();
-                $("#content-label").show();
-            }
-            else {
-                $("#formula-field2").hide();
-                if (ActiveRule == CellContains) {
-                    $("#content-label").hide();
-                }
-            }
-            // if(ActiveRule == CellContains){
-            //     if ($(this).val() == 'Between' || $(this).val() == 'Not_Between') {
-            //         $("#formula-field2").show();
-            //         $("#content-label").show();
-            //     }
-            //     else {
-            //         $("#formula-field2").hide();
-            //         if (ActiveRule == CellContains) {
-            //             $("#content-label").hide();
-            //         }
-            //     }
-            // }
-        });
-
-        $('#@Model.CurrentRuleTypeStr').click();
+         
+          const CreateTypeColor= function (id, parentNode, databaseName, title, input)
+          {
+             parentNode.append('<label>' + title + '\n' + '</label>');
+         
+             let testnode = parentNode.append('<div></div>');
+         
+             testnode.append('<label>Type</label>');
+             CreateDropDown(id + "dropDown ", testnode, databaseName + "dropDown ");
+         
+             let testId = $("#" + id + "dropDown");
+         
+             UpdateDropDown(testId, input.Names, input.SelectedName, input.EnumValues)
+         
+             parentNode.append('<label>Color</label>');
+             CreateDropDown(id + "color ", parentNode, databaseName + "color ");
+          }
+         
+          const CreateTypeValue= function (id, parentNode, databaseName, title, input)
+          {
+             parentNode.append('<label>' + title + '\n' + '</label>');
+         
+             let testnode = parentNode.append('<div></div>');
+         
+             testnode.append('<label>Type</label>');
+             CreateDropDown(id + "dropDown ", testnode, databaseName + "dropDown ");
+         
+             let testId = $("#" + id + "dropDown");
+         
+             UpdateDropDown(testId, input.Names, input.SelectedName, input.EnumValues)
+         
+             parentNode.append('<label>Value</label>');
+             CreateInputField(id + "formula ", parentNode, databaseName + "formula ");
+          }
+         
+         
+         const CreateTypeValueColor = function (id, parentNode, databaseName, title, input) {
+             CreateTypeValue(id, parentNode, databaseName, title, input);
+         
+             parentNode.append('<label>Color</label>');
+             CreateDropDown(id + "color ", parentNode, databaseName + "color ");
+             UpdateDropDownNameOnly($("#" + id + "color"), ColValues, ColValues[0]);
+         };
+         
+         $("#AllCells").click(function (e) {
+             ActiveRule = AllCells;
+             $("#formula-field1").hide();
+             $("#formula-field2").hide();
+         
+             let colorScale2 = ActiveRule.Types["Two_Color_Scale"];
+         
+             CreateTypeValueColor("minimumTVC", $("#tvc1"), "minimum", "Minimum", colorScale2.Minimum);
+             CreateTypeValueColor("maximumTVC", $("#tvc2"), "maximum", "Maximum", colorScale2.Maximum);
+         
+             UpdateFormatStyle();
+             $("#content-label").hide();
+         });
+         $("#CellContains").click(function (e) {
+             $("#debug-type-node").attr("value", "CellContains");
+             ActiveRule = CellContains;
+         
+             $("#formula-field1").show();
+             $("#percent-checkbox").hide();
+         
+             let keys = Object.keys(CellContains.DropDownDict);
+             UpdateDropDownNamesOnly($("#format-style"), keys, keys[0]);
+         
+             UpdateFormatStyle();
+             $("#format-style").show();
+         });
+         $("#Ranked").click(function (e) {
+             $("#debug-type-node").attr("value", "Ranked");
+             ActiveRule = Ranked;
+         
+             $("#formula-field1").show();
+         
+             $("#percent-checkbox").show();
+             let checkBoxResult = '@(Model.Checkbox != null ? Model.Checkbox : false)';
+             $("#percent-checkbox").prop('checked', checkBoxResult == 'True');
+             $("#percent-checkbox").change();
+         
+             $("#formula-field2").hide();
+                 
+             UpdateFormatStyle();
+         });
+         $("#Average").click(function (e) {
+             $("#debug-type-node").attr("value", "Average");
+             ActiveRule = Average;
+         
+             $("#formula-field1").hide();
+             $("#formula-field2").hide();
+             $("#percent-checkbox").hide();
+                 
+             UpdateFormatStyle();
+         });
+         $("#DuplicateUnique").click(function (e) {
+             $("#debug-type-node").attr("value", "DuplicateUnique");
+             ActiveRule = DuplicateUnique;
+         
+             $("#formula-field1").hide();
+             $("#formula-field2").hide();
+             $("#percent-checkbox").hide();
+                 
+             UpdateFormatStyle();
+         });
+         $("#CustomExpression").click(function (e) {
+             $("#debug-type-node").attr("value", "CustomExpression");
+             ActiveRule = CustomExpression;
+         
+             $("#formula-field1").show();
+             $("#formula-field2").hide();
+             $("#percent-checkbox").hide();
+             UpdateFormatStyle();
+         
+             $("#rule-type").val(28);
+             //28 is Expression in the cf enum.
+             //UpdateDropDown($("#format-style"), '["Expression"]', "Expression", '[28]');
+             // //28 is Expression in the cf enum.
+             // $("#format-style")
+             // $("#format-style").val(28);
+             $("#format-style").hide();
+         });
+         
+         $("#format-style").change(function () {
+         
+             if (ActiveRule == CellContains) {
+         
+                 let CellContainsElement = ActiveRule.DropDownDict[$(this).val()];
+         
+                 if ((CellContainsElement.SelectedName != undefined) || ($(this).val() == "Cell_Value")) {
+                     $("#dropdown-dependent").show();
+         
+                     if ($(this).val() == "Cell_Value") {
+                         let keys = Object.keys(CellContainsElement);
+                         UpdateDropDownNamesOnly($("#dropdown-dependent"), keys, keys[0]);
+                     }
+                     else {
+                         UpdateDropDownNamesOnly($("#dropdown-dependent"), CellContainsElement.Names, CellContainsElement.SelectedName);
+                     }
+         
+                     ActiveRule.CurrentType = $(this).val();
+                 }
+                 else { 
+                     $("#dropdown-dependent").empty();
+                     $("#dropdown-dependent").hide();
+                 }
+         
+                 if (($(this).val() == "Cell_Value") || ($(this).val() == "Specific_Text")) { 
+                     $("#formula-field1").show();
+                 }
+                 else
+                 {
+                     $("#formula-field1").hide();
+                 }
+         
+                 $("#dropdown-dependent").change();
+             }
+             else { 
+                 $("#dropdown-dependent").hide();
+         
+                 let textOption = $(this).find("option:selected").text();
+                 $("#rule-type-string").val(textOption);
+             }
+         
+             if (ActiveRule == AllCells) {
+                 $("#tvc1").empty();
+                 $("#tvc2").empty();
+                 $("#tvc3").empty();
+         
+                 $("#percent-checkbox").hide();
+                 $("#content-label").hide();
+         
+                 let advancedType = ActiveRule.Types[$(this).val()];
+         
+                 if ($(this).val() == "Three_Color_Scale") {
+                     CreateTypeValueColor("minimumTVC", $("#tvc1"), "minimum", "Minimum", advancedType.Minimum);
+                     CreateTypeValueColor("midpointTVC", $("#tvc2"), "midpoint", "Midpoint", advancedType.Midpoint);
+                     CreateTypeValueColor("maximumTVC", $("#tvc3"), "maximum", "Maximum", advancedType.Maximum);
+                 }
+                 else if ($(this).val() == "Two_Color_Scale") {
+                     CreateTypeValueColor("minimumTVC", $("#tvc1"), "minimum", "Minimum", advancedType.Minimum);
+                     CreateTypeValueColor("maximumTVC", $("#tvc2"), "maximum", "Maximum", advancedType.Maximum);
+                 }
+                 else { 
+                     $("#percent-checkbox").show();
+                     $("#content-label").show();
+                     CreateTypeValue("minimumTVC", $("#tvc1"), "minimum", "Minimum", advancedType.Minimum);
+                     CreateTypeValue("maximumTVC", $("#tvc2"), "maximum", "Maximum", advancedType.Maximum);
+         
+                     CreateTypeColor("pos-fill", $("#db1"), "PosFill", "Fill", advancedType.PositiveFill);
+                     CreateTypeColor("border-color", $("#db2"), "BorderColor", "Border", advancedType.PositiveBorderFill);
+                     CreateDropDown("bar-direction", $("#db3"), "dbContext");
+                     CreateTypeColor("axis-color", $("#db3"), "AxisColor", "Axis Settings", advancedType.Axis);
+         
+         
+                     // CreateTypeColor("NegFill", $("#db1"), "NegFill", "Negative Fill", advancedType.NegativeFill);
+         
+         
+                 }
+             }
+         
+         
+             //let dropListOptions = ActiveRule.DropDown.Names;
+         
+             // let name = $(this).val();
+         
+             // if ((ActiveRule == CellContains && ((name == "Cell_Value") || (name == "Specific_Text")))) {
+             //     $("#formula-field1").show();
+             // }
+             // else if (ActiveRule == CellContains) {
+             //     $("#formula-field1").hide();
+             // }
+         
+             // if (dropListOptions != null && dropListOptions != undefined && dropListOptions != "") {
+             //     $("#dropdown-dependent").show();
+         
+             //     dropListOptions.forEach((element) => {
+             //         let selected = "";
+             //         if (element == ActiveRule.DropDown.SelectedName) { 
+             //             selected = ' selected= "selected"';
+             //         }
+         
+             //         let html = '<option value=' + element + selected + '>' + element + '</option>';
+             //         $("#dropdown-dependent").append(html);
+             //     });
+             //     $("#dropdown-dependent").change();
+             // }
+             // else {
+             //     $("#dropdown-dependent").change();
+             //     $("#dropdown-dependent").hide();
+             // }
+         });
+         
+         $("#dropdown-dependent").change(function () {
+         
+             if (ActiveRule == CellContains) { 
+                 if(ActiveRule.CurrentType < 3)
+                 {
+                     if (ActiveRule.CurrentType == 0) { 
+                       let valRule = (ActiveRule.DropDownDict[0])[$(this).val()];
+         
+                     }
+                     
+                 }
+             }
+             
+             if ($(this).val() == 'Between' || $(this).val() == 'Not_Between') {
+                 $("#formula-field2").show();
+                 $("#content-label").show();
+             }
+             else {
+                 $("#formula-field2").hide();
+                 if (ActiveRule == CellContains) {
+                     $("#content-label").hide();
+                 }
+             }
+             // if(ActiveRule == CellContains){
+             //     if ($(this).val() == 'Between' || $(this).val() == 'Not_Between') {
+             //         $("#formula-field2").show();
+             //         $("#content-label").show();
+             //     }
+             //     else {
+             //         $("#formula-field2").hide();
+             //         if (ActiveRule == CellContains) {
+             //             $("#content-label").hide();
+             //         }
+             //     }
+             // }
+         });
+         
+         $('#@Model.CurrentRuleCategoryStr').click();
+         if(ActiveRule != CellContains)
+         {
+             if($('#format-style').is(":visible"))
+             {
+                 let testText = $('#format-style option').filter(function () {
+                 return $(this).text() == RuleTypeString;
+             }).attr('selected', true);
+             }
+         }
     });
 </script>

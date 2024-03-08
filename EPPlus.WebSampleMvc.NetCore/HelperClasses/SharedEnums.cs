@@ -10,9 +10,9 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses
         CellContains = 2,
         Ranked = 4,
         Average = 8,
-        UniqueDuplicates = 16,
+        DuplicateUnique = 16,
         CustomExpression = 32,
-        All = AllCells | CellContains | Ranked | Average | UniqueDuplicates | CustomExpression,
+        All = AllCells | CellContains | Ranked | Average | DuplicateUnique | CustomExpression,
     }
 
     public enum Ranked

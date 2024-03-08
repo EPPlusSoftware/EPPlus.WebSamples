@@ -49,7 +49,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
                     ActiveRule = new AverageFormat(input);
                     ActiveIndex = 2;
                     break;
-                case CFRuleCategory.UniqueDuplicates:
+                case CFRuleCategory.DuplicateUnique:
                     ActiveRule = new UniqueDuplicateFormat(input);
                     ActiveIndex = 3;
                     break;
@@ -88,7 +88,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
                 case CFRuleCategory.Average:
                     Types.Add(new AverageFormat());
                     break;
-                case CFRuleCategory.UniqueDuplicates:
+                case CFRuleCategory.DuplicateUnique:
                     Types.Add(new UniqueDuplicateFormat());
                     break;
                 case CFRuleCategory.CustomExpression:

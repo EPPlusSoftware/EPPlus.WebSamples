@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using System.Text.Json.Nodes;
 using OfficeOpenXml.ConditionalFormatting;
 using System.Drawing;
+using System.IO;
 
 namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 {
@@ -26,12 +27,26 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                     IncludeFields = true,
                 };
 
-                CurrentRuleType = CFRuleCategory.Average;
+                CurrentRuleCategory = CFRuleCategory.Average;
 
-                CurrentRuleTypeStr = Enum.GetName(typeof(CFRuleCategory), CurrentRuleType);
+                CurrentRuleCategoryStr = Enum.GetName(typeof(CFRuleCategory), CurrentRuleCategory);
 
                 //types.ActiveRule.Settings.SetColor(ActiveColor);
                 JsonData = JsonSerializer.Serialize(collection, options);
+
+                FormatStyleIntValue = (int)FormatStyle;
+
+                // Set a variable to the Documents path.
+                string docPath = @"C:\Users\OssianEdström\Documents\Epplus_Repos\webSamplesNew\EPPlus.WebSamples\EPPlus.WebSampleMvc.NetCore\HelperClasses\";
+
+                File.Delete(docPath + "JsonData.json");
+
+                // Append text to an existing file named "WriteLines.txt".
+                using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, "JsonData.json"), false))
+                {
+                    outputFile.Write(JsonData);
+                    outputFile.Close();
+                }
 
                 var jsonObject = JObject.Parse(JsonData);
 
@@ -96,13 +111,44 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 
                 var range = ws.Cells["A1:E11"];
 
-                var cf = ConditionalFormattingForRange.GetCFForRangeClass(range.ConditionalFormatting, RuleType);
+                //Used to determine dropdown values. Must be assigned before in case of percent.
+                FormatStyleIntValue = (int)FormatStyle;
 
-                ws.Cells["A1:E11"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                ws.Cells["A1:E11"].Style.Fill.BackgroundColor.SetColor(Color.AliceBlue);
+                if (FormatStyle == eExcelConditionalFormattingRuleType.Top)
+                {
+                    if(Checkbox == true)
+                    {
+                        FormatStyle = eExcelConditionalFormattingRuleType.TopPercent;
+                    }
+                }
+                   
+                if(FormatStyle == eExcelConditionalFormattingRuleType.Bottom)
+                {
+                    if(Checkbox == true)
+                    {
+                        FormatStyle = eExcelConditionalFormattingRuleType.BottomPercent;
+                    }
+                }
+
+                ExcelConditionalFormattingRule cf;
+
+                if (RuleTypeAlternate == null)
+                {
+                    cf = ConditionalFormattingForRange.GetCFForRangeClass(range.ConditionalFormatting, FormatStyle);
+                }
+                else
+                {
+                    cf = ConditionalFormattingForRange.GetCFForRangeClass(range.ConditionalFormatting, RuleTypeAlternate.Value);
+                }
+                range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                range.Style.Fill.BackgroundColor.SetColor(Color.AliceBlue);
 
                 cf.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                 cf.Style.Fill.BackgroundColor.SetColor(ColorHandler.GetColorAsColor(ActiveColor));
+
+                string docPath = @"C:\Users\OssianEdström\Documents\Epplus_Repos\webSamplesNew\EPPlus.WebSamples\EPPlus.WebSampleMvc.NetCore\HelperClasses\";
+
+                JsonData = File.ReadAllText(docPath + "JsonData.json");
 
                 if (cf.Type == eExcelConditionalFormattingRuleType.AboveStdDev || cf.Type == eExcelConditionalFormattingRuleType.BelowStdDev)
                 {
@@ -121,6 +167,44 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                         stdDev.StdDev = 3;
                     }
                 }
+
+                if (((int)cf.Type < 10) && ((int)cf.Type > 3))
+                {
+
+                    if (int.TryParse(Formula1, out int newRank))
+                    {
+                        cf.Rank = (ushort)newRank;
+                    }
+                    else
+                    {
+                        //Faulty rank input becomes 1
+                        cf.Rank = 1;
+                    }
+                }
+
+                cf.Formula = Formula1 == null ? "" : Formula1;
+                if (cf.Type == eExcelConditionalFormattingRuleType.Between || cf.Type == eExcelConditionalFormattingRuleType.NotBetween)
+                {
+                    cf.Formula2 = Formula2 == null ? "" : Formula2;
+                }
+
+                ws.Cells["A1:A11"].Formula = "ROW()-5";
+                ws.Cells["B1:B11"].Formula = "\"Row number \" & ROW()";
+                ws.Cells["C1:C11"].Formula = "TODAY() -2 + ROW()";
+                ws.Cells["D1"].Formula = "TODAY() -6";
+                ws.Cells["D2"].Formula = "TODAY()";
+                ws.Cells["D3"].Formula = "TODAY() + 7";
+                ws.Cells["D5"].Formula = "TODAY() -31";
+                ws.Cells["D6"].Formula = "TODAY()";
+                ws.Cells["D7"].Formula = "TODAY() + 31";
+
+                //Add in to test errors
+                //ws.Cells["E1:E5"].Formula = "E10-E11+NULL";
+
+                ws.Cells["C1:D11"].Style.Numberformat.Format = "mm-dd-yy";
+
+                range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                range.Style.Fill.BackgroundColor.SetColor(Color.AliceBlue);
 
                 var exporter = range.CreateHtmlExporter();
 
@@ -145,9 +229,11 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 
         public eExcelConditionalFormattingRuleType FormatStyle { get; set; }
 
+        public int FormatStyleIntValue { get; set; }
+
         public string JsonData = "";
 
-        public CFRuleCategory CurrentRuleType { get; set; } = CFRuleCategory.AllCells;
+        public CFRuleCategory CurrentRuleCategory { get; set; } = CFRuleCategory.AllCells;
 
         public string[] GetEnumValues()
         {
@@ -165,7 +251,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 
         public string[] SelectedEnums { get; set; } = new string[5];
 
-        public eExcelConditionalFormattingRuleType RuleType { get; set; }
+        public eExcelConditionalFormattingRuleType? RuleTypeAlternate { get; set; } = null;
 
         public string RuleTypeString { get; set; }
 
@@ -183,7 +269,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
 
         public bool? Checkbox { get; set; }
 
-        public string CurrentRuleTypeStr { get; set; }
+        public string CurrentRuleCategoryStr { get; set; }
 
         public string ActiveRule { get; set; }
 

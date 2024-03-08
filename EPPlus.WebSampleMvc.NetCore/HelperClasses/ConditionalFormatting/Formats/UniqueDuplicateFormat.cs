@@ -9,7 +9,7 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormatting.Format
 
         public override string FormatTitle => "Format all";
 
-        public override CFRuleCategory FormatType => CFRuleCategory.UniqueDuplicates;
+        public override CFRuleCategory FormatType => CFRuleCategory.DuplicateUnique;
 
         public override EnumCollection Collection { get; protected set; }
         public override string[] Formulas { get; set; }

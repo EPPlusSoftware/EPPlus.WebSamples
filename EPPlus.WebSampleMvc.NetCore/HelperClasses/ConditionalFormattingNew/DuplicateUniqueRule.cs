@@ -9,8 +9,8 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew
 {
     public class DuplicateUniqueRule : SimpleFormattingRule
     {
-        public override string FormatName => Enum.GetName(CFRuleCategory.UniqueDuplicates);
-        public override CFRuleCategory RuleCategory => CFRuleCategory.UniqueDuplicates;
+        public override string FormatName => Enum.GetName(CFRuleCategory.DuplicateUnique);
+        public override CFRuleCategory RuleCategory => CFRuleCategory.DuplicateUnique;
 
         public override string ListOptionText => "Format only unique or duplicate values";
 

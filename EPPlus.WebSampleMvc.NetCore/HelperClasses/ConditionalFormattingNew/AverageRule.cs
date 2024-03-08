@@ -20,7 +20,27 @@ namespace EPPlus.WebSampleMvc.NetCore.HelperClasses.ConditionalFormattingNew
 
         public AverageRule()
         {
+            //Since Averages has to be based on eExcelConditionalFormattingRuleType
+            //GetNames makes them appear in a non-sensical order to the user. This rectifies that
+            string[] preferredOrder = new string[]
+            {
+                "Above",
+                "Below",
+                "Equal_Or_Above",
+                "Equal_Or_Below",
+                "One_Std_Dev_Above",
+                "One_Std_Dev_Below",
+                "Two_Std_Dev_Above",
+                "Two_Std_Dev_Below",
+                "Three_Std_Dev_Above",
+                "Three_Std_Dev_Below",
+            };
 
+            for(int i = 0; i < preferredOrder.Length; i++) 
+            {
+                DropDown.Names[i] = preferredOrder[i];
+                DropDown.EnumValues[i] = (Averages)Enum.Parse(typeof(Averages), preferredOrder[i]);
+            }
         }
 
     }
