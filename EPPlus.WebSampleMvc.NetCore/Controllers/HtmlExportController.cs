@@ -92,6 +92,23 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public IActionResult ExportCf7()
+        {
+            var model = new ExportCf7Model();
+            model.SetupSampleData();
+            return View(model);
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult ExportCf7(string tn)
+        {
+            var model = new ExportCf7Model();
+            model.SelectedSample = tn;
+            model.SetupSampleData(tn);
+            return View(model);
+        }
+
         public async Task<IActionResult> GetWorkbookSample5()
         {
             var file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"data\\Allsvenskan2001.xlsx");
@@ -106,6 +123,14 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
             using var package = new ExcelPackage(file);
             var fileBytes = await package.GetAsByteArrayAsync();
             return File(fileBytes, ContentType, "EPPlusHtmlSample6.xlsx");
+        }
+
+        public async Task<IActionResult> GetWorkbookSample7()
+        {
+            var file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"data\\CfExport1.xlsx");
+            using var package = new ExcelPackage(file);
+            var fileBytes = await package.GetAsByteArrayAsync();
+            return File(fileBytes, ContentType, "EPPlusHtmlSample7.xlsx");
         }
     }
 }

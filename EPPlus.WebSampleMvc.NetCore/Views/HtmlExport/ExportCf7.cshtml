@@ -1,0 +1,185 @@
+﻿@model EPPlus.WebSampleMvc.NetCore.Models.HtmlExport.ExportCf7Model
+<style type="text/css">
+    @Html.Raw(Model.Css)
+</style>
+<div class="row">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/HtmlExport">Html export</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Export range</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<div class="row">
+    <div class="col text-center">
+        <h4>Html export - export Conditional Formatting</h4>
+    </div>
+</div>
+<div class="row my-2">
+    <div class="col bg-light rounded">
+        <div class="row">
+            <div class="col-6">
+                <a href="/HtmlExport/ExportRanges6">&laquo; Previous sample</a>
+            </div>
+            <div class="col-6 text-right">
+                <a href="#" class="text-secondary">Next sample &raquo;</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <p>Here is an exported table with conditional formatting exported to Html.</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <form action="/HtmlExport/ExportCf7" method="post">
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <label for="select-table-name">Conditional formatting type</label>
+                <select name="tn" class="form-control" id="select-table-name">
+                    @foreach(var sample in Model.AllSamples)
+                    {
+                        if(sample.TableName == Model.SelectedSample)
+                        {
+                             <option value="@sample.TableName" selected="selected">@sample.Name</option>
+                        }
+                        else
+                        {
+                             <option value="@sample.TableName">@sample.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Reload" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <div class="col my-3">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" id="tab-demo">Demo</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="tab-csharp">C#</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="tab-html">Html</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="tab-css">Css</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="row demo">
+    <div class="col p-3 table-responsive">
+        @Html.Raw(Model.Html)
+    </div>
+</div>
+<div class="row csharp" style="display:none">
+    <div class="col">
+        <pre>
+        <code class="language-csharp hljs">
+// the variable tblName contains the name of the table in the workbook to use.
+using (var package = new ExcelPackage(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"data\\CfExport1.xlsx")))
+{
+    var sheet = package.Workbook.Worksheets[0];
+    var table = sheet.Tables[tblName];
+    var exporter = package.Workbook.CreateHtmlExporter(table.Range);
+    var settings = exporter.Settings;
+    settings.Minify = false;
+    settings.Culture = CultureInfo.InvariantCulture;
+    settings.TableId = "temp-table";
+
+    Css = exporter.GetCssString();
+    Html = exporter.GetHtmlString();
+}
+
+            </code>
+        </pre>
+    </div>
+</div>
+<div class="row demo">
+    <div class="col">
+        <a href="/HtmlExport/GetWorkbookSample7" class="btn btn-secondary">Get the workbook</a>
+    </div>
+</div>
+<div class="row html" style="display:none">
+    <div class="col">
+        <p>Html as it was exported</p>
+        <pre style="white-space: pre-wrap">
+        <code class="language-html hljs" id="html-code">
+ @Model.Html.Trim()
+            </code>
+        </pre>
+    </div>
+</div>
+<div class="row css" style="display:none">
+    <div class="col table-responsive">
+        <pre style="white-space: pre-wrap">
+        <code class="language-css hljs" id="css-code">
+ @Model.Css.Trim()
+            </code>
+        </pre>
+    </div>
+</div>
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        jQuery(".csharp").hide();
+        jQuery(".html").hide();
+        jQuery(".css").hide();
+        hljs.highlightAll();
+        jQuery("#tab-csharp").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").hide();
+            jQuery(".csharp").show();
+            jQuery(".css").hide();
+            jQuery(".html").hide();
+            jQuery("#tab-demo").removeClass("active");
+            jQuery("#tab-csharp").addClass("active");
+            jQuery("#tab-html").removeClass("active");
+            jQuery("#tab-css").removeClass("active");
+        });
+        jQuery("#tab-demo").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").show();
+            jQuery(".csharp").hide();
+            jQuery(".css").hide();
+            jQuery(".html").hide();
+            jQuery("#tab-demo").addClass("active");
+            jQuery("#tab-csharp").removeClass("active");
+            jQuery("#tab-css").removeClass("active");
+            jQuery("#tab-html").removeClass("active");
+        });
+        jQuery("#tab-css").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").hide();
+            jQuery(".csharp").hide();
+            jQuery(".css").show();
+            jQuery(".html").hide();
+            jQuery("#tab-demo").removeClass("active");
+            jQuery("#tab-csharp").removeClass("active");
+            jQuery("#tab-css").addClass("active");
+            jQuery("#tab-html").removeClass("active");
+        });
+        jQuery("#tab-html").click(function (e) {
+            e.preventDefault();
+            jQuery(".demo").hide();
+            jQuery(".csharp").hide();
+            jQuery(".html").show();
+            jQuery(".css").hide();
+            jQuery("#tab-demo").removeClass("active");
+            jQuery("#tab-csharp").removeClass("active");
+            jQuery("#tab-css").removeClass("active");
+            jQuery("#tab-html").addClass("active");
+        });
+    });
+</script>
