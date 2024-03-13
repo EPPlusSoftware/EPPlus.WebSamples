@@ -60,6 +60,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 settings.Culture = CultureInfo.InvariantCulture;
                 settings.TableId = "cf-table";
                 settings.SetColumnWidth = true;
+                settings.SetRowHeight = true;
 
 
                 Css = exporter.GetCssString();
