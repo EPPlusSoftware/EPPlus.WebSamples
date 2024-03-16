@@ -26,7 +26,9 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 return new List<CfSample>
                 {
                     new() { Name = "3 Color Scale", TableName = "tbl3ColorScale" },
-                    new() { Name = "Data Bars", TableName = "tblDataBars" }
+                    new() { Name = "Data Bars", TableName = "tblDataBars" },
+                    new() { Name = "Expression", TableName = "tblExpression" },
+
                 };
             }
         }
