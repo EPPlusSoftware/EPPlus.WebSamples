@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\EPPlus Cf\EPPlus\src\EPPlus\EPPlus.csproj" />
+    <ProjectReference Include="..\..\..\Develop7_1\EPPlus\src\EPPlus\EPPlus.csproj" />
   </ItemGroup>
 
 </Project>

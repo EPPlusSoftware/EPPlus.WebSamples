@@ -26,9 +26,16 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 return new List<CfSample>
                 {
                     new() { Name = "3 Color Scale", TableName = "tbl3ColorScale" },
-                    new() { Name = "Data Bars", TableName = "tblDataBars" },
+                    //new() { Name = "Data Bars", TableName = "tblDataBars" },
                     new() { Name = "Expression", TableName = "tblExpression" },
-
+                    new() { Name = "Unique Duplicates", TableName = "UniqueDuplicates" },
+                    new() { Name = "Above Below", TableName = "AboveBelow" },
+                    new() { Name = "Top10", TableName = "Top10Tbl" },
+                    new() { Name = "Between 5 and 10", TableName = "BetweenTbl" },
+                    new() { Name = "Contains blue", TableName = "ContainsBlue" },
+                    new() { Name = "Dates yesterday,today,tomorrow", TableName = "Dates" },
+                    new() { Name = "Blanks", TableName = "Blanks" },
+                    new() { Name = "Errors", TableName = "Errors" },
                 };
             }
         }
@@ -64,6 +71,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 settings.SetColumnWidth = true;
                 settings.SetRowHeight = true;
 
+                sheet.Calculate();
 
                 Css = exporter.GetCssString();
                 Html = exporter.GetHtmlString();

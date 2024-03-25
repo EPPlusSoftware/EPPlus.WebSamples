@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29806.167
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPPlus.WebSampleMvc.NetCore", "EPPlus.WebSampleMvc.NetCore.csproj", "{D52138E6-EEC6-4C88-91FA-0BA5197EDEEE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPPlus", "..\EPPlus\src\EPPlus\EPPlus.csproj", "{F9EF9AE6-F7B1-412E-895A-96D2D2D5AF80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPPlus.WebSampleMvc.NetCore.WebAssemblySamples", "..\EPPlus.WebSampleMvc.NetCore.WebAssemblySamples\EPPlus.WebSampleMvc.NetCore.WebAssemblySamples.csproj", "{A99BA067-BC4C-4910-BDFC-8E3881DF2AAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPPlus.WebSampleMvc.NetCore.WebAssemblySamples", "..\EPPlus.WebSampleMvc.NetCore.WebAssemblySamples\EPPlus.WebSampleMvc.NetCore.WebAssemblySamples.csproj", "{A99BA067-BC4C-4910-BDFC-8E3881DF2AAD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPPlus", "..\..\..\HtmlEpplus\EPPlus\src\EPPlus\EPPlus.csproj", "{851273B3-DCF7-426E-A302-83C4CAF0E42A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +19,14 @@ Global
 		{D52138E6-EEC6-4C88-91FA-0BA5197EDEEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D52138E6-EEC6-4C88-91FA-0BA5197EDEEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D52138E6-EEC6-4C88-91FA-0BA5197EDEEE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F9EF9AE6-F7B1-412E-895A-96D2D2D5AF80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9EF9AE6-F7B1-412E-895A-96D2D2D5AF80}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9EF9AE6-F7B1-412E-895A-96D2D2D5AF80}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9EF9AE6-F7B1-412E-895A-96D2D2D5AF80}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A99BA067-BC4C-4910-BDFC-8E3881DF2AAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A99BA067-BC4C-4910-BDFC-8E3881DF2AAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A99BA067-BC4C-4910-BDFC-8E3881DF2AAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A99BA067-BC4C-4910-BDFC-8E3881DF2AAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{851273B3-DCF7-426E-A302-83C4CAF0E42A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{851273B3-DCF7-426E-A302-83C4CAF0E42A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{851273B3-DCF7-426E-A302-83C4CAF0E42A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{851273B3-DCF7-426E-A302-83C4CAF0E42A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
