@@ -41,14 +41,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Faker.Net" Version="1.5.150" />
+	<PackageReference Include="Faker.Net" Version="1.5.150" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.9" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Develop7_1\EPPlus\src\EPPlus\EPPlus.csproj" />
+	<ProjectReference Include="..\..\..\HtmlEpplusBugs\EPPlus\src\EPPlus\EPPlus.csproj" />
     <ProjectReference Include="..\EPPlus.WebSampleMvc.NetCore.WebAssemblySamples\EPPlus.WebSampleMvc.NetCore.WebAssemblySamples.csproj" />
   </ItemGroup>
 
