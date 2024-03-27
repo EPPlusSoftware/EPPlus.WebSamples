@@ -32,7 +32,7 @@
 </div>
 <div class="row">
     <div class="col-12">
-        <p>Here is an exported table with conditional formatting exported to Html.</p>
+        <p>This sample contains a dropdown list of all supported conditional formattings. Feel free to "get the workbook" fiddle around with the options and export again.</p>
     </div>
 </div>
 <div class="row">
@@ -40,6 +40,10 @@
         <form action="/HtmlExport/ExportCf7" method="post">
             @Html.AntiForgeryToken()
             <div class="form-group">
+                <label style="font-weight: bold;">Description</label>
+                <div class="col-12">
+                    <p style="white-space: pre-line;">@Model.Description</p>
+                </div>
                 <label for="select-table-name">Conditional formatting type</label>
                 <select name="tn" class="form-control" id="select-table-name">
                     @foreach(var sample in Model.AllSamples)
@@ -87,22 +91,74 @@
 <div class="row csharp" style="display:none">
     <div class="col">
         <pre>
-        <code class="language-csharp hljs">
-// the variable tblName contains the name of the table in the workbook to use.
-using (var package = new ExcelPackage(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"data\\CfExport1.xlsx")))
-{
-    var sheet = package.Workbook.Worksheets[0];
-    var table = sheet.Tables[tblName];
-    var exporter = package.Workbook.CreateHtmlExporter(table.Range);
-    var settings = exporter.Settings;
-    settings.Minify = false;
-    settings.Culture = CultureInfo.InvariantCulture;
-    settings.TableId = "temp-table";
+            <code class="language-csharp hljs">
+                public ExportCf7Model()
+                {
+                }
 
-    Css = exporter.GetCssString();
-    Html = exporter.GetHtmlString();
-}
+                public const string DefaultSample = "tbl3ColorScale";
 
+                public string SelectedSample { get; set; }
+
+                public IEnumerable<CfSample> AllSamples
+                {
+                    get
+                    {
+                        return new List<CfSample>
+                        {
+                            new() { Name = "3 Color Scale", TableName = "tbl3ColorScale" },
+                            new() { Name = "Cell Contains", TableName = "cellContainsTbl" },
+                            new() { Name = "Blanks No blanks", TableName = "blanksTbl" },
+                            new() { Name = "Errors No Errors", TableName = "errorsTbl" },
+                            new() { Name = "Top 10", TableName = "top10Tbl" },
+                            new() { Name = "Above and below average", TableName = "averageTbl" },
+                            new() { Name = "Unique and Duplicate", TableName = "uniqueDuplicatesTbl" },
+                            new() { Name = "Custom expression", TableName = "expressionTbl" },
+                        };
+                    }
+                }
+
+                private string GetTableName(string tableName)
+                {
+                    if(string.IsNullOrWhiteSpace(tableName))
+                    {
+                        return DefaultSample;
+                    }
+                    foreach(var sample in AllSamples)
+                    {
+                        if(string.Compare(sample.TableName, tableName, StringComparison.OrdinalIgnoreCase) == 0)
+                        {
+                            return sample.TableName;
+                        }
+                    }
+                    return DefaultSample;
+                }
+
+                public void SetupSampleData(string tableName = "")
+                {
+                    var tblName = GetTableName(tableName);
+                    using (var package = new ExcelPackage(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"data\\CfExport1.xlsx")))
+                    {
+                        var sheet = package.Workbook.Worksheets[0];
+                        var table = sheet.Tables[tblName];
+                        var exporter = package.Workbook.CreateHtmlExporter(table.Range);
+                        var settings = exporter.Settings;
+                        settings.Minify = false;
+                        settings.Culture = CultureInfo.InvariantCulture;
+                        settings.TableId = "cf-table";
+                        settings.SetColumnWidth = true;
+                        settings.SetRowHeight = true;
+
+                        sheet.Calculate();
+
+                        Css = exporter.GetCssString();
+                        Html = exporter.GetHtmlString();
+                    }
+                }
+
+                public string Css { get; set; }
+
+                public string Html { get; set; }
             </code>
         </pre>
     </div>

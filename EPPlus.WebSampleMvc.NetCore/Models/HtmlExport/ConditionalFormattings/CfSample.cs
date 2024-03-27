@@ -9,5 +9,6 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport.ConditionalFormattings
 
         public string TableName { get; set; }
 
+        public string Description { get; set; }
     }
 }
