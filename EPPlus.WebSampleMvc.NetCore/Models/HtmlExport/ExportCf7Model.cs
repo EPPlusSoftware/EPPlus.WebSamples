@@ -40,6 +40,14 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                     new() { Name = "Custom expression", TableName = "expressionTbl", Description = "A 'Use a formula to determine which cells to format' example.\n" +
                     "Column1 with formula 'D45>2002'.\n " +
                     "Column2 with 'isNumber(E45)' and 'isNumber(E45) == FALSE' formulas." },
+                    new() { Name = "Databar", TableName = "tblDataBars", Description = "Example of exported databars\n" +
+                    "Column2 with formula equivalent to 'Min 25, Max 115'.\n " +
+                    "Column3 automatic with show bar only and a border color.\n"+
+                    "Column4 automatic with positives and negatives" },
+                    new() { Name = "Iconsets", TableName = "tblIconSet", Description = "Example of exported Iconsets\n" +
+                    "Column2 Iconset automatic percent'.\n " +
+                    "Column3 Iconset with custom picked icons and reversed. \n"+
+                    "Column4 Iconset using numbers instead of percent." }
                 };
             }
         }
