@@ -31,7 +31,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Controllers
                 {
                     Delimiter = ';',
                     Culture = CultureInfo.InvariantCulture,
-                    DataTypes = new eDataTypes[] { eDataTypes.DateTime, eDataTypes.Number, eDataTypes.Number, eDataTypes.Number }                    
+                    DataTypes = new eDataTypes[] { eDataTypes.DateTime, eDataTypes.Number, eDataTypes.Number, eDataTypes.Number, eDataTypes.Number }                    
                 };
                 var range = await sheet.Cells["A1"].LoadFromTextAsync(csvFileInfo, format);
                 sheet.Cells[range.Start.Row, 1, range.End.Row, 1].Style.Numberformat.Format = "yyyy-MM-dd";

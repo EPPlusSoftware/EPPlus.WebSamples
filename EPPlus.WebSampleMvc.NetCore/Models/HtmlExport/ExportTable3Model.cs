@@ -23,7 +23,7 @@ namespace EPPlus.WebSampleMvc.NetCore.Models.HtmlExport
                 {
                     Delimiter = ';',
                     Culture = CultureInfo.InvariantCulture,
-                    DataTypes = new eDataTypes[] { eDataTypes.DateTime, eDataTypes.Number, eDataTypes.Number, eDataTypes.Number }
+                    DataTypes = new eDataTypes[] { eDataTypes.DateTime, eDataTypes.Number, eDataTypes.Number, eDataTypes.Number, eDataTypes.Number }
                 };
                 var tableRange = sheet.Cells["A1"].LoadFromText(csvFileInfo, format, style, true);
 
