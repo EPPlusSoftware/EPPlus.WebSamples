@@ -56,7 +56,7 @@
 
             // read png image from embedded resource
             using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EPPlus.WebSampleMvc.NetCore.WebAssemblySamples.Resources.EPPlus-logo-full.png");
-            var pic = sheet.Drawings.AddPicture("epplogo", stream, OfficeOpenXml.Drawing.ePictureType.Png);
+            var pic = sheet.Drawings.AddPicture("epplogo", stream);
             pic.SetSize(50);
             pic.SetPosition(0, 10, 0, 10);
 

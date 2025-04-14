@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -18,7 +19,7 @@ namespace EPPlus.WebSampleMvc.NetCore.WebAssemblySamples
             //builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
+            //ExcelPackage.License.SetNonCommercialPersonal("EPPlus Web Sample");
             await builder.Build().RunAsync();
         }
     }
