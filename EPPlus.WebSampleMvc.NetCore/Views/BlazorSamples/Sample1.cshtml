@@ -101,7 +101,7 @@
             CreateTableAndChartWorksheet(package, fxRates);
 
             // finally serialize the workbook to a byte array and use the BlazorDownloadFile function to create a link for download.
-            await JS.InvokeVoidAsync("BlazorDownloadFile", "BlazorSample1.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", package.GetAsByteArray());
+            await JS.InvokeVoidAsync("BlazorDownloadFile", "BlazorSample1.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Convert.ToBase64String(package.GetAsByteArray()));
 
         }
     }
