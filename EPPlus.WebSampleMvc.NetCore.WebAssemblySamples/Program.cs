@@ -19,7 +19,7 @@ namespace EPPlus.WebSampleMvc.NetCore.WebAssemblySamples
             //builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-            //ExcelPackage.License.SetNonCommercialPersonal("EPPlus Web Sample");
+            ExcelPackage.License.SetNonCommercialPersonal("EPPlus Web Sample");
             await builder.Build().RunAsync();
         }
     }
